@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M13 — AI remediation engine** (next up)
+**M14 — Quality Impact Twin** (next up)
 
 ## Milestone plan
 
@@ -23,7 +23,7 @@ _Last updated: 2026-07-16_
 | M10 | Golden-record survivorship | ✅ Complete |
 | M11 | BOM graph intelligence | ✅ Complete |
 | M12 | Document intelligence | ✅ Complete |
-| M13 | AI remediation engine | ⬜ Not started |
+| M13 | AI remediation engine | ✅ Complete (mock provider tested; Cortex path pending credentials) |
 | M14 | Quality Impact Twin | ⬜ Not started |
 | M15 | FastAPI service | ⬜ Not started |
 | M16 | React remediation workbench | ⬜ Not started |
@@ -108,6 +108,13 @@ _Last updated: 2026-07-16_
   flags instruction-like content without ever following it; ERP comparison producing
   price/lead-time discrepancy records. 8 integration tests (extraction exactness,
   injection resilience, discrepancy detection).
+- **M13** — AI remediation engine: `AIProvider` interface with
+  `DeterministicMockAIProvider` (tested) and `SnowflakeCortexAIProvider` (implemented,
+  external validation pending — no credentials); strict Pydantic proposal schema with
+  schema-level guarantees (no approve action exists; `human_review_required` cannot be
+  false); grounding validation rejecting fabricated evidence refs; abstention on sparse
+  evidence; per-call audit (provider, model, prompt version, sizes, latency, validation
+  result) in `quality.ai_call_audit`. 10 tests.
 
 ## In-progress work
 
@@ -119,7 +126,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 95 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
+- Python: 105 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -140,13 +147,13 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M13: AI remediation engine in `src/bom_guardian/ai/` + `remediation/` — provider
-interface (`DeterministicMockAIProvider`, `SnowflakeCortexAIProvider` stub, optional
-Anthropic), strict Pydantic proposal schema, evidence-grounded explanations, abstention,
-audit logging, no write path to golden state. Commit
-`feat: generate governed AI remediation proposals`.
+Start M14: Quality Impact Twin in `src/bom_guardian/impact_twin/` — blast-radius
+calculation (assemblies, demand, inventory, PO value, suppliers, plants, cost exposure,
+priority) and counterfactual scenario simulation (merge / field correction / component
+replacement) with before/after comparison, persisted separately, baseline never mutated.
+Commit `feat: simulate downstream impact of remediation decisions`.
 
 ## Honest completion percentage
 
-**~56%** — through document intelligence; AI engine, impact twin, API, frontend,
+**~60%** — through the AI remediation engine; impact twin, API, frontend, copilot,
 Power BI still pending.

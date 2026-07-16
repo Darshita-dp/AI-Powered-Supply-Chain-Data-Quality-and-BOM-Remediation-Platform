@@ -48,3 +48,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M12: document intelligence — synthetic quote PDFs (incl. injection-attempt fixtures),
   deterministic extraction with evidence/confidence/review routing, prompt-injection
   flagging, ERP discrepancy comparison, 8 tests.
+- M13: governed AI remediation engine — provider interface (mock tested, Cortex
+  pending), strict proposal schema (no approve action, mandatory human review),
+  grounding validation, abstention, AI-call audit table, 10 tests.
