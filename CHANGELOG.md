@@ -24,3 +24,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M4: Snowflake provisioning scripts (schemas, warehouses, roles/grants, stages,
   teardown — authored, deployment pending) and DuckDB `LocalWarehouse` with the same
   7-layer schema layout, 5 unit tests.
+- M5: auditable ingestion — audit columns (hashes, batch, sequence, status), file-hash
+  idempotency, null-PK rejection handling, ops audit tables, isolated ground-truth
+  loading, 5 integration tests.

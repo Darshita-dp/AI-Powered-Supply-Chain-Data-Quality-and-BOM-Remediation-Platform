@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M5 — Auditable ingestion** (next up)
+**M6 — dbt transformation layer** (next up)
 
 ## Milestone plan
 
@@ -15,7 +15,7 @@ _Last updated: 2026-07-16_
 | M2 | Synthetic ERP generator | ✅ Complete |
 | M3 | Controlled issue injection and ground truth | ✅ Complete |
 | M4 | Snowflake and local warehouse setup | ✅ Complete (Snowflake scripts authored, deployment pending — no credentials) |
-| M5 | Auditable ingestion | ⬜ Not started |
+| M5 | Auditable ingestion | ✅ Complete |
 | M6 | dbt transformation layer | ⬜ Not started |
 | M7 | Data-quality engine (40+ rules) | ⬜ Not started |
 | M8 | Entity-resolution baseline | ⬜ Not started |
@@ -60,6 +60,10 @@ _Last updated: 2026-07-16_
   **authored and reviewed but NOT executed — no Snowflake credentials, deployment
   pending**) and the DuckDB `LocalWarehouse` with the same 7-layer schema layout,
   load/query/validate API, 5 unit tests.
+- **M5** — `IngestionService`: raw-layer loads with audit columns (batch ID, timestamps,
+  file/row SHA-256 hashes, schema version, record sequence, load status), file-hash
+  idempotency (re-ingest loads 0 rows), null-PK rejection to `ops.rejected_records`,
+  batch/file audit tables, isolated ground-truth loading. 5 integration tests.
 
 ## In-progress work
 
@@ -71,7 +75,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 26 unit tests (`pytest`), ruff + ruff-format + mypy clean.
+- Python: 31 tests — 26 unit + 5 integration (`pytest`), ruff + ruff-format + mypy clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -92,11 +96,12 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M5: auditable ingestion — raw loads with batch tracking, file/row hashes,
-idempotency, rejected-record handling, load audit in `ops`. Commit
-`feat: implement auditable and idempotent data ingestion`.
+Start M6: dbt project `dbt_supply_chain/` — sources over raw, staging models
+(normalization preserving originals), core dims/facts, snapshots, contracts, tests,
+docs, DuckDB local target. Commit
+`feat: build governed dbt supply chain transformation models`.
 
 ## Honest completion percentage
 
-**~20%** — data generation, injection, and warehouse foundations done; quality engine,
-ML, API, and frontend functionality still pending.
+**~24%** — generation, injection, warehouse, and ingestion done; dbt, quality engine,
+ML, API, and frontend still pending.
