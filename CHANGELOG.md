@@ -51,3 +51,7 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M13: governed AI remediation engine — provider interface (mock tested, Cortex
   pending), strict proposal schema (no approve action, mandatory human review),
   grounding validation, abstention, AI-call audit table, 10 tests.
+- M14: Quality Impact Twin — blast-radius exposure metrics with documented priority
+  weights, merge/field-correction/component-replacement counterfactual scenarios with
+  before/after diffs and new-conflict warnings, scenario-only persistence, verified
+  baseline immutability, 9 tests.
