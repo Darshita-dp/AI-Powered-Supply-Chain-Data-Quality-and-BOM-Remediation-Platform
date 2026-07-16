@@ -45,3 +45,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M11: BOM graph intelligence — cycle/self-ref/orphan validation, depth, reverse
   dependencies, path tracing, expansion, centrality, criticality, supplier
   concentration, 16 tests.
+- M12: document intelligence — synthetic quote PDFs (incl. injection-attempt fixtures),
+  deterministic extraction with evidence/confidence/review routing, prompt-injection
+  flagging, ERP discrepancy comparison, 8 tests.

@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M12 — Document intelligence** (next up)
+**M13 — AI remediation engine** (next up)
 
 ## Milestone plan
 
@@ -22,7 +22,7 @@ _Last updated: 2026-07-16_
 | M9 | ML entity resolution | ✅ Complete |
 | M10 | Golden-record survivorship | ✅ Complete |
 | M11 | BOM graph intelligence | ✅ Complete |
-| M12 | Document intelligence | ⬜ Not started |
+| M12 | Document intelligence | ✅ Complete |
 | M13 | AI remediation engine | ⬜ Not started |
 | M14 | Quality Impact Twin | ⬜ Not started |
 | M15 | FastAPI service | ⬜ Not started |
@@ -101,6 +101,13 @@ _Last updated: 2026-07-16_
   demand-weighted criticality, single-source supplier concentration. 16 tests covering
   every required shape (acyclic, direct + multi-level cycle, self-ref, disconnected,
   deep, shared component, reverse traversal).
+- **M12** — document intelligence: synthetic supplier quote PDFs (reportlab) with a
+  configurable fraction containing prompt-injection attempts; deterministic regex
+  extraction (pypdf) with per-field evidence line, page number, confidence, and
+  review routing below 0.8; type/allowed-set validation; injection detection that
+  flags instruction-like content without ever following it; ERP comparison producing
+  price/lead-time discrepancy records. 8 integration tests (extraction exactness,
+  injection resilience, discrepancy detection).
 
 ## In-progress work
 
@@ -112,7 +119,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 87 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
+- Python: 95 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -133,13 +140,13 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M12: document intelligence in `src/bom_guardian/document_intelligence/` +
-`data_generator/documents/` — synthetic supplier quote PDFs, deterministic-first
-extraction with evidence + confidence, ERP comparison creating discrepancy issues,
-prompt-injection controls, mock AI path, evaluation. Commit
-`feat: extract and validate supplier document intelligence`.
+Start M13: AI remediation engine in `src/bom_guardian/ai/` + `remediation/` — provider
+interface (`DeterministicMockAIProvider`, `SnowflakeCortexAIProvider` stub, optional
+Anthropic), strict Pydantic proposal schema, evidence-grounded explanations, abstention,
+audit logging, no write path to golden state. Commit
+`feat: generate governed AI remediation proposals`.
 
 ## Honest completion percentage
 
-**~52%** — through BOM graph intelligence; documents, AI engine, impact twin, API,
-frontend, Power BI still pending.
+**~56%** — through document intelligence; AI engine, impact twin, API, frontend,
+Power BI still pending.
