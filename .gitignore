@@ -1,0 +1,55 @@
+# Secrets & config
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Data & generated artifacts
+*.duckdb
+*.duckdb.wal
+data/generated/
+data_generator/output/
+warehouse/local/*.db
+*.parquet
+!powerbi/**/sample_*.parquet
+model_cache/
+models/artifacts/*.pkl
+logs/
+*.log
+
+# dbt
+dbt_supply_chain/target/
+dbt_supply_chain/dbt_packages/
+dbt_supply_chain/logs/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/coverage/
+*.tsbuildinfo
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Power BI local caches
+*.pbix.bak
+.pbi/localSettings.json
+cache.abf
