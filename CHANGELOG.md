@@ -36,3 +36,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M8: explainable ER baseline — blocking, 11 interpretable features, weighted matcher
   with confidence bands + evidence, measured evaluation artifact (recommend band
   P=1.00/R=0.57 on smoke), 8 tests.
+- M9: ML entity resolution — LR + gradient boosting, group-aware splits, precision-floor
+  threshold selection, model persistence, model card, measured comparison report
+  (`evaluation/entity_resolution/ml_smoke.json`), 6 tests.

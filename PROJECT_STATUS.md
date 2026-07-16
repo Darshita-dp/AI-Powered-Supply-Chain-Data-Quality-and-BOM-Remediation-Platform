@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M9 — Machine-learning entity resolution** (next up)
+**M10 — Golden-record survivorship** (next up)
 
 ## Milestone plan
 
@@ -19,7 +19,7 @@ _Last updated: 2026-07-16_
 | M6 | dbt transformation layer | ✅ Complete |
 | M7 | Data-quality engine (40+ rules) | ✅ Complete |
 | M8 | Entity-resolution baseline | ✅ Complete |
-| M9 | ML entity resolution | ⬜ Not started |
+| M9 | ML entity resolution | ✅ Complete |
 | M10 | Golden-record survivorship | ⬜ Not started |
 | M11 | BOM graph intelligence | ⬜ Not started |
 | M12 | Document intelligence | ⬜ Not started |
@@ -83,6 +83,13 @@ _Last updated: 2026-07-16_
   (`evaluation/entity_resolution/baseline_smoke.json`, reproducible via
   `scripts/evaluate_entity_resolution.py`): recommend band precision 1.00 / recall 0.57;
   review band precision 1.00 / recall 0.86. 8 tests.
+- **M9** — ML ER: LR + gradient boosting over the same 11 features, group-aware
+  60/20/20 splits (no entity leakage), validation threshold selection with a 0.95
+  precision floor, joblib persistence, LR coefficients exported for explainability,
+  model card (`docs/model-card.md`) with honest caveats about small test-set size.
+  Measured on smoke (`evaluation/entity_resolution/ml_smoke.json`): LR P=1.00/R=0.83,
+  GB P=1.00/R=1.00 on held-out test split (~6 positives — wide uncertainty, noted).
+  6 tests.
 
 ## In-progress work
 
@@ -94,7 +101,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 56 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
+- Python: 62 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -115,12 +122,12 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M9: ML entity resolution — logistic regression + gradient boosting over the same
-features, proper train/val/test split from ground truth, threshold selection, model
-persistence, model card, error analysis. Commit
-`feat: train and evaluate duplicate entity resolution models`.
+Start M10: golden-record survivorship in `src/bom_guardian/golden_record/` —
+field-level selection with source reliability, recency, completeness, cross-source
+agreement; full lineage with alternatives and confidence; reversible; tests. Commit
+`feat: implement field-level golden record survivorship`.
 
 ## Honest completion percentage
 
-**~40%** — pipeline, quality engine, and ER baseline measured against ground truth;
-ML ER, golden records, graph, impact twin, API, and frontend still pending.
+**~44%** — pipeline, quality engine, baseline + ML ER measured against ground truth;
+golden records, graph, impact twin, AI engine, API, and frontend still pending.

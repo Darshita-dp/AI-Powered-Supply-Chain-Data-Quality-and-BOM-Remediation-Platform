@@ -28,7 +28,7 @@ warehouse/local/*.db
 *.parquet
 !powerbi/**/sample_*.parquet
 model_cache/
-models/artifacts/*.pkl
+models/artifacts/
 logs/
 *.log
 

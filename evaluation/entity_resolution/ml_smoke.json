@@ -1,0 +1,165 @@
+{
+  "generated_at": "2026-07-16T13:00:35.716373+00:00",
+  "profile": "smoke",
+  "seed": 20260716,
+  "inject_rate": 0.02,
+  "note": "Measured on synthetic data with injected ground truth. Baseline metrics cover ALL labeled pairs; ML metrics are on the held-out group-aware test split of blocked candidate pairs \u2014 comparable in method, not identical in denominator.",
+  "weighted_baseline": {
+    "recommend_band": {
+      "band": "high_confidence_recommendation",
+      "predicted_pairs": 20,
+      "labeled_duplicate_pairs": 35,
+      "true_positives": 20,
+      "false_positives": 0,
+      "false_negatives": 15,
+      "precision": 1.0,
+      "recall": 0.5714,
+      "f1": 0.7273,
+      "recall_by_difficulty": {
+        "easy": {
+          "labeled": 24,
+          "found": 20,
+          "recall": 0.8333
+        },
+        "medium": {
+          "labeled": 7,
+          "found": 0,
+          "recall": 0.0
+        },
+        "hard": {
+          "labeled": 4,
+          "found": 0,
+          "recall": 0.0
+        }
+      }
+    },
+    "review_band": {
+      "band": "human_review_required",
+      "predicted_pairs": 30,
+      "labeled_duplicate_pairs": 35,
+      "true_positives": 30,
+      "false_positives": 0,
+      "false_negatives": 5,
+      "precision": 1.0,
+      "recall": 0.8571,
+      "f1": 0.9231,
+      "recall_by_difficulty": {
+        "easy": {
+          "labeled": 24,
+          "found": 24,
+          "recall": 1.0
+        },
+        "medium": {
+          "labeled": 7,
+          "found": 6,
+          "recall": 0.8571
+        },
+        "hard": {
+          "labeled": 4,
+          "found": 0,
+          "recall": 0.0
+        }
+      }
+    }
+  },
+  "ml": {
+    "features": [
+      "part_number_exact",
+      "part_number_normalized_match",
+      "part_number_char_similarity",
+      "description_token_jaccard",
+      "description_char_similarity",
+      "mpn_match",
+      "uom_compatible",
+      "category_match",
+      "cost_proximity",
+      "source_system_differs",
+      "lead_time_proximity"
+    ],
+    "split": {
+      "train_pairs": 766,
+      "validation_pairs": 250,
+      "test_pairs": 278,
+      "positives_total": 33,
+      "group_aware": true
+    },
+    "precision_floor": 0.95,
+    "models": {
+      "logistic_regression": {
+        "precision": 1.0,
+        "recall": 0.8333,
+        "f1": 0.9091,
+        "false_positive_rate": 0.0,
+        "false_negative_rate": 0.1667,
+        "confusion_matrix": {
+          "tn": 272,
+          "fp": 0,
+          "fn": 1,
+          "tp": 5
+        },
+        "threshold": 0.945,
+        "recall_by_difficulty": {
+          "easy": {
+            "labeled": 3,
+            "found": 3,
+            "recall": 1.0
+          },
+          "medium": {
+            "labeled": 2,
+            "found": 2,
+            "recall": 1.0
+          },
+          "hard": {
+            "labeled": 1,
+            "found": 0,
+            "recall": 0.0
+          }
+        },
+        "coefficients": {
+          "part_number_exact": 1.0424,
+          "part_number_normalized_match": 2.2206,
+          "part_number_char_similarity": 3.4064,
+          "description_token_jaccard": 2.2869,
+          "description_char_similarity": 0.925,
+          "mpn_match": 0.9835,
+          "uom_compatible": 0.9796,
+          "category_match": 0.0014,
+          "cost_proximity": 3.0716,
+          "source_system_differs": 1.2667,
+          "lead_time_proximity": 2.0615
+        }
+      },
+      "gradient_boosting": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_rate": 0.0,
+        "false_negative_rate": 0.0,
+        "confusion_matrix": {
+          "tn": 272,
+          "fp": 0,
+          "fn": 0,
+          "tp": 6
+        },
+        "threshold": 1.0,
+        "recall_by_difficulty": {
+          "easy": {
+            "labeled": 3,
+            "found": 3,
+            "recall": 1.0
+          },
+          "medium": {
+            "labeled": 2,
+            "found": 2,
+            "recall": 1.0
+          },
+          "hard": {
+            "labeled": 1,
+            "found": 1,
+            "recall": 1.0
+          }
+        }
+      }
+    }
+  }
+}
