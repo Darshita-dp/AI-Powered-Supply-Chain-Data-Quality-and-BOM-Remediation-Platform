@@ -1,0 +1,36 @@
+# Optional, manually triggered Snowflake validation. PR CI never needs Snowflake
+# secrets; this workflow no-ops with a clear message when they are absent.
+name: Snowflake validation (manual)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Check secrets
+        id: check
+        run: |
+          if [ -z "${{ secrets.SNOWFLAKE_ACCOUNT }}" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "Snowflake secrets not configured; skipping validation."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install
+        if: steps.check.outputs.configured == 'true'
+        run: pip install -e ".[dev,snowflake]"
+      - name: dbt debug against Snowflake
+        if: steps.check.outputs.configured == 'true'
+        working-directory: dbt_supply_chain
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+        run: python -m dbt.cli.main debug --profiles-dir . --project-dir . --target snowflake

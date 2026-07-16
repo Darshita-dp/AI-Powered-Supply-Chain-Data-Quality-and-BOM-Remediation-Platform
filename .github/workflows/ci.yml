@@ -51,6 +51,36 @@ jobs:
       - name: Build
         run: npm run build
 
+  dbt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: pip install -e ".[dev,api,ml,dbt]"
+      - name: Run local pipeline (generate -> inject -> ingest -> dbt -> quality -> marts)
+        run: python scripts/run_local_pipeline.py --profile smoke
+
+  docs-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check markdown links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress README.md docs/ powerbi/
+          fail: true
+
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+
   secrets:
     runs-on: ubuntu-latest
     steps:

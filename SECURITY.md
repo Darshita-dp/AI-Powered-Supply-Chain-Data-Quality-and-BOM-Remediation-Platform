@@ -15,4 +15,5 @@ open a GitHub issue or contact the repository owner.
 - Supplier document content is treated as untrusted input (prompt-injection controls).
 - CORS restricted by default; structured errors without stack traces.
 
-The full threat model lives in `docs/security-model.md` (added in milestone M19).
+The full threat model lives in [docs/security-model.md](docs/security-model.md);
+AI-specific guarantees are documented in [docs/ai-governance.md](docs/ai-governance.md).

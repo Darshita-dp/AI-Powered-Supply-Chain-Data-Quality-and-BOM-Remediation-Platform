@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M19 — CI, security, and observability** (next up)
+**M20 — End-to-end evaluation** (next up)
 
 ## Milestone plan
 
@@ -29,7 +29,7 @@ _Last updated: 2026-07-16_
 | M16 | React remediation workbench | ✅ Complete (verified live against the API) |
 | M17 | Data Steward Copilot | ✅ Complete (deterministic classifier; AI rewrite optional later) |
 | M18 | Power BI analytical package | ✅ Complete (source package; Desktop validation pending — no `.pbix` claimed) |
-| M19 | CI, security, observability | ⬜ Not started |
+| M19 | CI, security, observability | ✅ Complete (workflows authored; GitHub run status verifies on push) |
 | M20 | End-to-end evaluation | ⬜ Not started |
 | M21 | Portfolio packaging | ⬜ Not started |
 
@@ -155,6 +155,13 @@ _Last updated: 2026-07-16_
   and drill-through; CSV fallback via `scripts/export_powerbi_data.py` (verified: 11
   extracts). **Power BI Desktop not operated — no `.pbix` exists; validation pending**
   per `powerbi/BUILD_POWER_BI.md`.
+- **M19** — CI/security: CI extended with a dbt job running the full smoke pipeline,
+  markdown link check (lychee, offline), dependency review on PRs, gitleaks; optional
+  manual Snowflake validation workflow that skips cleanly without secrets;
+  `docs/security-model.md` (controls, 10-risk threat model, honest gaps incl. no
+  API authentication) and `docs/ai-governance.md` (guarantees + provider status).
+  All local equivalents of CI checks pass; GitHub Actions run status to be confirmed
+  after push.
 
 ## In-progress work
 
@@ -188,12 +195,12 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M19: CI/security/observability — extend GitHub Actions (dbt compile/test local,
-smoke integration job, docs link check, optional manual Snowflake workflow, dependency
-review), write `docs/security-model.md` + `docs/ai-governance.md` threat model, verify
-no secrets. Commit `ci: automate quality security and build validation`.
+Start M20: end-to-end evaluation — the full E2E test (generate → inject → ingest →
+transform → rules → ER → issue → impact → mock recommendation → API retrieval →
+reviewer approval → audit verification), demo-profile pipeline run, performance
+measurements, published evaluation artifacts. Commit
+`test: publish end-to-end platform evaluation`.
 
 ## Honest completion percentage
 
-**~83%** — application + analytics package complete; CI hardening, E2E evaluation,
-and portfolio packaging remain.
+**~87%** — CI/security done; E2E evaluation and portfolio packaging remain.

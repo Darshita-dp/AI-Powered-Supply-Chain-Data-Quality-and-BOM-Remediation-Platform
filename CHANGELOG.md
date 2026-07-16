@@ -67,3 +67,5 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M18: Power BI package — 7 dbt analytics marts, semantic-model spec, 30+ DAX measures,
   theme, page specs with RLS/refresh/drill-through design, CSV fallback exporter;
   Desktop validation honestly marked pending.
+- M19: CI/security — dbt smoke-pipeline CI job, docs link check, dependency review,
+  optional manual Snowflake workflow, security threat model + AI governance docs.
