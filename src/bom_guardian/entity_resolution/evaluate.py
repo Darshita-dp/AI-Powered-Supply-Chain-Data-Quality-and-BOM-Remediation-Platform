@@ -23,8 +23,8 @@ def _truth_pairs(ground_truth: pd.DataFrame) -> dict[tuple[str, str], str]:
     ]
     out: dict[tuple[str, str], str] = {}
     for _, row in dups.iterrows():
-        pair = tuple(sorted([str(row["record_id"]), str(row["correct_matching_entity"])]))
-        out[pair] = str(row["difficulty"])
+        a, b = sorted([str(row["record_id"]), str(row["correct_matching_entity"])])
+        out[(a, b)] = str(row["difficulty"])
     return out
 
 
