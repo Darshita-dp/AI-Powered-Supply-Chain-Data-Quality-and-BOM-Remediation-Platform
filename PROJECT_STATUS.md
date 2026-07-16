@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M16 — React remediation workbench** (next up)
+**M17 — Data Steward Copilot** (next up)
 
 ## Milestone plan
 
@@ -26,7 +26,7 @@ _Last updated: 2026-07-16_
 | M13 | AI remediation engine | ✅ Complete (mock provider tested; Cortex path pending credentials) |
 | M14 | Quality Impact Twin | ✅ Complete |
 | M15 | FastAPI service | ✅ Complete |
-| M16 | React remediation workbench | ⬜ Not started |
+| M16 | React remediation workbench | ✅ Complete (verified live against the API) |
 | M17 | Data Steward Copilot | ⬜ Not started |
 | M18 | Power BI analytical package | ⬜ Not started |
 | M19 | CI, security, observability | ⬜ Not started |
@@ -132,6 +132,17 @@ _Last updated: 2026-07-16_
   Correlation-ID middleware, restricted CORS, structured errors without stack traces,
   OpenAPI at `/api/v1/docs`. 13 API tests against real pipeline data (no mocks);
   copilot endpoint arrives in M17.
+- **M16** — React workbench: 7 routes covering the 8 required surfaces (Command Center;
+  DQ Explorer with severity/domain/status/rule filters + pagination; Issue Detail inside
+  the Remediation Workbench with evidence, AI recommendation, approve/reject and
+  decision history; Part 360 with golden-record lineage + blast radius + issues; BOM
+  Graph Explorer with cytoscape rendering, cycle/lifecycle color coding, depth control,
+  reverse dependencies; Scenario Simulator with before/after + resolved rules + new
+  warnings; AI Governance metrics). All data flows through the live API (no mock data);
+  loading/empty/error states; industrial navy design; responsive sidebar. Verified in
+  the browser against the smoke-pipeline warehouse (Command Center KPIs, issue detail,
+  recommendation generation observed working). 5 vitest tests; typecheck/lint/build
+  clean. Found+fixed a DuckDB thread-safety issue under concurrent API requests.
 
 ## In-progress work
 
@@ -145,7 +156,7 @@ _Last updated: 2026-07-16_
 
 - Python: 127 tests — unit + integration + data-quality + API (`pytest`), ruff + mypy
   clean.
-- Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
+- Frontend: 5 vitest tests, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
 ## Known failures
@@ -165,12 +176,12 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M16: React remediation workbench — all 8 required pages against the live API
-(Command Center, DQ Explorer, Issue Detail, Part 360, BOM Graph Explorer, Remediation
-Workbench, Scenario Simulator, AI Governance), loading/error states, responsive,
-frontend tests. Commit `feat: build data steward remediation workbench`.
+Start M17: Data Steward Copilot — allowlisted read-only query tools, question
+classification, retrieval-grounded answers with cited evidence, refusal to approve,
+`POST /api/v1/copilot/query`, copilot UI panel, tests. Commit
+`feat: add governed supply chain data steward copilot`.
 
 ## Honest completion percentage
 
-**~68%** — backend and API complete; frontend, copilot, Power BI, CI hardening, and
-E2E evaluation still pending.
+**~74%** — full application (pipeline → API → UI) runs locally end to end; copilot,
+Power BI package, CI hardening, and E2E evaluation still pending.

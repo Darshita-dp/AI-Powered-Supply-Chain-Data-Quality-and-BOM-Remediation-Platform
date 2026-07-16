@@ -45,7 +45,7 @@ def main() -> int:
     if args.skip_dbt:
         return 0
 
-    print("[3/3] Running dbt build (local DuckDB target) ...")
+    print("[3/4] Running dbt build (local DuckDB target) ...")
     cmd = [
         sys.executable,
         "-m",
@@ -57,7 +57,21 @@ def main() -> int:
         ".",
     ]
     result = subprocess.run(cmd, cwd=REPO / "dbt_supply_chain")
-    return result.returncode
+    if result.returncode != 0:
+        return result.returncode
+
+    print("[4/4] Running data-quality rules and scoring ...")
+    from bom_guardian.quality import QualityScorer, RuleEngine
+
+    with LocalWarehouse(db_path) as wh:
+        summary = RuleEngine(wh).run_all()
+        scores = QualityScorer(wh).run_all()
+    print(
+        f"    rules={summary['rules_executed']} failed={summary['rules_failed']} "
+        f"issues={summary['issues_created']:,} "
+        f"enterprise_score={scores['enterprise_quality_score']}"
+    )
+    return 0
 
 
 if __name__ == "__main__":

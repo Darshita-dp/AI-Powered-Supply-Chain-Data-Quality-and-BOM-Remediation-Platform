@@ -58,3 +58,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M15: FastAPI service — 24 versioned endpoints (parts, issues + human decision
   workflow, BOM graph, scenarios, analytics), correlation IDs, structured errors,
   restricted CORS, OpenAPI, 13 API tests on real pipeline data.
+- M16: React remediation workbench — 8 surfaces over the live API (no mock data),
+  cytoscape BOM explorer, approval workflow, scenario before/after, AI-governance
+  dashboard; verified in-browser; DuckDB thread-safety fix; 5 frontend tests.

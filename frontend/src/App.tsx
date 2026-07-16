@@ -1,25 +1,27 @@
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
+import Layout from './components/Layout'
+import BomExplorer from './pages/BomExplorer'
+import CommandCenter from './pages/CommandCenter'
+import Governance from './pages/Governance'
+import IssueExplorer from './pages/IssueExplorer'
+import Part360 from './pages/Part360'
+import ScenarioSimulator from './pages/ScenarioSimulator'
+import Workbench from './pages/Workbench'
 
-/**
- * Application shell. Pages (Command Center, DQ Explorer, Issue Detail, Part 360,
- * BOM Graph Explorer, Remediation Workbench, Scenario Simulator, AI Governance)
- * are added in M16 once the backend API exists — no mock-data pages before then.
- */
-function App() {
+export default function App() {
   return (
-    <div className="app-shell">
-      <header className="app-header">
-        <h1>BOM Guardian AI</h1>
-        <p className="app-tagline">Supply chain data quality &amp; BOM remediation</p>
-      </header>
-      <main className="app-main">
-        <p>
-          Backend not yet connected. The remediation workbench is built in milestone M16
-          against the live API.
-        </p>
-      </main>
-    </div>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<CommandCenter />} />
+        <Route path="issues" element={<IssueExplorer />} />
+        <Route path="parts" element={<Part360 />} />
+        <Route path="bom" element={<BomExplorer />} />
+        <Route path="workbench" element={<Workbench />} />
+        <Route path="workbench/:issueId" element={<Workbench />} />
+        <Route path="scenarios" element={<ScenarioSimulator />} />
+        <Route path="governance" element={<Governance />} />
+      </Route>
+    </Routes>
   )
 }
-
-export default App
