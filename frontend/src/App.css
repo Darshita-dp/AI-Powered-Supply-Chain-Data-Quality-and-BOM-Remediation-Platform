@@ -1,0 +1,42 @@
+:root {
+  --color-nav: #1b2a41;
+  --color-bg: #f5f6f8;
+  --color-text: #1f2937;
+  --color-muted: #6b7280;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--color-text);
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: var(--color-nav);
+  color: #fff;
+  padding: 1rem 2rem;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.app-tagline {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.app-main {
+  padding: 2rem;
+  color: var(--color-muted);
+}

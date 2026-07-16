@@ -4,14 +4,14 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M0 — Repository governance and architecture** (in progress this session)
+**M2 — Synthetic ERP generator** (next up)
 
 ## Milestone plan
 
 | # | Milestone | Status |
 |---|-----------|--------|
-| M0 | Repository governance and architecture | 🔄 In progress |
-| M1 | Engineering foundation | ⬜ Not started |
+| M0 | Repository governance and architecture | ✅ Complete |
+| M1 | Engineering foundation | ✅ Complete |
 | M2 | Synthetic ERP generator | ⬜ Not started |
 | M3 | Controlled issue injection and ground truth | ⬜ Not started |
 | M4 | Snowflake and local warehouse setup | ⬜ Not started |
@@ -35,20 +35,29 @@ _Last updated: 2026-07-16_
 
 ## Completed milestones
 
-- None yet (M0 underway).
+- **M0** — governance docs, architecture overview, ADR log (6 ADRs), ERD, DQ rule
+  taxonomy (~45 rules), README skeleton, `.gitignore`, `.env.example`.
+  Commit `994e6b5`, pushed.
+- **M1** — `pyproject.toml` (ruff/mypy/pytest config, dependency groups), settings
+  module (pydantic-settings, local-first defaults), structured JSON logging (structlog),
+  4 passing unit tests, pre-commit config, Makefile, GitHub Actions CI skeleton
+  (Python 3.12/3.13 matrix + frontend + gitleaks), Vite React-TS frontend with
+  TanStack Query/router/vitest installed, app shell + 1 passing component test,
+  CONTRIBUTING/SECURITY/CHANGELOG.
 
 ## In-progress work
 
-- M0: governance docs, architecture docs, ADR log, ERD, rule taxonomy, README skeleton,
-  `.gitignore`, `.env.example`.
+- None; next is M2.
 
 ## Last successful commit
 
-- `6b53034` Initial commit (LICENSE only, from GitHub).
+- See `git log` (M1 commit).
 
 ## Tests currently passing
 
-- None exist yet (test infrastructure arrives in M1).
+- Python: 4 unit tests (`pytest`), ruff + ruff-format + mypy clean.
+- Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
+- CI workflow authored but not yet observed passing on GitHub (validates on push).
 
 ## Known failures
 
@@ -67,10 +76,11 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Finish M0 docs, validate documentation links, commit
-`docs: define BOM Guardian AI architecture and delivery controls`, push, then start M1
-(Python project config, tooling, frontend scaffold, CI skeleton).
+Start M2: implement `data_generator/` (config, generators for all master/operational
+datasets, smoke/demo/full profiles, stable seeds, CLI, generation manifest,
+record-count report) with tests. Commit
+`feat: generate realistic synthetic ERP and supply chain data`.
 
 ## Honest completion percentage
 
-**~2%** — repository governance documents only; no executable code exists yet.
+**~8%** — governance docs and engineering foundation only; no domain functionality yet.
