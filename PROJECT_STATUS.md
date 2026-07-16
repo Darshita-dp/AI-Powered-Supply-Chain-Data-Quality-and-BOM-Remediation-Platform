@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M4 — Snowflake and local warehouse setup** (next up)
+**M5 — Auditable ingestion** (next up)
 
 ## Milestone plan
 
@@ -14,7 +14,7 @@ _Last updated: 2026-07-16_
 | M1 | Engineering foundation | ✅ Complete |
 | M2 | Synthetic ERP generator | ✅ Complete |
 | M3 | Controlled issue injection and ground truth | ✅ Complete |
-| M4 | Snowflake and local warehouse setup | ⬜ Not started |
+| M4 | Snowflake and local warehouse setup | ✅ Complete (Snowflake scripts authored, deployment pending — no credentials) |
 | M5 | Auditable ingestion | ⬜ Not started |
 | M6 | dbt transformation layer | ⬜ Not started |
 | M7 | Data-quality engine (40+ rules) | ⬜ Not started |
@@ -55,6 +55,11 @@ _Last updated: 2026-07-16_
   manifest, `--inject` CLI flag. Smoke run with defaults injects ~250 labeled defects.
   9 unit tests proving correct injection (incl. cycle creation, orphan refs,
   determinism, clean-baseline isolation).
+- **M4** — Snowflake provisioning scripts (database + 7 layer schemas, XS/S warehouses
+  with auto-suspend, 4-role security model with grants, stages/file formats, teardown;
+  **authored and reviewed but NOT executed — no Snowflake credentials, deployment
+  pending**) and the DuckDB `LocalWarehouse` with the same 7-layer schema layout,
+  load/query/validate API, 5 unit tests.
 
 ## In-progress work
 
@@ -66,7 +71,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 21 unit tests (`pytest`), ruff + ruff-format + mypy clean.
+- Python: 26 unit tests (`pytest`), ruff + ruff-format + mypy clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -87,12 +92,11 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M4: Snowflake setup scripts (`warehouse/snowflake/` — database/schemas, roles and
-grants, warehouses, stages, file formats, teardown) plus the DuckDB local warehouse
-module (`warehouse/local/`), with setup validation. Commit
-`feat: provision Snowflake target and local warehouse fallback`.
+Start M5: auditable ingestion — raw loads with batch tracking, file/row hashes,
+idempotency, rejected-record handling, load audit in `ops`. Commit
+`feat: implement auditable and idempotent data ingestion`.
 
 ## Honest completion percentage
 
-**~17%** — data generation and defect injection done; warehouse, quality engine, ML,
-API, and frontend functionality still pending.
+**~20%** — data generation, injection, and warehouse foundations done; quality engine,
+ML, API, and frontend functionality still pending.

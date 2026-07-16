@@ -21,3 +21,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   attributes, BOM cycles/orphans/self-references, revision conflicts, anomalies,
   doc-vs-ERP discrepancies), difficulty levels, isolated ground-truth labels and
   injection manifest, `--inject` CLI flag, 9 unit tests.
+- M4: Snowflake provisioning scripts (schemas, warehouses, roles/grants, stages,
+  teardown — authored, deployment pending) and DuckDB `LocalWarehouse` with the same
+  7-layer schema layout, 5 unit tests.
