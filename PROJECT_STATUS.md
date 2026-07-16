@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M8 — Entity-resolution baseline** (next up)
+**M9 — Machine-learning entity resolution** (next up)
 
 ## Milestone plan
 
@@ -18,7 +18,7 @@ _Last updated: 2026-07-16_
 | M5 | Auditable ingestion | ✅ Complete |
 | M6 | dbt transformation layer | ✅ Complete |
 | M7 | Data-quality engine (40+ rules) | ✅ Complete |
-| M8 | Entity-resolution baseline | ⬜ Not started |
+| M8 | Entity-resolution baseline | ✅ Complete |
 | M9 | ML entity resolution | ⬜ Not started |
 | M10 | Golden-record survivorship | ⬜ Not started |
 | M11 | BOM graph intelligence | ⬜ Not started |
@@ -77,6 +77,12 @@ _Last updated: 2026-07-16_
   `QualityScorer` (entity, BOM, business-weighted enterprise scores with documented
   weights). 17 tests, including ground-truth detection checks for 10 injected defect
   types (100% of those injected records flagged) and ground-truth isolation.
+- **M8** — ER baseline: normalization, 3-key blocking (PN prefix / MPN / category+token,
+  oversized-block guard), 11 interpretable pair features, weighted deterministic matcher
+  with recommend/review/abstain bands and per-match evidence. Measured on smoke
+  (`evaluation/entity_resolution/baseline_smoke.json`, reproducible via
+  `scripts/evaluate_entity_resolution.py`): recommend band precision 1.00 / recall 0.57;
+  review band precision 1.00 / recall 0.86. 8 tests.
 
 ## In-progress work
 
@@ -88,7 +94,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 48 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
+- Python: 56 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -109,12 +115,12 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M8: entity-resolution baseline in `src/bom_guardian/entity_resolution/` —
-normalization, blocking, similarity features, weighted deterministic matcher, candidate
-evidence, evaluation report vs ground truth. Commit
-`feat: add explainable entity resolution baseline`.
+Start M9: ML entity resolution — logistic regression + gradient boosting over the same
+features, proper train/val/test split from ground truth, threshold selection, model
+persistence, model card, error analysis. Commit
+`feat: train and evaluate duplicate entity resolution models`.
 
 ## Honest completion percentage
 
-**~35%** — pipeline + 49-rule quality engine with scoring run locally; ER/ML, golden
-records, graph, impact twin, API, and frontend still pending.
+**~40%** — pipeline, quality engine, and ER baseline measured against ground truth;
+ML ER, golden records, graph, impact twin, API, and frontend still pending.

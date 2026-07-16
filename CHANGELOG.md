@@ -33,3 +33,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M7: data-quality engine — 49-rule registry across 9 domains, execution engine with
   issues + evidence + per-rule failure isolation, transparent entity/BOM/enterprise
   scoring, 17 tests incl. ground-truth detection verification.
+- M8: explainable ER baseline — blocking, 11 interpretable features, weighted matcher
+  with confidence bands + evidence, measured evaluation artifact (recommend band
+  P=1.00/R=0.57 on smoke), 8 tests.

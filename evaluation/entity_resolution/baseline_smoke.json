@@ -1,0 +1,66 @@
+{
+  "model": "weighted_baseline",
+  "generated_at": "2026-07-16T07:31:03.098043+00:00",
+  "note": "Measured against injected ground-truth labels on synthetic data; reproducible via tests/data_quality and scripts/run_local_pipeline.py.",
+  "metrics": {
+    "recommend_band": {
+      "band": "high_confidence_recommendation",
+      "predicted_pairs": 20,
+      "labeled_duplicate_pairs": 35,
+      "true_positives": 20,
+      "false_positives": 0,
+      "false_negatives": 15,
+      "precision": 1.0,
+      "recall": 0.5714,
+      "f1": 0.7273,
+      "recall_by_difficulty": {
+        "easy": {
+          "labeled": 24,
+          "found": 20,
+          "recall": 0.8333
+        },
+        "medium": {
+          "labeled": 7,
+          "found": 0,
+          "recall": 0.0
+        },
+        "hard": {
+          "labeled": 4,
+          "found": 0,
+          "recall": 0.0
+        }
+      }
+    },
+    "review_band": {
+      "band": "human_review_required",
+      "predicted_pairs": 30,
+      "labeled_duplicate_pairs": 35,
+      "true_positives": 30,
+      "false_positives": 0,
+      "false_negatives": 5,
+      "precision": 1.0,
+      "recall": 0.8571,
+      "f1": 0.9231,
+      "recall_by_difficulty": {
+        "easy": {
+          "labeled": 24,
+          "found": 24,
+          "recall": 1.0
+        },
+        "medium": {
+          "labeled": 7,
+          "found": 6,
+          "recall": 0.8571
+        },
+        "hard": {
+          "labeled": 4,
+          "found": 0,
+          "recall": 0.0
+        }
+      }
+    }
+  },
+  "profile": "smoke",
+  "seed": 20260716,
+  "inject_rate": 0.02
+}
