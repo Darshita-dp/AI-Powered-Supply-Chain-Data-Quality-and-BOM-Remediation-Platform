@@ -21,16 +21,23 @@ def generate(
     profile: str = typer.Option("smoke", help=f"One of: {', '.join(PROFILES)}"),
     seed: int = typer.Option(20260716, help="Random seed (stable output per seed)"),
     output: Path = typer.Option(DEFAULT_OUTPUT_ROOT, help="Output root directory"),
+    inject: bool = typer.Option(
+        False, help="Inject controlled data-quality defects with ground-truth labels"
+    ),
+    inject_rate: float = typer.Option(0.02, help="Base corruption fraction per issue type"),
 ) -> None:
     """Generate all synthetic datasets for a profile."""
     if profile not in PROFILES:
         raise typer.BadParameter(f"Unknown profile '{profile}'. Choose from: {list(PROFILES)}")
-    manifest = run_generation(profile, seed, output)
-    typer.echo(
+    manifest = run_generation(profile, seed, output, inject=inject, inject_rate=inject_rate)
+    msg = (
         f"Generated {manifest['total_records']:,} records across "
         f"{len(manifest['datasets'])} datasets in {manifest['duration_seconds']}s "
         f"-> {output / profile}"
     )
+    if manifest.get("injection"):
+        msg += f" (+{manifest['injection']['total_injections']:,} injected defects)"
+    typer.echo(msg)
 
 
 @app.command()

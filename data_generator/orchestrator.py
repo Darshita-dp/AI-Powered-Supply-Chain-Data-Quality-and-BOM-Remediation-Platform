@@ -129,8 +129,18 @@ def validate_referential_integrity(data: dict[str, pd.DataFrame]) -> list[str]:
     return errors
 
 
-def run_generation(profile: str, seed: int, output_root: Path = DEFAULT_OUTPUT_ROOT) -> dict:
-    """Generate, validate, write CSVs + manifest. Returns the manifest dict."""
+def run_generation(
+    profile: str,
+    seed: int,
+    output_root: Path = DEFAULT_OUTPUT_ROOT,
+    inject: bool = False,
+    inject_rate: float = 0.02,
+) -> dict:
+    """Generate, validate, optionally inject defects, write CSVs + manifest.
+
+    With inject=True, the written datasets contain controlled defects and the
+    hidden labels go to <profile>/ground_truth/ — separate from model inputs.
+    """
     configure_logging()
     log = get_logger("data_generator", profile=profile, seed=seed)
     started = time.perf_counter()
@@ -141,6 +151,24 @@ def run_generation(profile: str, seed: int, output_root: Path = DEFAULT_OUTPUT_R
         for e in errors:
             log.error("referential_integrity_violation", detail=e)
         raise ValueError(f"Referential integrity violations: {errors}")
+
+    injection_summary: dict | None = None
+    if inject:
+        from data_generator.injectors import inject_all
+
+        result = inject_all(data, seed=seed, rate=inject_rate)
+        data = result.data
+        gt_dir = output_root / profile / "ground_truth"
+        gt_dir.mkdir(parents=True, exist_ok=True)
+        result.ground_truth.to_csv(gt_dir / "labels.csv", index=False)
+        injection_summary = {
+            "total_injections": len(result.ground_truth),
+            "rate": inject_rate,
+            "issue_types": result.counts_by_type,
+            "labels_file": "ground_truth/labels.csv",
+        }
+        (gt_dir / "injection_manifest.json").write_text(json.dumps(injection_summary, indent=2))
+        log.info("injection_complete", total=len(result.ground_truth))
 
     out_dir = output_root / profile
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -161,7 +189,8 @@ def run_generation(profile: str, seed: int, output_root: Path = DEFAULT_OUTPUT_R
         "duration_seconds": round(time.perf_counter() - started, 2),
         "total_records": total,
         "datasets": datasets,
-        "referential_integrity": "validated",
+        "referential_integrity": "validated_before_injection" if inject else "validated",
+        "injection": injection_summary,
     }
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
     log.info("generation_complete", total_records=total)

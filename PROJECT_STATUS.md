@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M3 — Controlled issue injection and ground truth** (next up)
+**M4 — Snowflake and local warehouse setup** (next up)
 
 ## Milestone plan
 
@@ -13,7 +13,7 @@ _Last updated: 2026-07-16_
 | M0 | Repository governance and architecture | ✅ Complete |
 | M1 | Engineering foundation | ✅ Complete |
 | M2 | Synthetic ERP generator | ✅ Complete |
-| M3 | Controlled issue injection and ground truth | ⬜ Not started |
+| M3 | Controlled issue injection and ground truth | ✅ Complete |
 | M4 | Snowflake and local warehouse setup | ⬜ Not started |
 | M5 | Auditable ingestion | ⬜ Not started |
 | M6 | dbt transformation layer | ⬜ Not started |
@@ -49,6 +49,12 @@ _Last updated: 2026-07-16_
   Typer CLI, manifest with measured counts. Measured runs: smoke = 13,843 records
   (1.2s), demo = 247,881 records (13.5s); full profile configured but not yet executed
   (scheduled for M20 performance evaluation). 8 unit tests.
+- **M3** — issue-injection engine: all 25 defect types with easy/medium/hard difficulty,
+  ground-truth labels (injection ID, record, field, original/injected/correct values,
+  matching entity, seed) written to a separate `ground_truth/` directory, injection
+  manifest, `--inject` CLI flag. Smoke run with defaults injects ~250 labeled defects.
+  9 unit tests proving correct injection (incl. cycle creation, orphan refs,
+  determinism, clean-baseline isolation).
 
 ## In-progress work
 
@@ -60,7 +66,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 12 unit tests (`pytest`), ruff + ruff-format + mypy clean.
+- Python: 21 unit tests (`pytest`), ruff + ruff-format + mypy clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -81,11 +87,12 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M3: implement `data_generator/injectors/` — 25+ issue types with difficulty
-levels, ground-truth labels kept separate from model inputs, injection manifest, and
-tests proving correct injection. Commit
-`feat: inject governed data quality defects with ground truth`.
+Start M4: Snowflake setup scripts (`warehouse/snowflake/` — database/schemas, roles and
+grants, warehouses, stages, file formats, teardown) plus the DuckDB local warehouse
+module (`warehouse/local/`), with setup validation. Commit
+`feat: provision Snowflake target and local warehouse fallback`.
 
 ## Honest completion percentage
 
-**~13%** — foundation plus synthetic data generation; no quality/ML/API functionality yet.
+**~17%** — data generation and defect injection done; warehouse, quality engine, ML,
+API, and frontend functionality still pending.

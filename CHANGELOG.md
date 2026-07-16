@@ -17,3 +17,7 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   profiles, deterministic seeds, referential-integrity validation, multi-level acyclic
   BOMs by tier construction, Typer CLI, generation manifest with actual record counts,
   8 unit tests.
+- M3: issue-injection engine — 25 controlled defect types (duplicates, missing/invalid
+  attributes, BOM cycles/orphans/self-references, revision conflicts, anomalies,
+  doc-vs-ERP discrepancies), difficulty levels, isolated ground-truth labels and
+  injection manifest, `--inject` CLI flag, 9 unit tests.
