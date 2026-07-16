@@ -72,3 +72,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M20: end-to-end evaluation — 12-step E2E test, detection-recall report (100% on 156
   mapped injected defects), measured smoke/demo benchmarks, measured profile counts
   incl. full profile (1,699,010 records / 735s generation).
+- M21: portfolio packaging — final README with measured results and honest status
+  table, data dictionary, API guide, limitations, demo script; hygiene audit clean
+  (no TODOs, no secrets, all local doc links resolve).

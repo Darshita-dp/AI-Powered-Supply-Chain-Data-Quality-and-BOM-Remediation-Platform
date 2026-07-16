@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M21 — Portfolio packaging** (next up)
+**All 22 milestones (M0–M21) complete.**
 
 ## Milestone plan
 
@@ -31,7 +31,7 @@ _Last updated: 2026-07-16_
 | M18 | Power BI analytical package | ✅ Complete (source package; Desktop validation pending — no `.pbix` claimed) |
 | M19 | CI, security, observability | ✅ Complete (workflows authored; GitHub run status verifies on push) |
 | M20 | End-to-end evaluation | ✅ Complete |
-| M21 | Portfolio packaging | ⬜ Not started |
+| M21 | Portfolio packaging | ✅ Complete (no screenshots — capture unavailable; documented honestly) |
 
 ## Completed milestones
 
@@ -205,11 +205,14 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M21: portfolio packaging — rewrite README with the honest status table and
-measured results, remaining docs (data dictionary, API guide, limitations, demo
-script), screenshots, repository hygiene audit (TODO/FIXME/secrets/broken links),
-final commit `docs: publish complete BOM Guardian AI portfolio case study`.
+None — the project is complete. Remaining external items (documented, not blockers):
+Snowflake deployment when credentials exist; Power BI Desktop build/validation per
+`powerbi/BUILD_POWER_BI.md`; confirming GitHub Actions run status on github.com;
+optional application screenshots (automated capture unavailable in the build
+environment; see README).
 
 ## Honest completion percentage
 
-**~92%** — everything built and evaluated; only portfolio packaging remains.
+**~95%** — everything specified is built, tested, and honestly documented. The
+remaining 5% is external validation that requires resources this environment lacks
+(Snowflake account, Power BI Desktop) plus screenshots.

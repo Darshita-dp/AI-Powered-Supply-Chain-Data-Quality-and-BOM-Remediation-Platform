@@ -8,15 +8,15 @@ Read `CLAUDE.md`, `PROJECT_STATUS.md`, and this file. Inspect the repository and
 history, verify the current test state, and continue from the next incomplete milestone
 in `PROJECT_STATUS.md` without rebuilding completed work.
 
-## Current state (2026-07-16, later)
+## Current state (2026-07-16, end of build)
 
-- M0–M14 complete and pushed (see `PROJECT_STATUS.md` milestone table and `git log`).
-- 114 Python tests passing; ruff/mypy clean; frontend scaffold builds.
-- Local pipeline: `python scripts/run_local_pipeline.py` (generate → inject → ingest →
-  dbt build). ER evaluation: `scripts/evaluate_entity_resolution.py`,
-  `scripts/train_entity_resolution.py` (artifacts in `evaluation/`).
-- Next: M15 FastAPI service (`api/`), then M16 frontend, M17 copilot, M18 Power BI,
-  M19 CI/security, M20 E2E evaluation, M21 packaging.
+- **All milestones M0–M21 complete and pushed.** 136 Python + 5 frontend tests pass;
+  ruff/mypy/typecheck/build clean; evaluation artifacts in `evaluation/`.
+- Pipeline: `python scripts/run_local_pipeline.py`; API: `uvicorn api.app.main:app`;
+  UI: `cd frontend && npm run dev`. Demo walkthrough: `docs/demo-script.md`.
+- Open external items only: Snowflake deployment (needs account), Power BI Desktop
+  validation (`powerbi/BUILD_POWER_BI.md`), GitHub Actions run confirmation,
+  application screenshots.
 
 ## Environment notes
 
