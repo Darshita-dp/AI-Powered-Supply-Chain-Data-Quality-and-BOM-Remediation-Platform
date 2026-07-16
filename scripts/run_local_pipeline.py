@@ -45,33 +45,38 @@ def main() -> int:
     if args.skip_dbt:
         return 0
 
-    print("[3/4] Running dbt build (local DuckDB target) ...")
-    cmd = [
-        sys.executable,
-        "-m",
-        "dbt.cli.main",
-        "build",
-        "--profiles-dir",
-        ".",
-        "--project-dir",
-        ".",
-    ]
-    result = subprocess.run(cmd, cwd=REPO / "dbt_supply_chain")
+    print("[3/5] Running dbt build for staging + core (local DuckDB target) ...")
+    dbt = [sys.executable, "-m", "dbt.cli.main"]
+    common = ["--profiles-dir", ".", "--project-dir", "."]
+    result = subprocess.run(
+        [*dbt, "build", "--exclude", "marts", *common], cwd=REPO / "dbt_supply_chain"
+    )
     if result.returncode != 0:
         return result.returncode
 
-    print("[4/4] Running data-quality rules and scoring ...")
+    print("[4/5] Running data-quality rules and scoring ...")
+    from api.app.services import IssueService
+
+    from bom_guardian.ai import DeterministicMockAIProvider, RemediationEngine
     from bom_guardian.quality import QualityScorer, RuleEngine
 
     with LocalWarehouse(db_path) as wh:
         summary = RuleEngine(wh).run_all()
         scores = QualityScorer(wh).run_all()
+        # instantiate services so their audit tables exist for the marts layer
+        RemediationEngine(DeterministicMockAIProvider(), warehouse=wh)
+        IssueService(wh)
     print(
         f"    rules={summary['rules_executed']} failed={summary['rules_failed']} "
         f"issues={summary['issues_created']:,} "
         f"enterprise_score={scores['enterprise_quality_score']}"
     )
-    return 0
+
+    print("[5/5] Building analytics marts ...")
+    result = subprocess.run(
+        [*dbt, "build", "--select", "marts", *common], cwd=REPO / "dbt_supply_chain"
+    )
+    return result.returncode
 
 
 if __name__ == "__main__":

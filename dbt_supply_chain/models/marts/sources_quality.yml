@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: quality
+    description: Quality-layer tables produced by the Python rule engine and services.
+    schema: quality
+    tables:
+      - name: dq_rules
+      - name: dq_issues
+      - name: dq_issue_evidence
+      - name: dq_rule_executions
+      - name: entity_scores
+      - name: bom_scores
+      - name: enterprise_score
+      - name: remediation_decisions
+      - name: ai_call_audit

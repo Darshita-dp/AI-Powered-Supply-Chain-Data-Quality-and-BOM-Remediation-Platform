@@ -55,3 +55,4 @@ Thumbs.db
 cache.abf
 
 dbt_supply_chain/.user.yml
+powerbi/data/

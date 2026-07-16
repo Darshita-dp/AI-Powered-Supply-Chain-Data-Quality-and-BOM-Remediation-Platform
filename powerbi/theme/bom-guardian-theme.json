@@ -1,0 +1,26 @@
+{
+  "name": "BOM Guardian Industrial",
+  "dataColors": [
+    "#1B2A41", "#1D4ED8", "#64748B", "#0E7490", "#A16207", "#B91C1C",
+    "#15803D", "#7C3AED"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1F2937",
+  "tableAccent": "#1D4ED8",
+  "bad": "#B91C1C",
+  "neutral": "#A16207",
+  "good": "#15803D",
+  "textClasses": {
+    "title": { "fontFace": "Segoe UI Semibold", "fontSize": 13, "color": "#1F2937" },
+    "label": { "fontFace": "Segoe UI", "fontSize": 10, "color": "#6B7280" },
+    "callout": { "fontFace": "Segoe UI Semibold", "fontSize": 26, "color": "#1B2A41" }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#FFFFFF" } }, "transparency": 0 }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#E2E5EA" } }, "radius": 6 }]
+      }
+    }
+  }
+}

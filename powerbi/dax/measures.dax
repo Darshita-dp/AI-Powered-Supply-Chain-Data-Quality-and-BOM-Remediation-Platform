@@ -1,0 +1,118 @@
+// BOM Guardian AI — DAX measure catalog
+// Organized by display folder. Table references match model-specification.md.
+
+// ---------- Quality \ Issues ----------
+Open Issues =
+CALCULATE (
+    SUM ( ExecutiveQuality[issue_count] ),
+    NOT ExecutiveQuality[status] IN { "CLOSED", "REJECTED" }
+)
+
+Critical Open Issues =
+CALCULATE ( [Open Issues], ExecutiveQuality[severity] = "critical" )
+
+High Open Issues =
+CALCULATE ( [Open Issues], ExecutiveQuality[severity] = "high" )
+
+Issues Detected =
+SUM ( ExecutiveQuality[issue_count] )
+
+Issue Resolution Rate =
+DIVIDE (
+    CALCULATE ( SUM ( ExecutiveQuality[issue_count] ),
+                ExecutiveQuality[status] IN { "APPROVED", "CLOSED" } ),
+    [Issues Detected]
+)
+
+// ---------- Quality \ Scores ----------
+Avg Part Quality Score =
+AVERAGE ( PartQuality[quality_score] )
+
+Parts Below Quality Threshold =
+CALCULATE ( COUNTROWS ( PartQuality ), PartQuality[quality_score] < 60 )
+
+Avg BOM Quality Score =
+AVERAGE ( BomIntegrity[bom_quality_score] )
+
+// Weighted enterprise-style score consistent with the platform's Python scoring
+Enterprise Quality Score =
+VAR WeightedPoints =
+    SUMX (
+        ExecutiveQuality,
+        ExecutiveQuality[issue_count]
+            * SWITCH (
+                ExecutiveQuality[severity],
+                "critical", 8.0,
+                "high", 4.0,
+                "medium", 1.5,
+                0.5
+              )
+    )
+VAR PartsInScope = COUNTROWS ( DimPart )
+RETURN
+    MAX ( 0, 100 - DIVIDE ( WeightedPoints, PartsInScope ) * 100 / 8 )
+
+// ---------- BOM Integrity ----------
+Assemblies With Obsolete Components =
+CALCULATE ( COUNTROWS ( BomIntegrity ), BomIntegrity[obsolete_components] > 0 )
+
+Assemblies With Missing Components =
+CALCULATE ( COUNTROWS ( BomIntegrity ), BomIntegrity[missing_components] > 0 )
+
+Total BOM Relationships =
+SUM ( BomIntegrity[component_count] )
+
+// ---------- Business Impact ----------
+Inventory Value Exposed =
+CALCULATE ( SUM ( BusinessImpact[inventory_value] ), BusinessImpact[open_issues] > 0 )
+
+Total Inventory Value =
+SUM ( BusinessImpact[inventory_value] )
+
+Demand Qty Exposed =
+CALCULATE ( SUM ( BusinessImpact[future_demand_qty] ), BusinessImpact[open_issues] > 0 )
+
+Open PO Value Exposed =
+CALCULATE ( SUM ( BusinessImpact[open_po_value] ), BusinessImpact[open_issues] > 0 )
+
+Exposure % of Inventory =
+DIVIDE ( [Inventory Value Exposed], [Total Inventory Value] )
+
+Parts With Critical Exposure =
+CALCULATE ( COUNTROWS ( BusinessImpact ), BusinessImpact[critical_issues] > 0 )
+
+// ---------- Supplier ----------
+Suppliers With Open Issues =
+CALCULATE ( COUNTROWS ( SupplierQuality ), SupplierQuality[open_issues_on_parts] > 0 )
+
+Avg Supplier Lead Time =
+AVERAGE ( SupplierQuality[avg_lead_time_days] )
+
+// ---------- Remediation ----------
+Decisions Made =
+SUM ( RemediationPerformance[decisions] )
+
+Approvals =
+CALCULATE ( [Decisions Made], RemediationPerformance[decision] = "APPROVE" )
+
+Rejections =
+CALCULATE ( [Decisions Made], RemediationPerformance[decision] = "REJECT" )
+
+Acceptance Rate =
+DIVIDE ( [Approvals], [Approvals] + [Rejections] )
+
+// ---------- AI Governance ----------
+AI Calls =
+SUM ( AIGovernance[calls] )
+
+AI Abstention Rate =
+DIVIDE ( SUM ( AIGovernance[abstentions] ), [AI Calls] )
+
+AI Validation Failure Rate =
+DIVIDE ( SUM ( AIGovernance[validation_failures] ), [AI Calls] )
+
+AI Avg Latency (ms) =
+AVERAGEX ( AIGovernance, AIGovernance[avg_latency_ms] )
+
+AI Avg Confidence =
+AVERAGEX ( AIGovernance, AIGovernance[avg_confidence] )

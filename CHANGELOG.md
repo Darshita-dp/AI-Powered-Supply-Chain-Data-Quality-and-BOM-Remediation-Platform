@@ -64,3 +64,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M17: Data Steward Copilot — allowlisted read-only tools, keyword classification,
   cited evidence, mutation refusal, insufficient-evidence handling, API endpoint +
   UI page, 8 tests.
+- M18: Power BI package — 7 dbt analytics marts, semantic-model spec, 30+ DAX measures,
+  theme, page specs with RLS/refresh/drill-through design, CSV fallback exporter;
+  Desktop validation honestly marked pending.

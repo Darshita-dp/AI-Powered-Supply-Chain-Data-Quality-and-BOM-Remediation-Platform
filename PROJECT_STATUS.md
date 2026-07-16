@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M18 — Power BI analytical package** (next up)
+**M19 — CI, security, and observability** (next up)
 
 ## Milestone plan
 
@@ -28,7 +28,7 @@ _Last updated: 2026-07-16_
 | M15 | FastAPI service | ✅ Complete |
 | M16 | React remediation workbench | ✅ Complete (verified live against the API) |
 | M17 | Data Steward Copilot | ✅ Complete (deterministic classifier; AI rewrite optional later) |
-| M18 | Power BI analytical package | ⬜ Not started |
+| M18 | Power BI analytical package | ✅ Complete (source package; Desktop validation pending — no `.pbix` claimed) |
 | M19 | CI, security, observability | ⬜ Not started |
 | M20 | End-to-end evaluation | ⬜ Not started |
 | M21 | Portfolio packaging | ⬜ Not started |
@@ -148,6 +148,13 @@ _Last updated: 2026-07-16_
   (table:record citations), refusal of approve/apply/mutation requests, explicit
   insufficient-evidence handling, `POST /api/v1/copilot/query`, Copilot UI page with
   example questions. 8 tests incl. a source-level read-only guarantee check.
+- **M18** — Power BI package: 7 dbt analytics marts (executive, part, BOM, supplier,
+  business-impact, remediation, AI-governance) building green in the local pipeline
+  (`PASS=7`); semantic-model spec (11 tables, star relationships, RLS, refresh); 30+
+  measure DAX catalog; industrial theme JSON; page-by-page report spec with tooltips
+  and drill-through; CSV fallback via `scripts/export_powerbi_data.py` (verified: 11
+  extracts). **Power BI Desktop not operated — no `.pbix` exists; validation pending**
+  per `powerbi/BUILD_POWER_BI.md`.
 
 ## In-progress work
 
@@ -181,13 +188,12 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M18: Power BI analytical package in `powerbi/` — star-schema/semantic-model
-specification, DAX measure catalog, theme JSON, page specifications, RLS + refresh
-design, build instructions with honest validation status (Power BI Desktop not
-operated in this environment; no `.pbix` will be claimed). Also add the analytics
-marts to dbt. Commit `feat: deliver Power BI quality command center package`.
+Start M19: CI/security/observability — extend GitHub Actions (dbt compile/test local,
+smoke integration job, docs link check, optional manual Snowflake workflow, dependency
+review), write `docs/security-model.md` + `docs/ai-governance.md` threat model, verify
+no secrets. Commit `ci: automate quality security and build validation`.
 
 ## Honest completion percentage
 
-**~78%** — application complete incl. copilot; Power BI package, CI hardening, E2E
-evaluation, and packaging remain.
+**~83%** — application + analytics package complete; CI hardening, E2E evaluation,
+and portfolio packaging remain.

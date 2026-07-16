@@ -20,3 +20,6 @@ models:
     core:
       +schema: core
       +materialized: table
+    marts:
+      +schema: marts
+      +materialized: table
