@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M20 — End-to-end evaluation** (next up)
+**M21 — Portfolio packaging** (next up)
 
 ## Milestone plan
 
@@ -30,7 +30,7 @@ _Last updated: 2026-07-16_
 | M17 | Data Steward Copilot | ✅ Complete (deterministic classifier; AI rewrite optional later) |
 | M18 | Power BI analytical package | ✅ Complete (source package; Desktop validation pending — no `.pbix` claimed) |
 | M19 | CI, security, observability | ✅ Complete (workflows authored; GitHub run status verifies on push) |
-| M20 | End-to-end evaluation | ⬜ Not started |
+| M20 | End-to-end evaluation | ✅ Complete |
 | M21 | Portfolio packaging | ⬜ Not started |
 
 ## Completed milestones
@@ -162,6 +162,16 @@ _Last updated: 2026-07-16_
   API authentication) and `docs/ai-governance.md` (guarantees + provider status).
   All local equivalents of CI checks pass; GitHub Actions run status to be confirmed
   after push.
+- **M20** — E2E evaluation: 12-step end-to-end test passing (generation → injection →
+  ingest → transform → rules → ER → issue → impact → mock recommendation → API →
+  audited human approval → baseline-immutability check); detection-recall report
+  (`evaluation/data_quality/detection_smoke.json`): **100% recall on 156 mapped
+  injected defects across 17 issue types**, 8 unmapped types documented; measured
+  benchmarks for smoke (`benchmarks_smoke.json`: rules 0.44s, ER 0.21s, API lists
+  ~10ms) and demo (`benchmarks_demo.json`: generate 12.3s, ingest 18.5s, rules 0.9s,
+  ER 66.6s); profile counts measured (`profile_counts.json`): smoke 13,882 / demo
+  247,881 / **full 1,699,010 records generated in 735s** (full-profile downstream
+  stages not run — documented). 136 Python tests total.
 
 ## In-progress work
 
@@ -173,8 +183,8 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 135 tests — unit + integration + data-quality + API (`pytest`), ruff + mypy
-  clean.
+- Python: 136 tests — unit + integration + data-quality + API + E2E (`pytest`),
+  ruff + mypy clean.
 - Frontend: 5 vitest tests, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -195,12 +205,11 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M20: end-to-end evaluation — the full E2E test (generate → inject → ingest →
-transform → rules → ER → issue → impact → mock recommendation → API retrieval →
-reviewer approval → audit verification), demo-profile pipeline run, performance
-measurements, published evaluation artifacts. Commit
-`test: publish end-to-end platform evaluation`.
+Start M21: portfolio packaging — rewrite README with the honest status table and
+measured results, remaining docs (data dictionary, API guide, limitations, demo
+script), screenshots, repository hygiene audit (TODO/FIXME/secrets/broken links),
+final commit `docs: publish complete BOM Guardian AI portfolio case study`.
 
 ## Honest completion percentage
 
-**~87%** — CI/security done; E2E evaluation and portfolio packaging remain.
+**~92%** — everything built and evaluated; only portfolio packaging remains.

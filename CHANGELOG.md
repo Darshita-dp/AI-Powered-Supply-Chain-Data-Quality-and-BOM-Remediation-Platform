@@ -69,3 +69,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   Desktop validation honestly marked pending.
 - M19: CI/security — dbt smoke-pipeline CI job, docs link check, dependency review,
   optional manual Snowflake workflow, security threat model + AI governance docs.
+- M20: end-to-end evaluation — 12-step E2E test, detection-recall report (100% on 156
+  mapped injected defects), measured smoke/demo benchmarks, measured profile counts
+  incl. full profile (1,699,010 records / 735s generation).

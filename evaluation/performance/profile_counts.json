@@ -1,0 +1,26 @@
+{
+  "note": "Record counts measured from actual generator runs (seed 20260716), not estimated.",
+  "measured_on": "2026-07-16",
+  "profiles": {
+    "smoke": {
+      "clean_records": 13843,
+      "records_with_injection": 13882,
+      "datasets": 22,
+      "generation_seconds": 1.2,
+      "scope": "fast automated tests; runs in every CI build"
+    },
+    "demo": {
+      "clean_records": 247881,
+      "datasets": 22,
+      "generation_seconds": 13.5,
+      "full_pipeline_stage_timings": "see benchmarks_demo.json",
+      "scope": "application demonstrations"
+    },
+    "full": {
+      "clean_records": 1699010,
+      "datasets": 22,
+      "generation_seconds": 734.9,
+      "scope": "generation executed and measured; downstream pipeline stages NOT run at this scale (documented limitation)"
+    }
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "generated_at": "2026-07-16T18:15:46.441824+00:00",
+  "profile": "smoke",
+  "seed": 20260716,
+  "note": "Recall vs injected ground truth. Precision is not computed because the clean baseline also contains organic defects; unlabeled issues are not necessarily false positives. Issue types requiring entity resolution or detected by evidence-only comparison are listed under unmapped_types.",
+  "rules_executed": 49,
+  "issues_created": 1324,
+  "overall_recall_on_mapped_types": 1.0,
+  "labeled_defects_mapped": 156,
+  "detected_defects_mapped": 156,
+  "per_type": {
+    "invalid_uom": {
+      "labeled": 18,
+      "detected": 18,
+      "recall": 1.0,
+      "rules": [
+        "VALD-001"
+      ]
+    },
+    "zero_component_quantity": {
+      "labeled": 9,
+      "detected": 9,
+      "recall": 1.0,
+      "rules": [
+        "VALD-006"
+      ]
+    },
+    "negative_component_quantity": {
+      "labeled": 9,
+      "detected": 9,
+      "recall": 1.0,
+      "rules": [
+        "VALD-007"
+      ]
+    },
+    "orphan_bom_component": {
+      "labeled": 9,
+      "detected": 9,
+      "recall": 1.0,
+      "rules": [
+        "REFI-002"
+      ]
+    },
+    "orphan_bom_parent": {
+      "labeled": 5,
+      "detected": 5,
+      "recall": 1.0,
+      "rules": [
+        "REFI-001"
+      ]
+    },
+    "self_referencing_bom": {
+      "labeled": 3,
+      "detected": 3,
+      "recall": 1.0,
+      "rules": [
+        "GRPH-001"
+      ]
+    },
+    "blocked_part_with_future_demand": {
+      "labeled": 1,
+      "detected": 1,
+      "recall": 1.0,
+      "rules": [
+        "XFLD-003"
+      ]
+    },
+    "invalid_plant_relationship": {
+      "labeled": 9,
+      "detected": 9,
+      "recall": 1.0,
+      "rules": [
+        "REFI-004"
+      ]
+    },
+    "invalid_supplier_relationship": {
+      "labeled": 9,
+      "detected": 9,
+      "recall": 1.0,
+      "rules": [
+        "REFI-003"
+      ]
+    },
+    "stale_record": {
+      "labeled": 14,
+      "detected": 14,
+      "recall": 1.0,
+      "rules": [
+        "TEMP-002"
+      ]
+    },
+    "exact_duplicate_part": {
+      "labeled": 14,
+      "detected": 14,
+      "recall": 1.0,
+      "rules": [
+        "UNIQ-001",
+        "UNIQ-002",
+        "UNIQ-004"
+      ]
+    },
+    "currency_inconsistency": {
+      "labeled": 19,
+      "detected": 19,
+      "recall": 1.0,
+      "rules": [
+        "VALD-002",
+        "XFLD-006"
+      ]
+    },
+    "extreme_cost_change": {
+      "labeled": 18,
+      "detected": 18,
+      "recall": 1.0,
+      "rules": [
+        "ANOM-001"
+      ]
+    },
+    "extreme_lead_time_change": {
+      "labeled": 12,
+      "detected": 12,
+      "recall": 1.0,
+      "rules": [
+        "ANOM-002"
+      ]
+    },
+    "supplier_doc_vs_erp_discrepancy": {
+      "labeled": 5,
+      "detected": 5,
+      "recall": 1.0,
+      "rules": [
+        "DOCR-001"
+      ]
+    },
+    "multiple_active_revisions": {
+      "labeled": 1,
+      "detected": 1,
+      "recall": 1.0,
+      "rules": [
+        "UNIQ-005"
+      ]
+    },
+    "overlapping_effective_dates": {
+      "labeled": 1,
+      "detected": 1,
+      "recall": 1.0,
+      "rules": [
+        "TEMP-001"
+      ]
+    }
+  },
+  "unmapped_types": [
+    "circular_bom",
+    "conflicting_mpn",
+    "conflicting_part_descriptions",
+    "duplicate_supplier",
+    "fuzzy_duplicate_part",
+    "missing_critical_attributes",
+    "obsolete_component_in_active_bom",
+    "supplier_price_conflict"
+  ],
+  "duration_seconds": 1.9
+}

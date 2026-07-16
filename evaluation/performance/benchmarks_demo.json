@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-07-16T18:19:04.483041+00:00",
+  "profile": "demo",
+  "seed": 20260716,
+  "total_records_including_injection": 248594,
+  "machine": "Windows AMD64, Python 3.13.12",
+  "note": "All numbers measured on this machine for this profile; nothing extrapolated.",
+  "timings": {
+    "generate_seconds": 12.29,
+    "inject_seconds": 0.86,
+    "write_and_ingest_seconds": 18.54,
+    "quality_rules_seconds": 0.9,
+    "quality_scoring_seconds": 0.11,
+    "entity_resolution_seconds": 66.6,
+    "impact_per_part_ms": 12.0,
+    "api_parts_list_ms": 10.7,
+    "api_issues_list_ms": 8.4,
+    "api_analytics_quality_ms": 21.2
+  }
+}

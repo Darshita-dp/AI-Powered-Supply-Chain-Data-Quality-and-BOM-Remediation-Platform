@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-07-16T18:17:10.773885+00:00",
+  "profile": "smoke",
+  "seed": 20260716,
+  "total_records_including_injection": 13882,
+  "machine": "Windows AMD64, Python 3.13.12",
+  "note": "All numbers measured on this machine for this profile; nothing extrapolated.",
+  "timings": {
+    "generate_seconds": 0.44,
+    "inject_seconds": 0.05,
+    "write_and_ingest_seconds": 1.05,
+    "quality_rules_seconds": 0.44,
+    "quality_scoring_seconds": 0.03,
+    "entity_resolution_seconds": 0.21,
+    "impact_per_part_ms": 2.0,
+    "api_parts_list_ms": 10.5,
+    "api_issues_list_ms": 9.5,
+    "api_analytics_quality_ms": 15.0
+  }
+}
