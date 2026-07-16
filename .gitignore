@@ -53,3 +53,5 @@ Thumbs.db
 *.pbix.bak
 .pbi/localSettings.json
 cache.abf
+
+dbt_supply_chain/.user.yml
