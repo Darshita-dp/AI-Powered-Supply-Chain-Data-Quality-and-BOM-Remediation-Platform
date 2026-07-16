@@ -30,3 +30,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M6: dbt transformation layer — 22 sources, 10 staging views with adapter-safe
   normalization macros, 11 core dims/facts, part-master snapshot, 28 schema tests,
   DuckDB local target, `scripts/run_local_pipeline.py` end-to-end runner.
+- M7: data-quality engine — 49-rule registry across 9 domains, execution engine with
+  issues + evidence + per-rule failure isolation, transparent entity/BOM/enterprise
+  scoring, 17 tests incl. ground-truth detection verification.

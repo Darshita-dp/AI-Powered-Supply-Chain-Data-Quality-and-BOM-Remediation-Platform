@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M7 — Data-quality engine** (next up)
+**M8 — Entity-resolution baseline** (next up)
 
 ## Milestone plan
 
@@ -17,7 +17,7 @@ _Last updated: 2026-07-16_
 | M4 | Snowflake and local warehouse setup | ✅ Complete (Snowflake scripts authored, deployment pending — no credentials) |
 | M5 | Auditable ingestion | ✅ Complete |
 | M6 | dbt transformation layer | ✅ Complete |
-| M7 | Data-quality engine (40+ rules) | ⬜ Not started |
+| M7 | Data-quality engine (40+ rules) | ✅ Complete |
 | M8 | Entity-resolution baseline | ⬜ Not started |
 | M9 | ML entity resolution | ⬜ Not started |
 | M10 | Golden-record survivorship | ⬜ Not started |
@@ -70,6 +70,13 @@ _Last updated: 2026-07-16_
   intentionally present), local DuckDB target. Verified run:
   `python scripts/run_local_pipeline.py` → dbt build PASS=47 WARN=3 ERROR=0 (warnings
   are the injected orphans/missing UOMs, as designed).
+- **M7** — quality engine: registry of 49 executable rules across 9 domains
+  (completeness, uniqueness, validity, referential, cross-field, temporal, anomaly,
+  graph-SQL subset, doc reconciliation), `RuleEngine` persisting rules/executions/
+  issues/evidence to the quality schema with per-rule failure isolation,
+  `QualityScorer` (entity, BOM, business-weighted enterprise scores with documented
+  weights). 17 tests, including ground-truth detection checks for 10 injected defect
+  types (100% of those injected records flagged) and ground-truth isolation.
 
 ## In-progress work
 
@@ -81,7 +88,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 31 tests — 26 unit + 5 integration (`pytest`), ruff + ruff-format + mypy clean.
+- Python: 48 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -102,11 +109,12 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M7: quality engine in `src/bom_guardian/quality/` — rule registry (40+ rules over
-the staging/core layers), rule execution with evidence, issue lifecycle, quality scores,
-tests. Commit `feat: implement configurable supply chain data quality engine`.
+Start M8: entity-resolution baseline in `src/bom_guardian/entity_resolution/` —
+normalization, blocking, similarity features, weighted deterministic matcher, candidate
+evidence, evaluation report vs ground truth. Commit
+`feat: add explainable entity resolution baseline`.
 
 ## Honest completion percentage
 
-**~29%** — pipeline through dbt core layer runs locally end to end; quality engine, ML,
-API, and frontend still pending.
+**~35%** — pipeline + 49-rule quality engine with scoring run locally; ER/ML, golden
+records, graph, impact twin, API, and frontend still pending.
