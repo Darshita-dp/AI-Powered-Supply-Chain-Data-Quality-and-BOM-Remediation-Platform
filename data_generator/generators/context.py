@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, timedelta
+from typing import Any
 
 import numpy as np
 
@@ -21,7 +22,7 @@ class GenContext:
         self.rng = np.random.default_rng(self.seed)
 
     # -- small helpers -------------------------------------------------------
-    def choice(self, items: list, size: int | None = None, p: list[float] | None = None):
+    def choice(self, items: list, size: int | None = None, p: list[float] | None = None) -> Any:
         return self.rng.choice(items, size=size, p=p)
 
     def weighted_keys(self, weights: dict[str, float], size: int) -> np.ndarray:

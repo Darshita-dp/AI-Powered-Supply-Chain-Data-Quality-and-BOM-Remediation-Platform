@@ -22,7 +22,7 @@ INJECTION_SNIPPETS = [
 
 
 def _draw_quote(c: canvas.Canvas, quote: pd.Series, supplier_name: str, inject: bool) -> None:
-    width, height = LETTER
+    _width, height = LETTER
     y = height - 60
     c.setFont("Helvetica-Bold", 14)
     c.drawString(50, y, supplier_name)

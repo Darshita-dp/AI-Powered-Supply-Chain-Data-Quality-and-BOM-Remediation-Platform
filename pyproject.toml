@@ -52,7 +52,7 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["src", "."]
-include = ["bom_guardian*", "data_generator*"]
+include = ["bom_guardian*", "data_generator*", "api*"]
 
 [tool.ruff]
 line-length = 100
@@ -65,6 +65,8 @@ select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
 [tool.ruff.lint.per-file-ignores]
 # typer's idiom is Option() calls in argument defaults
 "data_generator/cli.py" = ["B008"]
+# FastAPI's idiom is Depends()/Query() calls in argument defaults
+"api/**" = ["B008"]
 
 [tool.mypy]
 python_version = "3.12"

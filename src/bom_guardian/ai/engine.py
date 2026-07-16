@@ -66,7 +66,7 @@ class RemediationEngine:
             f"SELECT * FROM quality.dq_issue_evidence WHERE issue_id = '{issue_id}'"
         )
         items: list[EvidenceItem] = []
-        for i, (_, ev) in enumerate(evidence.iterrows(), start=1):
+        for _, ev in evidence.iterrows():
             items.append(
                 EvidenceItem(
                     evidence_id=str(ev["evidence_id"]),

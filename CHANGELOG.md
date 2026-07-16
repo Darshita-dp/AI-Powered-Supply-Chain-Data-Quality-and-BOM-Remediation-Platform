@@ -55,3 +55,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   weights, merge/field-correction/component-replacement counterfactual scenarios with
   before/after diffs and new-conflict warnings, scenario-only persistence, verified
   baseline immutability, 9 tests.
+- M15: FastAPI service — 24 versioned endpoints (parts, issues + human decision
+  workflow, BOM graph, scenarios, analytics), correlation IDs, structured errors,
+  restricted CORS, OpenAPI, 13 API tests on real pipeline data.

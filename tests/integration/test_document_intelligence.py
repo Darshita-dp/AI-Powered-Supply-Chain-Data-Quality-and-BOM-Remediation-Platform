@@ -126,5 +126,5 @@ def test_missing_erp_relationship_reported() -> None:
 def test_low_confidence_routed_for_review() -> None:
     from bom_guardian.document_intelligence.extractor import QuoteExtractor
 
-    value, confidence = QuoteExtractor._validate("currency", "ZZZ")
+    _value, confidence = QuoteExtractor._validate("currency", "ZZZ")
     assert confidence < 0.8  # invalid currency must be routed for review

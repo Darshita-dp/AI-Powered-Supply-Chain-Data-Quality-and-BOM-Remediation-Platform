@@ -8,13 +8,15 @@ Read `CLAUDE.md`, `PROJECT_STATUS.md`, and this file. Inspect the repository and
 history, verify the current test state, and continue from the next incomplete milestone
 in `PROJECT_STATUS.md` without rebuilding completed work.
 
-## Current state (2026-07-16)
+## Current state (2026-07-16, later)
 
-- Repo cloned to `C:\Projects\AI-Powered Supply Chain Data Quality and BOM Remediation Platform`
-  from `Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform`.
-- M0 (governance/architecture docs) authored this session; commit pending/just made —
-  check `git log`.
-- No executable code yet. M1 (engineering foundation) is next.
+- M0–M14 complete and pushed (see `PROJECT_STATUS.md` milestone table and `git log`).
+- 114 Python tests passing; ruff/mypy clean; frontend scaffold builds.
+- Local pipeline: `python scripts/run_local_pipeline.py` (generate → inject → ingest →
+  dbt build). ER evaluation: `scripts/evaluate_entity_resolution.py`,
+  `scripts/train_entity_resolution.py` (artifacts in `evaluation/`).
+- Next: M15 FastAPI service (`api/`), then M16 frontend, M17 copilot, M18 Power BI,
+  M19 CI/security, M20 E2E evaluation, M21 packaging.
 
 ## Environment notes
 

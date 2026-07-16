@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M15 — FastAPI service** (next up)
+**M16 — React remediation workbench** (next up)
 
 ## Milestone plan
 
@@ -25,7 +25,7 @@ _Last updated: 2026-07-16_
 | M12 | Document intelligence | ✅ Complete |
 | M13 | AI remediation engine | ✅ Complete (mock provider tested; Cortex path pending credentials) |
 | M14 | Quality Impact Twin | ✅ Complete |
-| M15 | FastAPI service | ⬜ Not started |
+| M15 | FastAPI service | ✅ Complete |
 | M16 | React remediation workbench | ⬜ Not started |
 | M17 | Data Steward Copilot | ⬜ Not started |
 | M18 | Power BI analytical package | ⬜ Not started |
@@ -123,6 +123,15 @@ _Last updated: 2026-07-16_
   and new-warning detection (e.g. merging into an obsolete part, replacement causing a
   cycle), persistence to `quality.scenarios` only, and verified zero mutation of
   baseline data. 9 tests.
+- **M15** — FastAPI service (`api/`): 24 versioned `/api/v1` endpoints — health/
+  readiness/metrics; parts (paginated list with search/filter/sort, detail, sources,
+  golden-record lineage, impact); issues (filterable list, detail, evidence, history,
+  mock-AI recommendations, human approve/reject/request-evidence with lifecycle guards
+  and decision audit); BOM graph/dependencies/reverse-dependencies; scenario simulation
+  + retrieval; analytics (quality, business-impact, remediation, AI-governance).
+  Correlation-ID middleware, restricted CORS, structured errors without stack traces,
+  OpenAPI at `/api/v1/docs`. 13 API tests against real pipeline data (no mocks);
+  copilot endpoint arrives in M17.
 
 ## In-progress work
 
@@ -134,7 +143,8 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 114 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
+- Python: 127 tests — unit + integration + data-quality + API (`pytest`), ruff + mypy
+  clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -155,13 +165,12 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M15: FastAPI service in `api/` — versioned `/api/v1` routes (health/readiness,
-parts, issues + evidence + recommendations + approve/reject, BOM graph, scenarios,
-analytics, copilot placeholder wired in M17), pagination/filtering/sorting, structured
-errors, correlation IDs, OpenAPI, API tests. Commit
-`feat: expose quality remediation and impact intelligence APIs`.
+Start M16: React remediation workbench — all 8 required pages against the live API
+(Command Center, DQ Explorer, Issue Detail, Part 360, BOM Graph Explorer, Remediation
+Workbench, Scenario Simulator, AI Governance), loading/error states, responsive,
+frontend tests. Commit `feat: build data steward remediation workbench`.
 
 ## Honest completion percentage
 
-**~64%** — engine complete through the Impact Twin; API, frontend, copilot, Power BI,
-CI hardening, and E2E evaluation still pending.
+**~68%** — backend and API complete; frontend, copilot, Power BI, CI hardening, and
+E2E evaluation still pending.

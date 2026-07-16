@@ -39,9 +39,9 @@ class InjectCtx:
         record_id: str,
         difficulty: str,
         field_name: str | None = None,
-        original_value=None,
-        injected_value=None,
-        correct_value=None,
+        original_value: object = None,
+        injected_value: object = None,
+        correct_value: object = None,
         correct_matching_entity: str | None = None,
     ) -> None:
         self.labels.append(
