@@ -7,6 +7,7 @@ const LINKS = [
   { to: '/bom', label: 'BOM Graph Explorer' },
   { to: '/workbench', label: 'Remediation Workbench' },
   { to: '/scenarios', label: 'Scenario Simulator' },
+  { to: '/copilot', label: 'Steward Copilot' },
   { to: '/governance', label: 'AI Governance' },
 ]
 

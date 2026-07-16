@@ -61,3 +61,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M16: React remediation workbench — 8 surfaces over the live API (no mock data),
   cytoscape BOM explorer, approval workflow, scenario before/after, AI-governance
   dashboard; verified in-browser; DuckDB thread-safety fix; 5 frontend tests.
+- M17: Data Steward Copilot — allowlisted read-only tools, keyword classification,
+  cited evidence, mutation refusal, insufficient-evidence handling, API endpoint +
+  UI page, 8 tests.

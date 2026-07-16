@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M17 — Data Steward Copilot** (next up)
+**M18 — Power BI analytical package** (next up)
 
 ## Milestone plan
 
@@ -27,7 +27,7 @@ _Last updated: 2026-07-16_
 | M14 | Quality Impact Twin | ✅ Complete |
 | M15 | FastAPI service | ✅ Complete |
 | M16 | React remediation workbench | ✅ Complete (verified live against the API) |
-| M17 | Data Steward Copilot | ⬜ Not started |
+| M17 | Data Steward Copilot | ✅ Complete (deterministic classifier; AI rewrite optional later) |
 | M18 | Power BI analytical package | ⬜ Not started |
 | M19 | CI, security, observability | ⬜ Not started |
 | M20 | End-to-end evaluation | ⬜ Not started |
@@ -143,6 +143,11 @@ _Last updated: 2026-07-16_
   the browser against the smoke-pipeline warehouse (Command Center KPIs, issue detail,
   recommendation generation observed working). 5 vitest tests; typecheck/lint/build
   clean. Found+fixed a DuckDB thread-safety issue under concurrent API requests.
+- **M17** — Steward Copilot: 8 allowlisted read-only tools (fixed parameterized SELECTs
+  — no free-form SQL), deterministic keyword classification, cited answers
+  (table:record citations), refusal of approve/apply/mutation requests, explicit
+  insufficient-evidence handling, `POST /api/v1/copilot/query`, Copilot UI page with
+  example questions. 8 tests incl. a source-level read-only guarantee check.
 
 ## In-progress work
 
@@ -154,7 +159,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 127 tests — unit + integration + data-quality + API (`pytest`), ruff + mypy
+- Python: 135 tests — unit + integration + data-quality + API (`pytest`), ruff + mypy
   clean.
 - Frontend: 5 vitest tests, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
@@ -176,12 +181,13 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M17: Data Steward Copilot — allowlisted read-only query tools, question
-classification, retrieval-grounded answers with cited evidence, refusal to approve,
-`POST /api/v1/copilot/query`, copilot UI panel, tests. Commit
-`feat: add governed supply chain data steward copilot`.
+Start M18: Power BI analytical package in `powerbi/` — star-schema/semantic-model
+specification, DAX measure catalog, theme JSON, page specifications, RLS + refresh
+design, build instructions with honest validation status (Power BI Desktop not
+operated in this environment; no `.pbix` will be claimed). Also add the analytics
+marts to dbt. Commit `feat: deliver Power BI quality command center package`.
 
 ## Honest completion percentage
 
-**~74%** — full application (pipeline → API → UI) runs locally end to end; copilot,
-Power BI package, CI hardening, and E2E evaluation still pending.
+**~78%** — application complete incl. copilot; Power BI package, CI hardening, E2E
+evaluation, and packaging remain.

@@ -3,6 +3,7 @@ import './App.css'
 import Layout from './components/Layout'
 import BomExplorer from './pages/BomExplorer'
 import CommandCenter from './pages/CommandCenter'
+import Copilot from './pages/Copilot'
 import Governance from './pages/Governance'
 import IssueExplorer from './pages/IssueExplorer'
 import Part360 from './pages/Part360'
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="workbench" element={<Workbench />} />
         <Route path="workbench/:issueId" element={<Workbench />} />
         <Route path="scenarios" element={<ScenarioSimulator />} />
+        <Route path="copilot" element={<Copilot />} />
         <Route path="governance" element={<Governance />} />
       </Route>
     </Routes>

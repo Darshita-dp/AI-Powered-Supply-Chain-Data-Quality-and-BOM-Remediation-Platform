@@ -12,7 +12,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from api.app.routers import analytics, bom, health, issues, parts, scenarios
+from api.app.routers import analytics, bom, copilot, health, issues, parts, scenarios
 from bom_guardian import __version__
 from bom_guardian.config import get_settings
 from bom_guardian.observability import configure_logging, get_logger
@@ -67,5 +67,6 @@ for router in (
     bom.router,
     scenarios.router,
     analytics.router,
+    copilot.router,
 ):
     app.include_router(router, prefix="/api/v1")
