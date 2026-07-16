@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw layer — generator extracts as ingested, with audit columns.
+    schema: raw
+    tables:
+      - name: part_master
+      - name: part_aliases
+      - name: suppliers
+      - name: supplier_parts
+      - name: plants
+      - name: warehouses
+      - name: units_of_measure
+      - name: product_categories
+      - name: bom_headers
+      - name: bom_components
+      - name: engineering_revisions
+      - name: engineering_change_orders
+      - name: part_substitutions
+      - name: part_supersessions
+      - name: inventory_snapshots
+      - name: purchase_orders
+      - name: purchase_order_lines
+      - name: future_demand
+      - name: production_orders
+      - name: standard_cost_history
+      - name: lead_time_history
+      - name: supplier_quotes

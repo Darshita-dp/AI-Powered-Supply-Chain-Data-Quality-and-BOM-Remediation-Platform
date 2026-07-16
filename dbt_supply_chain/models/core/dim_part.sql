@@ -1,0 +1,21 @@
+select
+    part_id as part_key,
+    source_part_number,
+    part_number_normalized,
+    source_system,
+    description,
+    description_normalized,
+    category,
+    uom,
+    lifecycle_status,
+    procurement_type,
+    manufacturer_part_number,
+    mpn_normalized,
+    standard_cost,
+    currency,
+    lead_time_days,
+    primary_plant,
+    bom_tier,
+    created_date,
+    last_updated
+from {{ ref('stg_part_master') }}

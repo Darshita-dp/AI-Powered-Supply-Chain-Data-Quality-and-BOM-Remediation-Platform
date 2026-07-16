@@ -36,6 +36,10 @@ docs-ai = [
 ]
 snowflake = [
     "snowflake-connector-python>=3.10",
+    "dbt-snowflake>=1.8",
+]
+dbt = [
+    "dbt-duckdb>=1.8",
 ]
 dev = [
     "pytest>=8.2",

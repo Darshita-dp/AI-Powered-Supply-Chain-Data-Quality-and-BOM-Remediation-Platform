@@ -1,0 +1,20 @@
+# Local-first profile. `local` (default) uses DuckDB and needs no credentials.
+# `snowflake` reads everything from environment variables and is used only when
+# a real account is configured — see docs/handoff.md for honest deployment status.
+bom_guardian:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('BOMG_DUCKDB_PATH', '../warehouse/local/bom_guardian.duckdb') }}"
+      threads: 4
+    snowflake:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT', '') }}"
+      user: "{{ env_var('SNOWFLAKE_USER', '') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD', '') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'BOMG_ENGINEER') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'BOMG_WH_XS') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'BOM_GUARDIAN') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA', 'STAGING') }}"
+      threads: 4

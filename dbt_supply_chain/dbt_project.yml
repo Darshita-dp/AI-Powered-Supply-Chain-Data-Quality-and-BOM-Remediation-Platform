@@ -1,0 +1,22 @@
+name: dbt_supply_chain
+version: "1.0.0"
+profile: bom_guardian
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+
+target-path: target
+clean-targets: [target, dbt_packages]
+
+models:
+  dbt_supply_chain:
+    staging:
+      +schema: staging
+      +materialized: view
+    core:
+      +schema: core
+      +materialized: table

@@ -1,0 +1,95 @@
+version: 2
+
+# Structural integrity tests fail the build (severity: error).
+# Content-level tests are `warn` by design: the pipeline intentionally carries
+# injected defects (orphans, invalid UOMs, ...) that the QUALITY layer — not dbt —
+# is responsible for detecting and remediating.
+
+models:
+  - name: dim_part
+    description: Conformed part dimension (one row per source part record).
+    columns:
+      - name: part_key
+        description: Part surrogate key from the source part_id.
+        tests: [unique, not_null]
+      - name: uom
+        tests:
+          - not_null:
+              config: {severity: warn}
+      - name: lifecycle_status
+        tests:
+          - accepted_values:
+              values: [ACTIVE, BLOCKED, OBSOLETE, IN_DEVELOPMENT]
+              config: {severity: warn}
+
+  - name: dim_supplier
+    columns:
+      - name: supplier_key
+        tests: [unique, not_null]
+
+  - name: dim_plant
+    columns:
+      - name: plant_key
+        tests: [unique, not_null]
+
+  - name: dim_warehouse
+    columns:
+      - name: warehouse_key
+        tests: [unique, not_null]
+      - name: plant_key
+        tests:
+          - relationships:
+              to: ref('dim_plant')
+              field: plant_key
+
+  - name: dim_date
+    columns:
+      - name: date_key
+        tests: [unique, not_null]
+
+  - name: fact_bom_relationship
+    columns:
+      - name: bom_rel_key
+        tests: [unique, not_null]
+      - name: parent_part_key
+        tests:
+          - relationships:
+              to: ref('dim_part')
+              field: part_key
+              config: {severity: warn}   # orphan parents are injected defects
+      - name: child_part_key
+        tests:
+          - relationships:
+              to: ref('dim_part')
+              field: part_key
+              config: {severity: warn}   # orphan components are injected defects
+
+  - name: fact_inventory
+    columns:
+      - name: inventory_key
+        tests: [unique, not_null]
+      - name: part_key
+        tests:
+          - relationships:
+              to: ref('dim_part')
+              field: part_key
+
+  - name: fact_future_demand
+    columns:
+      - name: demand_key
+        tests: [unique, not_null]
+
+  - name: fact_purchase_order
+    columns:
+      - name: po_line_key
+        tests: [unique, not_null]
+
+  - name: fact_standard_cost
+    columns:
+      - name: cost_key
+        tests: [unique, not_null]
+
+  - name: fact_lead_time
+    columns:
+      - name: lead_time_key
+        tests: [unique, not_null]

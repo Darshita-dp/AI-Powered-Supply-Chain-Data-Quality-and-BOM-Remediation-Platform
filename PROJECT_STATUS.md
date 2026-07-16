@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M6 — dbt transformation layer** (next up)
+**M7 — Data-quality engine** (next up)
 
 ## Milestone plan
 
@@ -16,7 +16,7 @@ _Last updated: 2026-07-16_
 | M3 | Controlled issue injection and ground truth | ✅ Complete |
 | M4 | Snowflake and local warehouse setup | ✅ Complete (Snowflake scripts authored, deployment pending — no credentials) |
 | M5 | Auditable ingestion | ✅ Complete |
-| M6 | dbt transformation layer | ⬜ Not started |
+| M6 | dbt transformation layer | ✅ Complete |
 | M7 | Data-quality engine (40+ rules) | ⬜ Not started |
 | M8 | Entity-resolution baseline | ⬜ Not started |
 | M9 | ML entity resolution | ⬜ Not started |
@@ -64,6 +64,12 @@ _Last updated: 2026-07-16_
   file/row SHA-256 hashes, schema version, record sequence, load status), file-hash
   idempotency (re-ingest loads 0 rows), null-PK rejection to `ops.rejected_records`,
   batch/file audit tables, isolated ground-truth loading. 5 integration tests.
+- **M6** — dbt project: 22 raw sources, 10 staging views (normalization with originals
+  preserved, adapter-safe macros for DuckDB + Snowflake), 11 core dims/facts, part
+  snapshot, 28 schema tests (structural = error, content = warn since defects are
+  intentionally present), local DuckDB target. Verified run:
+  `python scripts/run_local_pipeline.py` → dbt build PASS=47 WARN=3 ERROR=0 (warnings
+  are the injected orphans/missing UOMs, as designed).
 
 ## In-progress work
 
@@ -96,12 +102,11 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M6: dbt project `dbt_supply_chain/` — sources over raw, staging models
-(normalization preserving originals), core dims/facts, snapshots, contracts, tests,
-docs, DuckDB local target. Commit
-`feat: build governed dbt supply chain transformation models`.
+Start M7: quality engine in `src/bom_guardian/quality/` — rule registry (40+ rules over
+the staging/core layers), rule execution with evidence, issue lifecycle, quality scores,
+tests. Commit `feat: implement configurable supply chain data quality engine`.
 
 ## Honest completion percentage
 
-**~24%** — generation, injection, warehouse, and ingestion done; dbt, quality engine,
-ML, API, and frontend still pending.
+**~29%** — pipeline through dbt core layer runs locally end to end; quality engine, ML,
+API, and frontend still pending.

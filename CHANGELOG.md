@@ -27,3 +27,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M5: auditable ingestion — audit columns (hashes, batch, sequence, status), file-hash
   idempotency, null-PK rejection handling, ops audit tables, isolated ground-truth
   loading, 5 integration tests.
+- M6: dbt transformation layer — 22 sources, 10 staging views with adapter-safe
+  normalization macros, 11 core dims/facts, part-master snapshot, 28 schema tests,
+  DuckDB local target, `scripts/run_local_pipeline.py` end-to-end runner.
