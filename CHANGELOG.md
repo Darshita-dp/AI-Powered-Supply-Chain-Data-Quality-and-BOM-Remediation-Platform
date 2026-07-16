@@ -42,3 +42,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M10: field-level golden-record survivorship — reliability/recency/agreement scoring,
   domain source preferences, full lineage with alternatives + confidence, reversible,
   9 tests.
+- M11: BOM graph intelligence — cycle/self-ref/orphan validation, depth, reverse
+  dependencies, path tracing, expansion, centrality, criticality, supplier
+  concentration, 16 tests.

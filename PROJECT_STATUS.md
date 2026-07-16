@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M11 — BOM graph intelligence** (next up)
+**M12 — Document intelligence** (next up)
 
 ## Milestone plan
 
@@ -21,7 +21,7 @@ _Last updated: 2026-07-16_
 | M8 | Entity-resolution baseline | ✅ Complete |
 | M9 | ML entity resolution | ✅ Complete |
 | M10 | Golden-record survivorship | ✅ Complete |
-| M11 | BOM graph intelligence | ⬜ Not started |
+| M11 | BOM graph intelligence | ✅ Complete |
 | M12 | Document intelligence | ⬜ Not started |
 | M13 | AI remediation engine | ⬜ Not started |
 | M14 | Quality Impact Twin | ⬜ Not started |
@@ -95,6 +95,12 @@ _Last updated: 2026-07-16_
   domain preferences (engineering→description, ERP→cost, supplier portal→lead time);
   every decision carries source record/system, reason, confidence, timestamp, version,
   and all alternatives (reversible); no warehouse mutation. 9 tests.
+- **M11** — `BomGraph` (NetworkX): cycles/self-refs/orphans-by-role validation,
+  roots/leaves/longest-chain depth (cycle-safe), dependencies + reverse dependencies,
+  bounded path tracing, level-aware subassembly expansion, degree centrality,
+  demand-weighted criticality, single-source supplier concentration. 16 tests covering
+  every required shape (acyclic, direct + multi-level cycle, self-ref, disconnected,
+  deep, shared component, reverse traversal).
 
 ## In-progress work
 
@@ -106,7 +112,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 71 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
+- Python: 87 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -127,12 +133,13 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M11: BOM graph intelligence in `src/bom_guardian/bom_graph/` — NetworkX directed
-graph, cycles/self-references/orphans, roots/leaves/depth, reverse dependencies, path
-tracing, centrality/criticality, affected-assembly counts; tests for all required graph
-shapes. Commit `feat: add BOM graph validation and dependency intelligence`.
+Start M12: document intelligence in `src/bom_guardian/document_intelligence/` +
+`data_generator/documents/` — synthetic supplier quote PDFs, deterministic-first
+extraction with evidence + confidence, ERP comparison creating discrepancy issues,
+prompt-injection controls, mock AI path, evaluation. Commit
+`feat: extract and validate supplier document intelligence`.
 
 ## Honest completion percentage
 
-**~48%** — through golden records; graph, impact twin, documents, AI engine, API,
+**~52%** — through BOM graph intelligence; documents, AI engine, impact twin, API,
 frontend, Power BI still pending.
