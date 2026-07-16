@@ -39,3 +39,6 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - M9: ML entity resolution — LR + gradient boosting, group-aware splits, precision-floor
   threshold selection, model persistence, model card, measured comparison report
   (`evaluation/entity_resolution/ml_smoke.json`), 6 tests.
+- M10: field-level golden-record survivorship — reliability/recency/agreement scoring,
+  domain source preferences, full lineage with alternatives + confidence, reversible,
+  9 tests.

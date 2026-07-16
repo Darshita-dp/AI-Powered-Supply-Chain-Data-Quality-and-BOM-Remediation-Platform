@@ -4,7 +4,7 @@ _Last updated: 2026-07-16_
 
 ## Current milestone
 
-**M10 — Golden-record survivorship** (next up)
+**M11 — BOM graph intelligence** (next up)
 
 ## Milestone plan
 
@@ -20,7 +20,7 @@ _Last updated: 2026-07-16_
 | M7 | Data-quality engine (40+ rules) | ✅ Complete |
 | M8 | Entity-resolution baseline | ✅ Complete |
 | M9 | ML entity resolution | ✅ Complete |
-| M10 | Golden-record survivorship | ⬜ Not started |
+| M10 | Golden-record survivorship | ✅ Complete |
 | M11 | BOM graph intelligence | ⬜ Not started |
 | M12 | Document intelligence | ⬜ Not started |
 | M13 | AI remediation engine | ⬜ Not started |
@@ -90,6 +90,11 @@ _Last updated: 2026-07-16_
   Measured on smoke (`evaluation/entity_resolution/ml_smoke.json`): LR P=1.00/R=0.83,
   GB P=1.00/R=1.00 on held-out test split (~6 positives — wide uncertainty, noted).
   6 tests.
+- **M10** — golden-record survivorship: field-level selection over 9 governed fields
+  scored on source reliability + recency + cross-source agreement with documented
+  domain preferences (engineering→description, ERP→cost, supplier portal→lead time);
+  every decision carries source record/system, reason, confidence, timestamp, version,
+  and all alternatives (reversible); no warehouse mutation. 9 tests.
 
 ## In-progress work
 
@@ -101,7 +106,7 @@ _Last updated: 2026-07-16_
 
 ## Tests currently passing
 
-- Python: 62 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
+- Python: 71 tests — unit + integration + data-quality (`pytest`), ruff + mypy clean.
 - Frontend: 1 vitest test, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI workflow authored but not yet observed passing on GitHub (validates on push).
 
@@ -122,12 +127,12 @@ _Last updated: 2026-07-16_
 
 ## Next exact action
 
-Start M10: golden-record survivorship in `src/bom_guardian/golden_record/` —
-field-level selection with source reliability, recency, completeness, cross-source
-agreement; full lineage with alternatives and confidence; reversible; tests. Commit
-`feat: implement field-level golden record survivorship`.
+Start M11: BOM graph intelligence in `src/bom_guardian/bom_graph/` — NetworkX directed
+graph, cycles/self-references/orphans, roots/leaves/depth, reverse dependencies, path
+tracing, centrality/criticality, affected-assembly counts; tests for all required graph
+shapes. Commit `feat: add BOM graph validation and dependency intelligence`.
 
 ## Honest completion percentage
 
-**~44%** — pipeline, quality engine, baseline + ML ER measured against ground truth;
-golden records, graph, impact twin, AI engine, API, and frontend still pending.
+**~48%** — through golden records; graph, impact twin, documents, AI engine, API,
+frontend, Power BI still pending.
