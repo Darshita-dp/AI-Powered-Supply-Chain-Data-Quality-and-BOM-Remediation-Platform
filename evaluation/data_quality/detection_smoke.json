@@ -1,163 +1,764 @@
 {
-  "generated_at": "2026-07-16T18:15:46.441824+00:00",
+  "generated_at": "2026-07-18T03:17:54.005982+00:00",
   "profile": "smoke",
   "seed": 20260716,
-  "note": "Recall vs injected ground truth. Precision is not computed because the clean baseline also contains organic defects; unlabeled issues are not necessarily false positives. Issue types requiring entity resolution or detected by evidence-only comparison are listed under unmapped_types.",
-  "rules_executed": 49,
-  "issues_created": 1324,
-  "overall_recall_on_mapped_types": 1.0,
-  "labeled_defects_mapped": 156,
-  "detected_defects_mapped": 156,
+  "method": "Baseline-diff against a validated clean baseline (see clean_baseline_smoke.json). New issues = injected - clean, with allowlisted organic rules excluded. Recall is per injected type; precision is per rule with false positives split into collateral (real, injection-caused, other type) vs spurious (non-injected record).",
+  "clean_baseline_validated": true,
+  "false_positive_interpretation": "precision_injection_caused treats any new detection whose entity_key is not itself a ground-truth record as a false positive. On inspection these are dominated by UNLINKABLE COLLATERAL \u2014 the same real, injection-caused defect surfacing on a related record the exact-id matcher cannot link: an obsolete part used in several active BOMs (XFLD-004), both revisions of a multi-active pair (UNIQ-005), a cycle's partner edge (GRPH-002), a 5x price conflict bleeding into that supplier's quote (DOCR-001). So the reported precision is a conservative LOWER BOUND; genuinely spurious flags (on records with no injection relationship) are rarer than the spurious count suggests.",
+  "recall_caveats": {
+    "obsolete_component_in_active_bom": "recall < 1.0 is expected, not a miss: the injector marks a child part obsolete without guaranteeing its parent assembly is ACTIVE, and XFLD-004 only flags obsolete children under ACTIVE parents \u2014 so some injected records are not actually rule violations."
+  },
+  "injected_types_total": 25,
+  "sql_detectable_types": 20,
+  "subsystem_rollup_sql": {
+    "types": [
+      "blocked_part_with_future_demand",
+      "circular_bom",
+      "currency_inconsistency",
+      "extreme_cost_change",
+      "extreme_lead_time_change",
+      "invalid_plant_relationship",
+      "invalid_supplier_relationship",
+      "invalid_uom",
+      "missing_critical_attributes",
+      "multiple_active_revisions",
+      "negative_component_quantity",
+      "obsolete_component_in_active_bom",
+      "orphan_bom_component",
+      "orphan_bom_parent",
+      "overlapping_effective_dates",
+      "self_referencing_bom",
+      "stale_record",
+      "supplier_doc_vs_erp_discrepancy",
+      "supplier_price_conflict",
+      "zero_component_quantity"
+    ],
+    "labeled_defects": 197,
+    "detected_defects": 194,
+    "recall": 0.9848,
+    "rule_new_detections": 210,
+    "rule_true_positives": 184,
+    "rule_spurious": 14,
+    "precision_injection_caused": 0.9333
+  },
   "per_type": {
-    "invalid_uom": {
-      "labeled": 18,
-      "detected": 18,
-      "recall": 1.0,
-      "rules": [
-        "VALD-001"
-      ]
-    },
-    "zero_component_quantity": {
-      "labeled": 9,
-      "detected": 9,
-      "recall": 1.0,
-      "rules": [
-        "VALD-006"
-      ]
-    },
-    "negative_component_quantity": {
-      "labeled": 9,
-      "detected": 9,
-      "recall": 1.0,
-      "rules": [
-        "VALD-007"
-      ]
-    },
-    "orphan_bom_component": {
-      "labeled": 9,
-      "detected": 9,
-      "recall": 1.0,
-      "rules": [
-        "REFI-002"
-      ]
-    },
-    "orphan_bom_parent": {
-      "labeled": 5,
-      "detected": 5,
-      "recall": 1.0,
-      "rules": [
-        "REFI-001"
-      ]
-    },
-    "self_referencing_bom": {
-      "labeled": 3,
-      "detected": 3,
-      "recall": 1.0,
-      "rules": [
-        "GRPH-001"
-      ]
-    },
     "blocked_part_with_future_demand": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "XFLD-003"
+      ],
       "labeled": 1,
       "detected": 1,
       "recall": 1.0,
-      "rules": [
-        "XFLD-003"
-      ]
+      "by_difficulty": {
+        "medium": {
+          "labeled": 1,
+          "detected": 1,
+          "recall": 1.0
+        }
+      }
     },
-    "invalid_plant_relationship": {
-      "labeled": 9,
-      "detected": 9,
-      "recall": 1.0,
+    "circular_bom": {
+      "subsystem": "bom_graph_sql",
       "rules": [
-        "REFI-004"
-      ]
+        "GRPH-002"
+      ],
+      "labeled": 3,
+      "note": "GRPH-002 catches direct 2-node cycles (what the injector creates); deeper cycles need the NetworkX graph module (tests/unit/test_bom_graph.py)",
+      "detected": 3,
+      "recall": 1.0,
+      "by_difficulty": {
+        "medium": {
+          "labeled": 3,
+          "detected": 3,
+          "recall": 1.0
+        }
+      }
     },
-    "invalid_supplier_relationship": {
-      "labeled": 9,
-      "detected": 9,
-      "recall": 1.0,
-      "rules": [
-        "REFI-003"
-      ]
+    "conflicting_mpn": {
+      "subsystem": "unevaluated",
+      "rules": [],
+      "labeled": 13,
+      "note": "MPN reassigned to a random value; only SQL-detectable if it collides (UNIQ-004). A cross-source consistency issue without a single-record rule.",
+      "recall": null,
+      "evaluated_elsewhere": "not evaluated by an automated metric"
     },
-    "stale_record": {
-      "labeled": 14,
-      "detected": 14,
-      "recall": 1.0,
-      "rules": [
-        "TEMP-002"
-      ]
-    },
-    "exact_duplicate_part": {
-      "labeled": 14,
-      "detected": 14,
-      "recall": 1.0,
-      "rules": [
-        "UNIQ-001",
-        "UNIQ-002",
-        "UNIQ-004"
-      ]
+    "conflicting_part_descriptions": {
+      "subsystem": "unevaluated",
+      "rules": [],
+      "labeled": 2,
+      "note": "stored on the alias record; no dedicated single-record SQL rule",
+      "recall": null,
+      "evaluated_elsewhere": "not evaluated by an automated metric"
     },
     "currency_inconsistency": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "VALD-002"
+      ],
       "labeled": 19,
       "detected": 19,
       "recall": 1.0,
+      "by_difficulty": {
+        "easy": {
+          "labeled": 19,
+          "detected": 19,
+          "recall": 1.0
+        }
+      }
+    },
+    "duplicate_supplier": {
+      "subsystem": "entity_resolution",
       "rules": [
-        "VALD-002",
-        "XFLD-006"
-      ]
+        "UNIQ-003"
+      ],
+      "labeled": 1,
+      "note": "UNIQ-003 catches exact normalized-name duplicates; fuzzy ones need ER",
+      "recall": null,
+      "evaluated_elsewhere": "evaluation/entity_resolution/ml_eval.json"
+    },
+    "exact_duplicate_part": {
+      "subsystem": "entity_resolution",
+      "rules": [
+        "UNIQ-002"
+      ],
+      "labeled": 14,
+      "note": "primary detector is entity resolution (evaluation/entity_resolution/ml_eval.json); UNIQ-002 also catches normalized-PN collisions",
+      "recall": null,
+      "evaluated_elsewhere": "evaluation/entity_resolution/ml_eval.json"
     },
     "extreme_cost_change": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "ANOM-001"
+      ],
       "labeled": 18,
       "detected": 18,
       "recall": 1.0,
-      "rules": [
-        "ANOM-001"
-      ]
+      "by_difficulty": {
+        "medium": {
+          "labeled": 18,
+          "detected": 18,
+          "recall": 1.0
+        }
+      }
     },
     "extreme_lead_time_change": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "ANOM-002"
+      ],
       "labeled": 12,
       "detected": 12,
       "recall": 1.0,
-      "rules": [
-        "ANOM-002"
-      ]
+      "by_difficulty": {
+        "medium": {
+          "labeled": 12,
+          "detected": 12,
+          "recall": 1.0
+        }
+      }
     },
-    "supplier_doc_vs_erp_discrepancy": {
+    "fuzzy_duplicate_part": {
+      "subsystem": "entity_resolution",
+      "rules": [],
+      "labeled": 21,
+      "note": "detected by the ER matcher, not SQL rules \u2014 see ml_eval.json",
+      "recall": null,
+      "evaluated_elsewhere": "evaluation/entity_resolution/ml_eval.json"
+    },
+    "invalid_plant_relationship": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "REFI-004"
+      ],
+      "labeled": 9,
+      "detected": 9,
+      "recall": 1.0,
+      "by_difficulty": {
+        "easy": {
+          "labeled": 9,
+          "detected": 9,
+          "recall": 1.0
+        }
+      }
+    },
+    "invalid_supplier_relationship": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "REFI-003"
+      ],
+      "labeled": 9,
+      "detected": 9,
+      "recall": 1.0,
+      "by_difficulty": {
+        "easy": {
+          "labeled": 9,
+          "detected": 9,
+          "recall": 1.0
+        }
+      }
+    },
+    "invalid_uom": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "VALD-001"
+      ],
+      "labeled": 18,
+      "detected": 18,
+      "recall": 1.0,
+      "by_difficulty": {
+        "easy": {
+          "labeled": 18,
+          "detected": 18,
+          "recall": 1.0
+        }
+      }
+    },
+    "missing_critical_attributes": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "COMP-001",
+        "COMP-002",
+        "COMP-003",
+        "COMP-005",
+        "COMP-006"
+      ],
+      "labeled": 35,
+      "note": "field-specific completeness rules (description/category/uom/lead time/cost)",
+      "detected": 35,
+      "recall": 1.0,
+      "by_difficulty": {
+        "easy": {
+          "labeled": 35,
+          "detected": 35,
+          "recall": 1.0
+        }
+      }
+    },
+    "multiple_active_revisions": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "UNIQ-005"
+      ],
+      "labeled": 1,
+      "detected": 1,
+      "recall": 1.0,
+      "by_difficulty": {
+        "medium": {
+          "labeled": 1,
+          "detected": 1,
+          "recall": 1.0
+        }
+      }
+    },
+    "negative_component_quantity": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "VALD-007"
+      ],
+      "labeled": 9,
+      "detected": 9,
+      "recall": 1.0,
+      "by_difficulty": {
+        "easy": {
+          "labeled": 9,
+          "detected": 9,
+          "recall": 1.0
+        }
+      }
+    },
+    "obsolete_component_in_active_bom": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "XFLD-004"
+      ],
+      "labeled": 9,
+      "detected": 6,
+      "recall": 0.6667,
+      "by_difficulty": {
+        "medium": {
+          "labeled": 9,
+          "detected": 6,
+          "recall": 0.6667
+        }
+      }
+    },
+    "orphan_bom_component": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "REFI-002"
+      ],
+      "labeled": 9,
+      "detected": 9,
+      "recall": 1.0,
+      "by_difficulty": {
+        "easy": {
+          "labeled": 9,
+          "detected": 9,
+          "recall": 1.0
+        }
+      }
+    },
+    "orphan_bom_parent": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "REFI-001"
+      ],
       "labeled": 5,
       "detected": 5,
       "recall": 1.0,
-      "rules": [
-        "DOCR-001"
-      ]
-    },
-    "multiple_active_revisions": {
-      "labeled": 1,
-      "detected": 1,
-      "recall": 1.0,
-      "rules": [
-        "UNIQ-005"
-      ]
+      "by_difficulty": {
+        "easy": {
+          "labeled": 5,
+          "detected": 5,
+          "recall": 1.0
+        }
+      }
     },
     "overlapping_effective_dates": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "TEMP-001"
+      ],
       "labeled": 1,
       "detected": 1,
       "recall": 1.0,
+      "by_difficulty": {
+        "medium": {
+          "labeled": 1,
+          "detected": 1,
+          "recall": 1.0
+        }
+      }
+    },
+    "self_referencing_bom": {
+      "subsystem": "bom_graph_sql",
       "rules": [
-        "TEMP-001"
-      ]
+        "GRPH-001"
+      ],
+      "labeled": 3,
+      "detected": 3,
+      "recall": 1.0,
+      "by_difficulty": {
+        "easy": {
+          "labeled": 3,
+          "detected": 3,
+          "recall": 1.0
+        }
+      }
+    },
+    "stale_record": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "TEMP-002"
+      ],
+      "labeled": 14,
+      "detected": 14,
+      "recall": 1.0,
+      "by_difficulty": {
+        "easy": {
+          "labeled": 14,
+          "detected": 14,
+          "recall": 1.0
+        }
+      }
+    },
+    "supplier_doc_vs_erp_discrepancy": {
+      "subsystem": "document_reconciliation",
+      "rules": [
+        "DOCR-001"
+      ],
+      "labeled": 5,
+      "note": "quote-vs-ERP price discrepancy",
+      "detected": 5,
+      "recall": 1.0,
+      "by_difficulty": {
+        "medium": {
+          "labeled": 5,
+          "detected": 5,
+          "recall": 1.0
+        }
+      }
+    },
+    "supplier_price_conflict": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "ANOM-004"
+      ],
+      "labeled": 8,
+      "detected": 8,
+      "recall": 1.0,
+      "by_difficulty": {
+        "medium": {
+          "labeled": 8,
+          "detected": 8,
+          "recall": 1.0
+        }
+      }
+    },
+    "zero_component_quantity": {
+      "subsystem": "sql_rules",
+      "rules": [
+        "VALD-006"
+      ],
+      "labeled": 9,
+      "detected": 9,
+      "recall": 1.0,
+      "by_difficulty": {
+        "easy": {
+          "labeled": 9,
+          "detected": 9,
+          "recall": 1.0
+        }
+      }
     }
   },
-  "unmapped_types": [
-    "circular_bom",
+  "per_rule_precision": {
+    "ANOM-001": {
+      "target_types": [
+        "extreme_cost_change"
+      ],
+      "new_detections": 18,
+      "true_positives": 18,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "ANOM-002": {
+      "target_types": [
+        "extreme_lead_time_change"
+      ],
+      "new_detections": 12,
+      "true_positives": 12,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "ANOM-004": {
+      "target_types": [
+        "supplier_price_conflict"
+      ],
+      "new_detections": 8,
+      "true_positives": 8,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "COMP-001": {
+      "target_types": [
+        "missing_critical_attributes"
+      ],
+      "new_detections": 7,
+      "true_positives": 7,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "COMP-002": {
+      "target_types": [
+        "missing_critical_attributes"
+      ],
+      "new_detections": 7,
+      "true_positives": 7,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "COMP-003": {
+      "target_types": [
+        "missing_critical_attributes"
+      ],
+      "new_detections": 7,
+      "true_positives": 7,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "COMP-004": {
+      "target_types": [],
+      "new_detections": 30,
+      "true_positives": 0,
+      "collateral_injection_caused": 30,
+      "spurious": 0,
+      "precision_strict": 0.0,
+      "precision_injection_caused": 1.0
+    },
+    "COMP-005": {
+      "target_types": [
+        "missing_critical_attributes"
+      ],
+      "new_detections": 7,
+      "true_positives": 7,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "COMP-006": {
+      "target_types": [
+        "missing_critical_attributes"
+      ],
+      "new_detections": 7,
+      "true_positives": 7,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "COMP-008": {
+      "target_types": [],
+      "new_detections": 14,
+      "true_positives": 0,
+      "collateral_injection_caused": 14,
+      "spurious": 0,
+      "precision_strict": 0.0,
+      "precision_injection_caused": 1.0
+    },
+    "DOCR-001": {
+      "target_types": [
+        "supplier_doc_vs_erp_discrepancy"
+      ],
+      "new_detections": 8,
+      "true_positives": 5,
+      "collateral_injection_caused": 0,
+      "spurious": 3,
+      "precision_strict": 0.625,
+      "precision_injection_caused": 0.625
+    },
+    "GRPH-001": {
+      "target_types": [
+        "self_referencing_bom"
+      ],
+      "new_detections": 3,
+      "true_positives": 3,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "GRPH-002": {
+      "target_types": [
+        "circular_bom"
+      ],
+      "new_detections": 6,
+      "true_positives": 3,
+      "collateral_injection_caused": 1,
+      "spurious": 2,
+      "precision_strict": 0.5,
+      "precision_injection_caused": 0.6667
+    },
+    "REFI-001": {
+      "target_types": [
+        "orphan_bom_parent"
+      ],
+      "new_detections": 5,
+      "true_positives": 5,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "REFI-002": {
+      "target_types": [
+        "orphan_bom_component"
+      ],
+      "new_detections": 10,
+      "true_positives": 9,
+      "collateral_injection_caused": 1,
+      "spurious": 0,
+      "precision_strict": 0.9,
+      "precision_injection_caused": 1.0
+    },
+    "REFI-003": {
+      "target_types": [
+        "invalid_supplier_relationship"
+      ],
+      "new_detections": 9,
+      "true_positives": 9,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "REFI-004": {
+      "target_types": [
+        "invalid_plant_relationship"
+      ],
+      "new_detections": 9,
+      "true_positives": 9,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "TEMP-001": {
+      "target_types": [
+        "overlapping_effective_dates"
+      ],
+      "new_detections": 1,
+      "true_positives": 1,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "TEMP-002": {
+      "target_types": [
+        "stale_record"
+      ],
+      "new_detections": 14,
+      "true_positives": 4,
+      "collateral_injection_caused": 10,
+      "spurious": 0,
+      "precision_strict": 0.2857,
+      "precision_injection_caused": 1.0
+    },
+    "TEMP-004": {
+      "target_types": [],
+      "new_detections": 6,
+      "true_positives": 0,
+      "collateral_injection_caused": 6,
+      "spurious": 0,
+      "precision_strict": 0.0,
+      "precision_injection_caused": 1.0
+    },
+    "UNIQ-002": {
+      "target_types": [
+        "exact_duplicate_part"
+      ],
+      "new_detections": 48,
+      "true_positives": 14,
+      "collateral_injection_caused": 13,
+      "spurious": 21,
+      "precision_strict": 0.2917,
+      "precision_injection_caused": 0.5625
+    },
+    "UNIQ-004": {
+      "target_types": [],
+      "new_detections": 40,
+      "true_positives": 0,
+      "collateral_injection_caused": 23,
+      "spurious": 17,
+      "precision_strict": 0.0,
+      "precision_injection_caused": 0.575
+    },
+    "UNIQ-005": {
+      "target_types": [
+        "multiple_active_revisions"
+      ],
+      "new_detections": 2,
+      "true_positives": 1,
+      "collateral_injection_caused": 0,
+      "spurious": 1,
+      "precision_strict": 0.5,
+      "precision_injection_caused": 0.5
+    },
+    "VALD-001": {
+      "target_types": [
+        "invalid_uom"
+      ],
+      "new_detections": 18,
+      "true_positives": 18,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "VALD-002": {
+      "target_types": [
+        "currency_inconsistency"
+      ],
+      "new_detections": 19,
+      "true_positives": 19,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "VALD-006": {
+      "target_types": [
+        "zero_component_quantity"
+      ],
+      "new_detections": 9,
+      "true_positives": 9,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "VALD-007": {
+      "target_types": [
+        "negative_component_quantity"
+      ],
+      "new_detections": 9,
+      "true_positives": 9,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "XFLD-001": {
+      "target_types": [],
+      "new_detections": 4,
+      "true_positives": 0,
+      "collateral_injection_caused": 4,
+      "spurious": 0,
+      "precision_strict": 0.0,
+      "precision_injection_caused": 1.0
+    },
+    "XFLD-002": {
+      "target_types": [],
+      "new_detections": 3,
+      "true_positives": 0,
+      "collateral_injection_caused": 0,
+      "spurious": 3,
+      "precision_strict": 0.0,
+      "precision_injection_caused": 0.0
+    },
+    "XFLD-003": {
+      "target_types": [
+        "blocked_part_with_future_demand"
+      ],
+      "new_detections": 1,
+      "true_positives": 1,
+      "collateral_injection_caused": 0,
+      "spurious": 0,
+      "precision_strict": 1.0,
+      "precision_injection_caused": 1.0
+    },
+    "XFLD-004": {
+      "target_types": [
+        "obsolete_component_in_active_bom"
+      ],
+      "new_detections": 14,
+      "true_positives": 6,
+      "collateral_injection_caused": 0,
+      "spurious": 8,
+      "precision_strict": 0.4286,
+      "precision_injection_caused": 0.4286
+    },
+    "XFLD-006": {
+      "target_types": [],
+      "new_detections": 18,
+      "true_positives": 0,
+      "collateral_injection_caused": 18,
+      "spurious": 0,
+      "precision_strict": 0.0,
+      "precision_injection_caused": 1.0
+    }
+  },
+  "types_not_evaluated_by_sql": [
     "conflicting_mpn",
     "conflicting_part_descriptions",
     "duplicate_supplier",
-    "fuzzy_duplicate_part",
-    "missing_critical_attributes",
-    "obsolete_component_in_active_bom",
-    "supplier_price_conflict"
-  ],
-  "duration_seconds": 1.9
+    "exact_duplicate_part",
+    "fuzzy_duplicate_part"
+  ]
 }

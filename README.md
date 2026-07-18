@@ -20,7 +20,7 @@ end, reproducibly, on a laptop.
 | Controlled defect injection (25 types) with isolated ground truth | Implemented and tested |
 | Auditable, idempotent ingestion → DuckDB local warehouse | Implemented and tested |
 | dbt transformations (staging, core star schema, 7 marts) | Implemented and tested (local DuckDB target) |
-| Data-quality engine — 49 rules, evidence, scoring | Implemented and tested (recall measured vs ground truth) |
+| Data-quality engine — 49 rules, evidence, scoring | Implemented and tested (precision + recall by subsystem/difficulty vs a validated clean baseline) |
 | Entity resolution — weighted baseline + LR + gradient boosting | Implemented and tested (evaluation artifacts published) |
 | Field-level golden-record survivorship with lineage | Implemented and tested |
 | BOM graph intelligence (cycles, orphans, reverse deps, criticality) | Implemented and tested |
@@ -40,7 +40,7 @@ end, reproducibly, on a laptop.
 
 | Metric | Result | Source |
 |---|---|---|
-| Detection recall vs injected labeled defects (17 SQL-rule-mapped types) | **100% recall** *(recall only; precision + all 25 types + subsystem attribution added in H3)* | [`evaluation/data_quality/detection_smoke.json`](evaluation/data_quality/detection_smoke.json) · `python scripts/evaluate_detection.py` |
+| Defect detection vs a **validated clean baseline** (20 SQL-detectable types) | **recall 0.985 (194/197), precision ≥ 0.933** (conservative; per difficulty + subsystem) | [`detection_smoke.json`](evaluation/data_quality/detection_smoke.json), [`clean_baseline_smoke.json`](evaluation/data_quality/clean_baseline_smoke.json) · `scripts/evaluate_detection.py` |
 | ER — candidate-generation recall (blocking) | 0.95 over 409 labeled duplicate pairs | [`evaluation/entity_resolution/ml_eval.json`](evaluation/entity_resolution/ml_eval.json) |
 | ER — logistic regression (entity-disjoint, 5 seeds) | **P 0.962 ± 0.010, R 0.804 ± 0.178, F1 0.867 ± 0.113** | same · [model card](docs/model-card.md) |
 | ER — gradient boosting (entity-disjoint, 5 seeds) | P 0.769 ± 0.431, R 0.471 ± 0.375 — high-variance, not recommended at this scale | same |

@@ -24,8 +24,12 @@ def generate_bom(
     n_assemblies = min(len(assemblies), int(len(parts) * ctx.cfg.assembly_ratio))
     assemblies = assemblies.sample(n=n_assemblies, random_state=int(ctx.rng.integers(0, 2**31)))
 
+    # Only ACTIVE parts may be components on the clean baseline, so an active
+    # assembly never organically contains an obsolete/blocked component (XFLD-004/005).
+    # The injector introduces those defects deliberately later.
+    active = parts["lifecycle_status"] == "ACTIVE"
     by_tier: dict[int, list[str]] = {
-        t: parts.loc[parts["bom_tier"] == t, "part_id"].tolist() for t in range(4)
+        t: parts.loc[(parts["bom_tier"] == t) & active, "part_id"].tolist() for t in range(4)
     }
 
     headers, components, revisions = [], [], []
@@ -57,15 +61,17 @@ def generate_bom(
         chosen = ctx.rng.choice(
             candidate_children, size=min(n_comp, len(candidate_children)), replace=False
         )
+        # Contiguous, non-overlapping revision windows: rev i occupies
+        # [boundary[i], boundary[i+1] - 1 day], rev i+1 starts at boundary[i+1].
+        # This keeps the clean baseline free of TEMP-001 overlaps and VALD-008 inversions.
+        boundaries = [base_date]
+        for _ in range(n_revs):
+            boundaries.append(boundaries[-1] + timedelta(days=int(ctx.rng.integers(90, 400))))
         for rev_i in range(n_revs):
             rev_key += 1
             rev_label = chr(ord("A") + rev_i)
-            eff_from = base_date + timedelta(days=rev_i * int(ctx.rng.integers(90, 400)))
-            eff_to = (
-                base_date + timedelta(days=(rev_i + 1) * int(ctx.rng.integers(90, 400)) - 1)
-                if rev_i < n_revs - 1
-                else None
-            )
+            eff_from = boundaries[rev_i]
+            eff_to = boundaries[rev_i + 1] - timedelta(days=1) if rev_i < n_revs - 1 else None
             revisions.append(
                 {
                     "revision_id": f"REV{rev_key:07d}",

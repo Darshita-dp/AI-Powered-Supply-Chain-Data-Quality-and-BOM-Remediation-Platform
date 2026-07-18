@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-07-18T03:12:50.979079+00:00",
+  "profile": "smoke",
+  "seed": 20260716,
+  "rules_executed": 49,
+  "clean_baseline": true,
+  "note": "A baseline is 'clean' when the only rules that fire are on the documented allowlist of intentional realism. Precision in detection_<profile>.json is computed by diffing injected-run issues against these organic baseline issues, so allowlisted organic hits are never counted as false positives.",
+  "organic_violations": {
+    "TEMP-002": 404,
+    "COMP-008": 236,
+    "DOCR-003": 48,
+    "XFLD-001": 31,
+    "ANOM-002": 10
+  },
+  "allowlist": {
+    "COMP-008": "\u224825% of parts intentionally have no manufacturer part number (realistic sparsity).",
+    "XFLD-001": "Some MAKE parts at tier>=2 legitimately have no BOM yet (in-development items).",
+    "TEMP-002": "A share of active parts are intentionally older than the staleness threshold.",
+    "ANOM-001": "Cost history walks with random drift; a few steps naturally exceed the 4x band.",
+    "ANOM-002": "Lead-time history drifts; a few steps naturally exceed the 3x band.",
+    "ANOM-004": "Multi-supplier parts naturally show price spread; a few exceed the 2.5x band.",
+    "DOCR-001": "Quotes are generated with +/-10% price noise vs ERP; some exceed the 30% band.",
+    "DOCR-002": "Quotes carry lead-time noise vs ERP; some exceed the 14-day band.",
+    "DOCR-003": "Some quotes are generated already past their validity window.",
+    "GRPH-003": "Shared components can legitimately appear under one parent across revisions."
+  },
+  "unexpected_violations": {}
+}

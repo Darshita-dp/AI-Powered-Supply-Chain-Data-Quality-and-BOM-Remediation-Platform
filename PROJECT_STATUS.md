@@ -187,7 +187,7 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 |---|------------|--------|
 | H1 | Reconcile documentation and status | ✅ Complete |
 | H2 | Enforce entity-disjoint ML evaluation | ✅ Complete |
-| H3 | Strengthen defect-detection evaluation | ⬜ Not started |
+| H3 | Strengthen defect-detection evaluation | ✅ Complete |
 | H4 | True dbt end-to-end integration test | ⬜ Not started |
 | H5 | Complete/modernize the Snowflake execution path | ⬜ Not started |
 | H6 | Add a configurable real AI provider | ⬜ Not started |
@@ -198,8 +198,8 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 
 ## In-progress work
 
-- H3 next — strengthen defect-detection evaluation (clean baseline + all 25 types +
-  precision/recall/F1 by subsystem).
+- H4 next — true dbt end-to-end integration test (invoke the real dbt project, verify
+  staging/core/marts, then run the full engine + API loop against it).
 
 ## Hardening results so far
 
@@ -211,6 +211,16 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
   pairs: candidate-gen recall 0.95; **LR P 0.962±0.010 / R 0.804±0.178 / F1 0.867±0.113**
   (recommended); GB P 0.769±0.431 / R 0.471±0.375 (high-variance). See
   `evaluation/entity_resolution/ml_eval.json` and `docs/model-card.md`.
+- **H3** — fixed the generator so the pre-injection baseline is genuinely clean
+  (active-only BOM components, active-only demand, contiguous revision windows),
+  validated by `scripts/validate_clean_baseline.py` (only 5 allowlisted statistical
+  conditions fire). New baseline-diff detection evaluation over **all 25 injected
+  types**, attributed by subsystem: **SQL-detectable types recall 0.985 (194/197),
+  precision ≥ 0.933** (conservative — unlinkable collateral counted as FP); per-type +
+  per-difficulty + per-rule breakdown with explicit denominators; 3 duplicate types
+  cross-referenced to ER, 2 documented as unevaluated. Artifacts
+  `evaluation/data_quality/{clean_baseline,detection}_smoke.json`; 2 new tests lock in
+  the clean-baseline property.
 
 ## Last successful commit
 

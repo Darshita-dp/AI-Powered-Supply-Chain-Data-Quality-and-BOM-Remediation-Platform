@@ -50,13 +50,13 @@
       "known_limitation": null
     },
     {
-      "id": "dq-detection-recall",
-      "claim": "100% detection recall on 156 injected labeled defects across 17 SQL-rule-mapped types.",
-      "supporting": "evaluation/data_quality/detection_smoke.json; scripts/evaluate_detection.py",
+      "id": "dq-detection",
+      "claim": "Against a validated clean baseline, SQL-detectable defect types (20) show recall 0.985 (194/197) and precision >= 0.933 (conservative lower bound); per-type recall and per-difficulty are reported, with all 25 injected types attributed to a detecting subsystem.",
+      "supporting": "evaluation/data_quality/detection_smoke.json; evaluation/data_quality/clean_baseline_smoke.json; scripts/evaluate_detection.py; scripts/validate_clean_baseline.py; tests/data_quality/test_clean_baseline.py",
       "validation_status": "measured",
-      "date_validated": "2026-07-16",
+      "date_validated": "2026-07-17",
       "external_dependency": null,
-      "known_limitation": "RECALL ONLY, and only 17 of 25 types (those mapped to SQL rules). No precision. No clean-baseline validation. H3 addresses all of this with precision/recall/F1 by subsystem across all 25 types."
+      "known_limitation": "Precision is computed by baseline-diff and treats unlinkable collateral (the same injected defect surfacing on a related record) as a false positive, so 0.933 is a conservative lower bound. obsolete_component_in_active_bom recall is 0.667 by construction (the injector does not guarantee an ACTIVE parent, so some injected records are not real violations). 3 duplicate types are evaluated by entity resolution (ml_eval.json); 2 types (conflicting_mpn, conflicting_part_descriptions) have no single-record SQL rule and are documented as unevaluated. Smoke profile."
     },
     {
       "id": "er-baseline",

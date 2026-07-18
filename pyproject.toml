@@ -84,4 +84,5 @@ markers = [
     "integration: integration tests (may be slower)",
     "e2e: end-to-end pipeline tests",
     "performance: performance measurement tests",
+    "data_quality: data-quality rule/detection tests",
 ]

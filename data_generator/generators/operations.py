@@ -94,9 +94,17 @@ def generate_purchase_orders(
 def generate_future_demand(
     ctx: GenContext, parts: pd.DataFrame, bom_components: pd.DataFrame, plants: pd.DataFrame
 ) -> pd.DataFrame:
-    """Demand lands on assemblies (independent) and flows implicitly to components."""
-    assemblies = parts[parts["part_id"].isin(bom_components["parent_part_id"].unique())]
-    others = parts[parts["bom_tier"] == 0].sample(
+    """Demand lands on assemblies (independent) and flows implicitly to components.
+
+    Only ACTIVE parts receive demand on the clean baseline, so obsolete/blocked parts
+    never organically carry future demand (XFLD-002/003). The injector creates those
+    defects deliberately by blocking a part that already has demand.
+    """
+    active_parts = parts[parts["lifecycle_status"] == "ACTIVE"]
+    assemblies = active_parts[
+        active_parts["part_id"].isin(bom_components["parent_part_id"].unique())
+    ]
+    others = active_parts[active_parts["bom_tier"] == 0].sample(
         frac=0.3, random_state=int(ctx.rng.integers(0, 2**31))
     )
     demand_parts = pd.concat([assemblies, others])

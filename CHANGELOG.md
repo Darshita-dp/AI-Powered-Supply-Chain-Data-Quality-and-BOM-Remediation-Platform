@@ -24,6 +24,16 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   Reports candidate-generation recall separately so model recall is not read as
   end-to-end recall. Added connected-component, entity-disjointness, leak-rejection,
   and multi-seed tests.
+- H3: strengthened defect-detection evaluation against a validated clean baseline.
+  Generator fixes make the pre-injection baseline genuinely clean (active-only BOM
+  components and demand; contiguous, non-overlapping revision windows) — validated by
+  `scripts/validate_clean_baseline.py` (only 5 allowlisted statistical conditions fire).
+  New baseline-diff evaluation covers all 25 injected types with subsystem attribution:
+  SQL-detectable types recall 0.985 (194/197), precision >= 0.933 (conservative; false
+  positives split into collateral vs spurious), per-type/per-difficulty/per-rule with
+  explicit denominators. Duplicate types cross-referenced to entity resolution; 2 types
+  documented as unevaluated. Added `scripts/validate_clean_baseline.py` and
+  `tests/data_quality/test_clean_baseline.py`.
 
 ### Added
 - M0: repository governance, architecture docs, ADR log, ERD, DQ rule taxonomy,
