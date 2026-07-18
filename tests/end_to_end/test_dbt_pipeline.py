@@ -18,16 +18,16 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
-from fastapi.testclient import TestClient
-
 from api.app.dependencies import get_remediation_engine, get_warehouse
 from api.app.main import app
+from data_generator.config.profiles import PROFILES, ProfileConfig
+from data_generator.orchestrator import run_generation
+from fastapi.testclient import TestClient
+
 from bom_guardian.ai import DeterministicMockAIProvider, RemediationEngine
 from bom_guardian.ingestion import IngestionService
 from bom_guardian.quality import QualityScorer, RuleEngine
 from bom_guardian.warehouse import LocalWarehouse
-from data_generator.config.profiles import PROFILES, ProfileConfig
-from data_generator.orchestrator import run_generation
 
 REPO = Path(__file__).resolve().parents[2]
 DBT_DIR = REPO / "dbt_supply_chain"
