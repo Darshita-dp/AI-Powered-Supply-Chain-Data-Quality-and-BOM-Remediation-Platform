@@ -47,6 +47,13 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   validation, error handling, configurable model and latency capture; added
   `scripts/deploy_snowflake.py` (dry-run default), a scoped `SNOWFLAKE.CORTEX_USER`
   grant, and 12 fake-connection tests. Still never run against a live account.
+- H6: added a configurable real AI provider (`AnthropicAIProvider`, optional `anthropic`
+  extra) on the official SDK — schema-constrained JSON output, grounding validation via
+  the engine, SDK retry/timeout, refusal handling, env-configured key/model
+  (default `claude-opus-4-8`), token/latency audit, abstention, no data-write path. Added
+  a provider factory, `scripts/validate_real_ai_provider.py` (skips without a key — no
+  fabricated artifact), and 7 fake-client tests + a skipped-without-key integration test.
+  Never called against the real API — external validation pending.
 
 ### Added
 - M0: repository governance, architecture docs, ADR log, ERD, DQ rule taxonomy,

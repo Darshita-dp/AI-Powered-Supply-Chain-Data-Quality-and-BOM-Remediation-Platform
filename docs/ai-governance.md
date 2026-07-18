@@ -33,7 +33,7 @@
 |---|---|
 | `DeterministicMockAIProvider` | Implemented and tested — default for all local runs and CI |
 | `SnowflakeCortexAIProvider` | Implemented locally on Cortex **`AI_COMPLETE`** (the legacy `SNOWFLAKE.CORTEX.COMPLETE` was replaced) with a response schema, JSON validation, error handling, env-configurable model, and latency capture; fake-connection tested. External validation pending (no Snowflake credentials); raises a clear error rather than pretending |
-| Anthropic / other | Not implemented; the interface allows adding one via configuration only |
+| `AnthropicAIProvider` | Implemented on the official Anthropic SDK: `output_config.format` JSON-schema constraint, JSON parse + shape check before the engine's full validation, SDK retry/timeout, refusal handling, token + latency capture, env-configured key (`ANTHROPIC_API_KEY`) and model (`BOMG_ANTHROPIC_MODEL`, default `claude-opus-4-8`); fake-client tested. **External validation pending** until `scripts/validate_real_ai_provider.py` is run with a real key (it skips cleanly without one — no fabricated artifact) |
 
 ## Feedback loop policy
 

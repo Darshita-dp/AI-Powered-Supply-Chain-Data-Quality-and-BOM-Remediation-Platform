@@ -119,7 +119,16 @@
       "validation_status": "verified_local",
       "date_validated": "2026-07-16",
       "external_dependency": null,
-      "known_limitation": "Only the deterministic mock provider is exercised; no real LLM has been called (H6 adds and validates a real provider)."
+      "known_limitation": "The deterministic mock is the default and the only provider exercised by automated tests. H6 added AnthropicAIProvider (real SDK, fake-client tested) and scripts/validate_real_ai_provider.py; a real LLM call is pending an API key (the script skips cleanly without one)."
+    },
+    {
+      "id": "real-ai-provider",
+      "claim": "Configurable real AI provider (Anthropic Claude) with schema-constrained output, grounding validation, retry/timeout, refusal handling, and token/latency audit.",
+      "supporting": "src/bom_guardian/ai/providers.py (AnthropicAIProvider); scripts/validate_real_ai_provider.py; tests/unit/test_anthropic_provider.py (fake-client + skipped-without-key integration test)",
+      "validation_status": "implemented_untested_externally",
+      "date_validated": "2026-07-17",
+      "external_dependency": "ANTHROPIC_API_KEY",
+      "known_limitation": "NEVER called against the real Anthropic API in this environment. Logic is verified only with a fake client. Run scripts/validate_real_ai_provider.py with a key to produce evaluation/ai/real_provider_validation.json and flip this to measured. Marked validated only after a successful run."
     },
     {
       "id": "snowflake",

@@ -28,6 +28,7 @@ end, reproducibly, on a laptop.
 | Document intelligence with prompt-injection controls | Implemented and tested |
 | Governed AI remediation engine (mock provider) | Implemented and tested |
 | Snowflake warehouse adapter + Cortex `AI_COMPLETE` provider | Implemented locally, fake-connection tested — **external Snowflake execution pending (no credentials)** |
+| Configurable real AI provider (Anthropic Claude) | Implemented, fake-client tested — **external validation pending (`scripts/validate_real_ai_provider.py` needs a key)** |
 | FastAPI service (25 endpoints) | Implemented and tested |
 | React remediation workbench (8 surfaces, live API data) | Implemented and tested (5 vitest tests, typecheck/build clean); browser rendering exercised via the accessibility tree — automated screenshots pending (H9) |
 | Data Steward Copilot (read-only, cited) | Implemented and tested |

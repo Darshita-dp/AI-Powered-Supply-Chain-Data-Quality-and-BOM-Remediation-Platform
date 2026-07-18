@@ -190,7 +190,7 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 | H3 | Strengthen defect-detection evaluation | ✅ Complete |
 | H4 | True dbt end-to-end integration test | ✅ Complete |
 | H5 | Complete/modernize the Snowflake execution path | ✅ Complete (implemented locally; external execution pending) |
-| H6 | Add a configurable real AI provider | ⬜ Not started |
+| H6 | Add a configurable real AI provider | ✅ Complete (implemented + fake-client tested; external validation pending) |
 | H7 | Role-based remediation authorization | ⬜ Not started |
 | H8 | Verify GitHub Actions | ⬜ Not started |
 | H9 | Verified application screenshots | ⬜ Not started |
@@ -198,8 +198,8 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 
 ## In-progress work
 
-- H6 next — add a configurable real AI provider (Anthropic) with schema, grounding,
-  retry/timeout, audit, and a validation script; tests skip cleanly without a key.
+- H7 next — role-based remediation authorization (analyst/steward/admin; approve/reject
+  require steward+; authenticated actor recorded, not trusted from the body).
 
 ## Hardening results so far
 
@@ -238,6 +238,14 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
   (dry-run default; real execution needs credentials), scoped `SNOWFLAKE.CORTEX_USER`
   AI grant, and 12 fake-connection tests. **Still never executed against a live
   account — external execution pending.**
+- **H6** — added `AnthropicAIProvider` (optional `anthropic` extra) on the official SDK:
+  `output_config.format` JSON-schema constraint, JSON parse + shape check before the
+  engine's full validation, SDK retry/timeout, refusal handling, env-configured key and
+  model (default `claude-opus-4-8`), token + latency capture, abstention, no data-write
+  path. Added a provider factory (`get_ai_provider`), `scripts/validate_real_ai_provider.py`
+  (skips cleanly / exit 2 without a key — no fabricated artifact), and 7 fake-client
+  tests + 1 integration test that skips without `ANTHROPIC_API_KEY`. **Never called
+  against the real Anthropic API — external validation pending.**
 
 ## Last successful commit
 
