@@ -1,0 +1,278 @@
+{
+  "generated_at": "2026-07-18T03:05:30.211481+00:00",
+  "profile": "er_eval",
+  "n_parts": 4000,
+  "inject_rate": 0.05,
+  "data_seed": 20260716,
+  "split_seeds": [
+    1,
+    7,
+    13,
+    21,
+    31
+  ],
+  "methodology": "Candidate pairs from blocking are labeled from injected ground truth. Folds are entity-disjoint (connected-component grouping over the candidate-pair graph; part-set disjointness asserted). The dataset is fixed; only the 60/20/20 split varies across split_seeds, giving the mean \u00b1 std bands below. Baseline is unsupervised over all labeled pairs.",
+  "labeled_duplicate_pairs": 409,
+  "candidate_generation_recall": 0.9511,
+  "weighted_baseline": {
+    "recommend_band": {
+      "band": "high_confidence_recommendation",
+      "predicted_pairs": 242,
+      "labeled_duplicate_pairs": 409,
+      "true_positives": 234,
+      "false_positives": 8,
+      "false_negatives": 175,
+      "precision": 0.9669,
+      "recall": 0.5721,
+      "f1": 0.7189,
+      "recall_by_difficulty": {
+        "easy": {
+          "labeled": 261,
+          "found": 234,
+          "recall": 0.8966
+        },
+        "medium": {
+          "labeled": 102,
+          "found": 0,
+          "recall": 0.0
+        },
+        "hard": {
+          "labeled": 46,
+          "found": 0,
+          "recall": 0.0
+        }
+      }
+    },
+    "review_band": {
+      "band": "human_review_required",
+      "predicted_pairs": 329,
+      "labeled_duplicate_pairs": 409,
+      "true_positives": 315,
+      "false_positives": 14,
+      "false_negatives": 94,
+      "precision": 0.9574,
+      "recall": 0.7702,
+      "f1": 0.8537,
+      "recall_by_difficulty": {
+        "easy": {
+          "labeled": 261,
+          "found": 259,
+          "recall": 0.9923
+        },
+        "medium": {
+          "labeled": 102,
+          "found": 56,
+          "recall": 0.549
+        },
+        "hard": {
+          "labeled": 46,
+          "found": 0,
+          "recall": 0.0
+        }
+      }
+    }
+  },
+  "ml_aggregated": {
+    "seeds": [
+      1,
+      7,
+      13,
+      21,
+      31
+    ],
+    "n_runs": 5,
+    "split_strategy": "connected_component_entity_disjoint",
+    "candidate_generation": {
+      "labeled_duplicate_pairs": 409,
+      "produced_as_candidates": 389,
+      "candidate_generation_recall": 0.9511,
+      "note": "Model recall below is conditional on candidate generation: it can only recover duplicate pairs that blocking produced. End-to-end recall = candidate_generation_recall * model_recall_on_candidates."
+    },
+    "aggregated": {
+      "logistic_regression": {
+        "precision": {
+          "mean": 0.9623,
+          "std": 0.0097,
+          "min": 0.95,
+          "max": 0.9762,
+          "values": [
+            0.9762,
+            0.9655,
+            0.95,
+            0.9625,
+            0.9574
+          ]
+        },
+        "recall": {
+          "mean": 0.8041,
+          "std": 0.1785,
+          "min": 0.5423,
+          "max": 0.9655,
+          "values": [
+            0.8542,
+            0.9655,
+            0.95,
+            0.5423,
+            0.7087
+          ]
+        },
+        "f1": {
+          "mean": 0.867,
+          "std": 0.1133,
+          "min": 0.6937,
+          "max": 0.9655,
+          "values": [
+            0.9111,
+            0.9655,
+            0.95,
+            0.6937,
+            0.8145
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0006,
+          "std": 0.0006,
+          "min": 0.0002,
+          "max": 0.0016,
+          "values": [
+            0.0002,
+            0.0003,
+            0.0016,
+            0.0003,
+            0.0004
+          ]
+        }
+      },
+      "gradient_boosting": {
+        "precision": {
+          "mean": 0.769,
+          "std": 0.4308,
+          "min": 0.0,
+          "max": 1.0,
+          "values": [
+            0.9667,
+            0.9583,
+            1.0,
+            0.92,
+            0.0
+          ]
+        },
+        "recall": {
+          "mean": 0.4714,
+          "std": 0.3746,
+          "min": 0.0,
+          "max": 0.8099,
+          "values": [
+            0.6042,
+            0.7931,
+            0.15,
+            0.8099,
+            0.0
+          ]
+        },
+        "f1": {
+          "mean": 0.5468,
+          "std": 0.3942,
+          "min": 0.0,
+          "max": 0.8679,
+          "values": [
+            0.7436,
+            0.8679,
+            0.2609,
+            0.8614,
+            0.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0003,
+          "std": 0.0004,
+          "min": 0.0,
+          "max": 0.0009,
+          "values": [
+            0.0002,
+            0.0003,
+            0.0,
+            0.0009,
+            0.0
+          ]
+        }
+      }
+    },
+    "per_seed_test_positives": [
+      48,
+      58,
+      20,
+      142,
+      127
+    ]
+  },
+  "ml_single_run_for_persisted_models": {
+    "seed": 20260716,
+    "split": {
+      "strategy": "connected_component_entity_disjoint",
+      "entity_disjoint_asserted": true,
+      "train": {
+        "pairs": 17082,
+        "positive_pairs": 216,
+        "negative_pairs": 16866,
+        "unique_parts": 2434,
+        "unique_components": 114
+      },
+      "validation": {
+        "pairs": 11192,
+        "positive_pairs": 142,
+        "negative_pairs": 11050,
+        "unique_parts": 1330,
+        "unique_components": 38
+      },
+      "test": {
+        "pairs": 2331,
+        "positive_pairs": 31,
+        "negative_pairs": 2300,
+        "unique_parts": 441,
+        "unique_components": 39
+      }
+    },
+    "models": {
+      "logistic_regression": {
+        "precision": 0.9355,
+        "recall": 0.9355,
+        "f1": 0.9355,
+        "threshold": 0.9797,
+        "test_positives": 31,
+        "confusion_matrix": {
+          "tn": 2298,
+          "fp": 2,
+          "fn": 2,
+          "tp": 29
+        }
+      },
+      "gradient_boosting": {
+        "precision": 1.0,
+        "recall": 0.1935,
+        "f1": 0.3243,
+        "threshold": 0.9916,
+        "test_positives": 31,
+        "confusion_matrix": {
+          "tn": 2300,
+          "fp": 0,
+          "fn": 25,
+          "tp": 6
+        }
+      }
+    },
+    "lr_coefficients": {
+      "part_number_exact": 0.7642,
+      "part_number_normalized_match": 0.9075,
+      "part_number_char_similarity": 11.2571,
+      "description_token_jaccard": 4.6837,
+      "description_char_similarity": 0.4199,
+      "mpn_match": 2.6747,
+      "uom_compatible": 1.425,
+      "category_match": -0.1154,
+      "cost_proximity": 5.4894,
+      "source_system_differs": 0.6771,
+      "lead_time_proximity": 1.7112
+    }
+  }
+}

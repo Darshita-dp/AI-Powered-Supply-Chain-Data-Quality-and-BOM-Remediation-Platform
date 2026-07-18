@@ -14,6 +14,16 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   precision + all 25 types); screenshots and GitHub Actions status marked explicitly
   pending; earlier "verified live/in-browser" phrasing replaced with what was actually
   exercised (accessibility tree + local tests).
+- H2: enforced entity-disjoint ML evaluation. Candidate pairs form a graph over part
+  ids; connected components become split groups; train/val/test part-set disjointness
+  is asserted at runtime. Evaluated over 5 split seeds on a 4,000-part profile (409
+  labeled duplicate pairs). Honest results (`evaluation/entity_resolution/ml_eval.json`):
+  candidate-generation recall 0.95; logistic regression P 0.962±0.010 / R 0.804±0.178 /
+  F1 0.867±0.113 (stable, recommended); gradient boosting P 0.769±0.431 / R 0.471±0.375
+  (high-variance, not recommended at this scale) — retiring the earlier P=1.00/R=1.00.
+  Reports candidate-generation recall separately so model recall is not read as
+  end-to-end recall. Added connected-component, entity-disjointness, leak-rejection,
+  and multi-seed tests.
 
 ### Added
 - M0: repository governance, architecture docs, ADR log, ERD, DQ rule taxonomy,
@@ -49,7 +59,7 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   P=1.00/R=0.57 on smoke), 8 tests.
 - M9: ML entity resolution — LR + gradient boosting, group-aware splits, precision-floor
   threshold selection, model persistence, model card, measured comparison report
-  (`evaluation/entity_resolution/ml_smoke.json`), 6 tests.
+  6 tests. (Metrics re-measured leakage-safe in H2 → `evaluation/entity_resolution/ml_eval.json`.)
 - M10: field-level golden-record survivorship — reliability/recency/agreement scoring,
   domain source preferences, full lineage with alternatives + confidence, reversible,
   9 tests.

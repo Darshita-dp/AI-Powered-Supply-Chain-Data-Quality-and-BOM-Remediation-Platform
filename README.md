@@ -41,8 +41,9 @@ end, reproducibly, on a laptop.
 | Metric | Result | Source |
 |---|---|---|
 | Detection recall vs injected labeled defects (17 SQL-rule-mapped types) | **100% recall** *(recall only; precision + all 25 types + subsystem attribution added in H3)* | [`evaluation/data_quality/detection_smoke.json`](evaluation/data_quality/detection_smoke.json) · `python scripts/evaluate_detection.py` |
-| ER baseline (recommend band) | P = 1.00, R = 0.57 | [`evaluation/entity_resolution/baseline_smoke.json`](evaluation/entity_resolution/baseline_smoke.json) |
-| ER ML (LR / gradient boosting) | **under re-evaluation** — the original split was not provably entity-disjoint; leakage-safe metrics land in H2 | [`evaluation/entity_resolution/ml_smoke.json`](evaluation/entity_resolution/ml_smoke.json), [model card](docs/model-card.md) |
+| ER — candidate-generation recall (blocking) | 0.95 over 409 labeled duplicate pairs | [`evaluation/entity_resolution/ml_eval.json`](evaluation/entity_resolution/ml_eval.json) |
+| ER — logistic regression (entity-disjoint, 5 seeds) | **P 0.962 ± 0.010, R 0.804 ± 0.178, F1 0.867 ± 0.113** | same · [model card](docs/model-card.md) |
+| ER — gradient boosting (entity-disjoint, 5 seeds) | P 0.769 ± 0.431, R 0.471 ± 0.375 — high-variance, not recommended at this scale | same |
 | Generated records — smoke / demo / full | 13,882 / 247,881 / **1,699,010** | [`evaluation/performance/profile_counts.json`](evaluation/performance/profile_counts.json) |
 | 49 rules over demo profile (248k records) | 0.9 s | [`evaluation/performance/benchmarks_demo.json`](evaluation/performance/benchmarks_demo.json) |
 | API list endpoints | ~10 ms | same |

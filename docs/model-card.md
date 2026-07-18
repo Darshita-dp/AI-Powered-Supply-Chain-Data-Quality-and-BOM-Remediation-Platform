@@ -1,13 +1,5 @@
 # Model Card — Duplicate Part Entity Resolution
 
-> ⚠️ **Under revision (hardening H2).** The split described below was keyed on the first
-> part ID only, which does **not** guarantee entity-disjoint folds — so the ML metrics
-> in this card may reflect leakage and rest on ~6 test positives. **Do not quote
-> P=1.00/R=1.00.** H2 replaces the split with connected-component grouping, asserts
-> disjoint train/val/test entity sets, evaluates across multiple seeds with confidence
-> intervals, and rewrites the results table with leakage-safe numbers. Until then, treat
-> the ML rows as provisional; the weighted-baseline rows (unsupervised, no split) stand.
-
 ## Overview
 
 | | |
@@ -16,32 +8,50 @@
 | Models | Weighted deterministic baseline, logistic regression, gradient boosting (scikit-learn) |
 | Features | 11 interpretable pair-similarity features (`src/bom_guardian/entity_resolution/features.py`) |
 | Training data | Blocked candidate pairs from synthetic parts with injected duplicates; positives labeled from injected ground truth |
-| Splits | Group-aware 60/20/20 (GroupShuffleSplit keyed on entity) — no entity appears in more than one fold |
+| Splits | **Entity-disjoint** 60/20/20: candidate pairs form a graph over part ids, connected components become groups, folds split by component. Part-set disjointness of train/val/test is asserted at runtime (`_assert_entity_disjoint`). |
+| Robustness | Evaluated across 5 split seeds; results reported as mean ± std, not a single point |
 | Threshold policy | Selected on validation: max F1 subject to **precision ≥ 0.95** (wrong merges are operationally damaging) |
 | Persistence | joblib bundles (model + threshold + feature list + seed) in `models/artifacts/` (git-ignored) |
-| Reproduce | `python scripts/train_entity_resolution.py --profile smoke` |
+| Reproduce | `python scripts/train_entity_resolution.py` (4,000-part `er_eval` profile, rate 0.05) |
 
-## Measured results (smoke profile, seed 20260716)
+## Measured results — leakage-safe (hardening H2)
 
-Source: `evaluation/entity_resolution/ml_smoke.json` — generated, not hand-written.
+Source: `evaluation/entity_resolution/ml_eval.json` — generated, not hand-written.
+Population: **409 labeled duplicate pairs**; **candidate-generation recall 0.95**
+(blocking produces 95% of labeled duplicate pairs — the ceiling on end-to-end recall).
 
 | Model | Precision | Recall | F1 | Scope |
 |---|---|---|---|---|
-| Weighted baseline (recommend band) | 1.00 | 0.57 | 0.73 | all labeled pairs |
-| Weighted baseline (review band) | 1.00 | 0.86 | 0.92 | all labeled pairs |
-| Logistic regression | 1.00 | 0.83 | 0.91 | held-out test split |
-| Gradient boosting | 1.00 | 1.00 | 1.00 | held-out test split |
+| Weighted baseline (recommend band) | 0.97 | 0.57 | — | all labeled pairs (unsupervised) |
+| Weighted baseline (review band) | 0.96 | 0.77 | — | all labeled pairs (unsupervised) |
+| **Logistic regression** | **0.962 ± 0.010** | **0.804 ± 0.178** | **0.867 ± 0.113** | entity-disjoint test fold, 5 seeds |
+| Gradient boosting | 0.769 ± 0.431 | 0.471 ± 0.375 | 0.547 ± 0.394 | entity-disjoint test fold, 5 seeds |
 
-**Caveats on these numbers (read before quoting):**
+Model recall is **conditional on candidate generation**: end-to-end recall ≈
+candidate-generation recall (0.95) × model recall on candidates.
 
-- The smoke profile yields a small positive class (~30 labeled duplicate pairs; the
-  held-out test split contains only ~6 positives), so recall estimates have wide
-  uncertainty. Larger-profile evaluation is scheduled for M20.
-- Baseline metrics are computed over *all* labeled pairs; ML metrics are on the
-  held-out test split. Method is comparable; denominators are not identical.
+### What changed vs. the earlier (retired) numbers
+
+The previous card reported gradient boosting at P=1.00/R=1.00. That was an artifact of
+(a) a split grouped on the first part ID only — not provably entity-disjoint — and
+(b) a test fold with only ~6 positives. Under a genuinely entity-disjoint split over a
+much larger labeled set:
+
+- **Logistic regression is the stable, recommended model**: tight precision
+  (0.962 ± 0.010) and the best mean F1.
+- **Gradient boosting is high-variance here** (recall 0.471 ± 0.375; one seed collapsed
+  to 0/0). It over/under-fits on the small per-fold positive counts and should not be
+  the headline model at this data scale.
+- The interpretable baseline and logistic regression are the trustworthy options; the
+  platform uses them accordingly and keeps a human in the loop regardless.
+
+**Caveats (read before quoting):**
+
+- Per-fold test positives still range from ~20 to ~140 across seeds, hence the wide
+  recall/F1 bands — the mean ± std *is* the honest summary; do not quote a single seed.
 - Duplicates are synthetic perturbations (casing, abbreviation, typos, transposition).
-  Real ERP duplicates include failure modes not modeled here (multilingual
-  descriptions, semantic synonyms, unit conversions).
+  Real ERP duplicates include failure modes not modeled here (multilingual descriptions,
+  semantic synonyms, unit conversions).
 
 ## Intended use and limits
 

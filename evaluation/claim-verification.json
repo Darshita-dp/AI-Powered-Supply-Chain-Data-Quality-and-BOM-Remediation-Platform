@@ -69,12 +69,12 @@
     },
     {
       "id": "er-ml-metrics",
-      "claim": "ML ER (gradient boosting) P=1.00/R=1.00 on held-out test split.",
-      "supporting": "evaluation/entity_resolution/ml_smoke.json (original)",
-      "validation_status": "superseded",
-      "date_validated": "2026-07-16",
+      "claim": "ML ER, leakage-safe: logistic regression P 0.962±0.010 / R 0.804±0.178 / F1 0.867±0.113; gradient boosting high-variance (R 0.471±0.375) and not recommended at this scale. Candidate-generation recall 0.95 over 409 labeled pairs.",
+      "supporting": "evaluation/entity_resolution/ml_eval.json; scripts/train_entity_resolution.py; tests/unit/test_ml_entity_resolution.py (entity-disjoint + connected-component + multi-seed tests); docs/model-card.md",
+      "validation_status": "measured",
+      "date_validated": "2026-07-17",
       "external_dependency": null,
-      "known_limitation": "RETIRED. The split grouped on the first part ID only, which does not guarantee entity-disjoint folds, so the metric may reflect leakage and rests on ~6 positives. H2 replaces the split with connected-component grouping, asserts disjoint entity sets, evaluates over multiple seeds, and re-reports with confidence intervals. Do not quote P=1.00/R=1.00."
+      "known_limitation": "Replaces the retired P=1.00/R=1.00 claim (that split was not provably entity-disjoint and rested on ~6 positives). Folds are now connected-component entity-disjoint with a runtime part-disjointness assertion; metrics are mean ± std over 5 split seeds. Per-fold test positives still range ~20-140, hence the wide recall band. Synthetic duplicates only."
     },
     {
       "id": "golden-record",

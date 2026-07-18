@@ -185,8 +185,8 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 
 | # | Checkpoint | Status |
 |---|------------|--------|
-| H1 | Reconcile documentation and status | 🔄 In progress |
-| H2 | Enforce entity-disjoint ML evaluation | ⬜ Not started |
+| H1 | Reconcile documentation and status | ✅ Complete |
+| H2 | Enforce entity-disjoint ML evaluation | ✅ Complete |
 | H3 | Strengthen defect-detection evaluation | ⬜ Not started |
 | H4 | True dbt end-to-end integration test | ⬜ Not started |
 | H5 | Complete/modernize the Snowflake execution path | ⬜ Not started |
@@ -198,8 +198,19 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 
 ## In-progress work
 
-- H1 — reconciling stale/contradictory documentation and building
-  `evaluation/claim-verification.json`.
+- H3 next — strengthen defect-detection evaluation (clean baseline + all 25 types +
+  precision/recall/F1 by subsystem).
+
+## Hardening results so far
+
+- **H1** — reconciled docs; `evaluation/claim-verification.json` (21 claims with
+  evidence + validation status). Retired the ML P=1.00/R=1.00 headline and the
+  "verified live"/dbt-E2E overclaims.
+- **H2** — entity-disjoint ML evaluation (connected-component grouping, runtime
+  part-disjointness assertion, 5-seed dispersion). Honest numbers over 409 labeled
+  pairs: candidate-gen recall 0.95; **LR P 0.962±0.010 / R 0.804±0.178 / F1 0.867±0.113**
+  (recommended); GB P 0.769±0.431 / R 0.471±0.375 (high-variance). See
+  `evaluation/entity_resolution/ml_eval.json` and `docs/model-card.md`.
 
 ## Last successful commit
 
