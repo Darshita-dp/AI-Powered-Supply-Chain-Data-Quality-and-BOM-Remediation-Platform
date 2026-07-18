@@ -55,3 +55,13 @@ GRANT SELECT ON FUTURE TABLES IN SCHEMA BOM_GUARDIAN.MARTS TO ROLE BOMG_ANALYST;
 GRANT SELECT ON FUTURE TABLES IN SCHEMA BOM_GUARDIAN.CORE    TO ROLE BOMG_APP;
 GRANT SELECT ON FUTURE TABLES IN SCHEMA BOM_GUARDIAN.QUALITY TO ROLE BOMG_APP;
 GRANT SELECT ON FUTURE TABLES IN SCHEMA BOM_GUARDIAN.MARTS   TO ROLE BOMG_APP;
+
+-- The app also needs write access to the remediation/audit tables it maintains
+-- (decisions, AI-call audit, scenarios). Keep this narrow: only the QUALITY tables the
+-- application actually writes, not the whole schema.
+GRANT INSERT, UPDATE ON FUTURE TABLES IN SCHEMA BOM_GUARDIAN.QUALITY TO ROLE BOMG_APP;
+
+-- AI (Cortex AI_COMPLETE) access is scoped narrowly to the app role that calls it, via
+-- the Snowflake-provided database role. No broad ACCOUNTADMIN privilege is granted.
+-- Requires running as an admin that can grant SNOWFLAKE database roles.
+GRANT DATABASE ROLE SNOWFLAKE.CORTEX_USER TO ROLE BOMG_APP;

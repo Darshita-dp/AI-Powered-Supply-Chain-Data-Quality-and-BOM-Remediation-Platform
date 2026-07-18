@@ -40,6 +40,13 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   loop against the dbt-built warehouse. Renamed the fast service-level test accordingly
   and added a fixture-drift guard so `TRANSFORM_SQL` cannot silently diverge from the dbt
   models.
+- H5: completed/modernized the Snowflake execution path. Added a backend-agnostic
+  `Warehouse` protocol and a `SnowflakeWarehouse` adapter (env-config, parameterized
+  queries, `write_pandas` ingestion, existence/validation checks); moved the AI provider
+  from legacy `SNOWFLAKE.CORTEX.COMPLETE` to `AI_COMPLETE` with a response schema, JSON
+  validation, error handling, configurable model and latency capture; added
+  `scripts/deploy_snowflake.py` (dry-run default), a scoped `SNOWFLAKE.CORTEX_USER`
+  grant, and 12 fake-connection tests. Still never run against a live account.
 
 ### Added
 - M0: repository governance, architecture docs, ADR log, ERD, DQ rule taxonomy,

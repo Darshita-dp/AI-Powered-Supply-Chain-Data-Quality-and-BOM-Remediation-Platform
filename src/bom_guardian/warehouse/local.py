@@ -14,16 +14,9 @@ import duckdb
 import pandas as pd
 
 from bom_guardian.observability import get_logger
+from bom_guardian.warehouse.base import SCHEMAS
 
-SCHEMAS: list[str] = [
-    "raw",
-    "staging",
-    "core",
-    "quality",
-    "marts",
-    "ground_truth",
-    "ops",
-]
+__all__ = ["SCHEMAS", "LocalWarehouse"]
 
 
 class LocalWarehouse:
@@ -63,13 +56,13 @@ class LocalWarehouse:
         self._log.info("table_loaded", schema=schema, table=table, rows=len(df))
         return n
 
-    def query(self, sql: str) -> pd.DataFrame:
+    def query(self, sql: str, params: list | tuple | None = None) -> pd.DataFrame:
         with self._lock:
-            return self.conn.execute(sql).df()
+            return self.conn.execute(sql, list(params) if params else None).df()
 
-    def execute(self, sql: str) -> None:
+    def execute(self, sql: str, params: list | tuple | None = None) -> None:
         with self._lock:
-            self.conn.execute(sql)
+            self.conn.execute(sql, list(params) if params else None)
 
     def count(self, schema: str, table: str) -> int:
         with self._lock:
@@ -83,6 +76,9 @@ class LocalWarehouse:
                 [schema],
             ).fetchall()
         return sorted(r[0] for r in rows)
+
+    def table_exists(self, schema: str, table: str) -> bool:
+        return table in self.tables(schema)
 
     def validate(self) -> dict[str, list[str]]:
         """Return schema -> tables mapping; raises if a layer schema is missing."""

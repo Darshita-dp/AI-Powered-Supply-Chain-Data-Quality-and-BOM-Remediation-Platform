@@ -27,11 +27,11 @@ end, reproducibly, on a laptop.
 | Quality Impact Twin — blast radius + counterfactual simulation | Implemented and tested (baseline immutability asserted) |
 | Document intelligence with prompt-injection controls | Implemented and tested |
 | Governed AI remediation engine (mock provider) | Implemented and tested |
-| Snowflake Cortex AI provider | Implemented locally — **external execution pending (no credentials)** |
+| Snowflake warehouse adapter + Cortex `AI_COMPLETE` provider | Implemented locally, fake-connection tested — **external Snowflake execution pending (no credentials)** |
 | FastAPI service (25 endpoints) | Implemented and tested |
 | React remediation workbench (8 surfaces, live API data) | Implemented and tested (5 vitest tests, typecheck/build clean); browser rendering exercised via the accessibility tree — automated screenshots pending (H9) |
 | Data Steward Copilot (read-only, cited) | Implemented and tested |
-| Snowflake warehouse scripts | Authored — **deployment pending (no credentials)** |
+| Snowflake warehouse scripts + adapter + deploy path | Implemented locally (`SnowflakeWarehouse`, `scripts/deploy_snowflake.py`) — **deployment pending (no credentials)** |
 | Power BI package (marts, model spec, DAX, theme, pages) | Source package complete — **Desktop validation pending; no `.pbix` exists** |
 | CI (GitHub Actions), secret scanning, threat model | Implemented (see Actions run history for live status) |
 | End-to-end test + published evaluation artifacts | Implemented and measured |

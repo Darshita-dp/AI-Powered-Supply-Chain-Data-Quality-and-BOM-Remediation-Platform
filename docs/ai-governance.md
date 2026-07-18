@@ -32,7 +32,7 @@
 | Provider | Status |
 |---|---|
 | `DeterministicMockAIProvider` | Implemented and tested — default for all local runs and CI |
-| `SnowflakeCortexAIProvider` | Implemented; external validation pending (no Snowflake credentials in this environment); raises a clear error rather than pretending |
+| `SnowflakeCortexAIProvider` | Implemented locally on Cortex **`AI_COMPLETE`** (the legacy `SNOWFLAKE.CORTEX.COMPLETE` was replaced) with a response schema, JSON validation, error handling, env-configurable model, and latency capture; fake-connection tested. External validation pending (no Snowflake credentials); raises a clear error rather than pretending |
 | Anthropic / other | Not implemented; the interface allows adding one via configuration only |
 
 ## Feedback loop policy

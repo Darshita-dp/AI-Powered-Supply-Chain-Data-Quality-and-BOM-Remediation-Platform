@@ -189,7 +189,7 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 | H2 | Enforce entity-disjoint ML evaluation | ✅ Complete |
 | H3 | Strengthen defect-detection evaluation | ✅ Complete |
 | H4 | True dbt end-to-end integration test | ✅ Complete |
-| H5 | Complete/modernize the Snowflake execution path | ⬜ Not started |
+| H5 | Complete/modernize the Snowflake execution path | ✅ Complete (implemented locally; external execution pending) |
 | H6 | Add a configurable real AI provider | ⬜ Not started |
 | H7 | Role-based remediation authorization | ⬜ Not started |
 | H8 | Verify GitHub Actions | ⬜ Not started |
@@ -198,8 +198,8 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 
 ## In-progress work
 
-- H5 next — complete/modernize the Snowflake execution path (warehouse adapter,
-  loading path, `AI_COMPLETE`, mocked tests; status stays external-pending).
+- H6 next — add a configurable real AI provider (Anthropic) with schema, grounding,
+  retry/timeout, audit, and a validation script; tests skip cleanly without a key.
 
 ## Hardening results so far
 
@@ -229,6 +229,15 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
   and documented that it uses `TRANSFORM_SQL`. Added a fixture-drift guard (dbt
   `dim_part` columns must match the `TRANSFORM_SQL` fixture) and documented the sync
   requirement in `src/bom_guardian/testing.py`.
+- **H5** — completed/modernized the Snowflake path: a backend-agnostic `Warehouse`
+  Protocol (`warehouse/base.py`), a `SnowflakeWarehouse` adapter (env-based config, no
+  embedded creds, parameterized queries, `write_pandas` ingestion, table-existence +
+  schema validation), the AI provider moved from legacy `SNOWFLAKE.CORTEX.COMPLETE` to
+  **`AI_COMPLETE`** with a response schema, JSON validation, error handling,
+  env-configurable model and latency capture, a `scripts/deploy_snowflake.py`
+  (dry-run default; real execution needs credentials), scoped `SNOWFLAKE.CORTEX_USER`
+  AI grant, and 12 fake-connection tests. **Still never executed against a live
+  account — external execution pending.**
 
 ## Last successful commit
 
