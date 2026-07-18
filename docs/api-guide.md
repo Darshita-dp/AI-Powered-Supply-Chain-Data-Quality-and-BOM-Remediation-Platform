@@ -4,6 +4,23 @@ Base URL: `http://127.0.0.1:8000/api/v1` · Interactive docs: `/api/v1/docs` (Op
 All responses JSON; errors are structured (`error`, `detail`, `correlation_id`) with no
 stack traces; every response carries `X-Correlation-ID`.
 
+## Authorization (demonstration)
+
+Every `/api/v1` business endpoint (parts, issues, bom, scenarios, analytics, copilot)
+requires an `Authorization: Bearer <token>` header; `/health`, `/readiness`, and
+`/metrics` are open. This is **demonstration auth**, not enterprise SSO — three static
+demo tokens map to the three roles (override via the `BOMG_DEMO_USERS` env var):
+
+| Token | Role | Can do |
+|---|---|---|
+| `demo-analyst-token` | analyst | read parts/issues/analytics/bom/copilot, generate draft proposals, run scenarios |
+| `demo-steward-token` | steward | analyst + **approve / reject / request-evidence** |
+| `demo-admin-token` | admin | steward + (reserved) configuration |
+
+Missing or unknown token → 401; authenticated but insufficient role → 403. The reviewer
+recorded on a decision is the **authenticated principal**, never a value in the request
+body. Example: `curl -H "Authorization: Bearer demo-steward-token" .../issues`.
+
 ## Endpoints (25)
 
 ### Platform
@@ -26,7 +43,7 @@ stack traces; every response carries `X-Correlation-ID`.
 |---|---|---|
 | GET | /issues/{id} · /evidence · /history | detail, failed values, decision audit |
 | POST | /issues/{id}/recommendations | governed AI proposal (mock provider by default); never mutates |
-| POST | /issues/{id}/approve · /reject · /request-evidence | body `{reviewer, reason}`; lifecycle-guarded (409 on invalid transition); audited |
+| POST | /issues/{id}/approve · /reject · /request-evidence | **requires steward/admin**; body `{reason}` (actor taken from the auth principal); lifecycle-guarded (409 on invalid transition); audited |
 
 ### BOM graph
 | GET | /bom/{id}/graph?depth=1..10 | nodes (with lifecycle + cycle flags), edges, cycles |

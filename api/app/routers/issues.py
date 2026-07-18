@@ -2,13 +2,19 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from api.app.auth import Principal, Role, get_principal, require_role
 from api.app.dependencies import get_remediation_engine, get_warehouse
 from api.app.schemas import DecisionIn, EvidenceOut, IssueOut, Page
 from api.app.services import IssueService
 from bom_guardian.ai import RemediationEngine
 from bom_guardian.warehouse import LocalWarehouse
 
-router = APIRouter(prefix="/issues", tags=["issues"])
+router = APIRouter(
+    prefix="/issues", tags=["issues"], dependencies=[Depends(get_principal)]
+)
+
+# Decisions that transition an issue require a data steward or administrator.
+_require_steward = require_role(Role.STEWARD)
 
 _SORTABLE = {"issue_id", "rule_id", "severity", "domain", "status", "detected_at"}
 
@@ -91,7 +97,10 @@ def issue_history(issue_id: str, wh: LocalWarehouse = Depends(get_warehouse)) ->
 def generate_recommendation(
     issue_id: str,
     engine: RemediationEngine = Depends(get_remediation_engine),
+    _principal: Principal = Depends(get_principal),
 ) -> dict:
+    # Any authenticated role may generate a draft proposal (read-only: the
+    # engine never mutates data and the proposal cannot approve itself).
     try:
         bundle = engine.gather_evidence(issue_id)
     except ValueError as exc:
@@ -101,17 +110,30 @@ def generate_recommendation(
 
 
 @router.post("/{issue_id}/approve")
-def approve(issue_id: str, body: DecisionIn, wh: LocalWarehouse = Depends(get_warehouse)) -> dict:
-    return IssueService(wh).decide(issue_id, "APPROVE", body.reviewer, body.reason)
+def approve(
+    issue_id: str,
+    body: DecisionIn,
+    wh: LocalWarehouse = Depends(get_warehouse),
+    principal: Principal = Depends(_require_steward),
+) -> dict:
+    return IssueService(wh).decide(issue_id, "APPROVE", principal.username, body.reason)
 
 
 @router.post("/{issue_id}/reject")
-def reject(issue_id: str, body: DecisionIn, wh: LocalWarehouse = Depends(get_warehouse)) -> dict:
-    return IssueService(wh).decide(issue_id, "REJECT", body.reviewer, body.reason)
+def reject(
+    issue_id: str,
+    body: DecisionIn,
+    wh: LocalWarehouse = Depends(get_warehouse),
+    principal: Principal = Depends(_require_steward),
+) -> dict:
+    return IssueService(wh).decide(issue_id, "REJECT", principal.username, body.reason)
 
 
 @router.post("/{issue_id}/request-evidence")
 def request_evidence(
-    issue_id: str, body: DecisionIn, wh: LocalWarehouse = Depends(get_warehouse)
+    issue_id: str,
+    body: DecisionIn,
+    wh: LocalWarehouse = Depends(get_warehouse),
+    principal: Principal = Depends(_require_steward),
 ) -> dict:
-    return IssueService(wh).decide(issue_id, "REQUEST_EVIDENCE", body.reviewer, body.reason)
+    return IssueService(wh).decide(issue_id, "REQUEST_EVIDENCE", principal.username, body.reason)

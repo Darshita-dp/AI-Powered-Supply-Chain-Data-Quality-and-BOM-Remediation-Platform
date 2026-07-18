@@ -54,6 +54,17 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   a provider factory, `scripts/validate_real_ai_provider.py` (skips without a key — no
   fabricated artifact), and 7 fake-client tests + a skipped-without-key integration test.
   Never called against the real API — external validation pending.
+- H7: added role-based authorization to the API (`api/app/auth.py`). An
+  analyst/steward/admin role ladder; `get_principal` resolves a Bearer token to a
+  principal (401 on missing/unknown) and is enforced at the router level on every
+  business route; approve/reject/request-evidence additionally require a steward or admin
+  (`require_role`, 403 for analysts). The reviewer recorded on a decision is now the
+  authenticated principal — the `reviewer` field was removed from the request body so an
+  actor cannot be spoofed. Demonstration auth (static demo tokens, overridable via
+  `BOMG_DEMO_USERS`), clearly labeled — not an enterprise IdP. The frontend signs in as a
+  steward via a demo token (`VITE_DEMO_TOKEN`). Added 7 unit tests plus an API-level
+  enforcement test (401/401/403, analyst-read allowed, issue never transitioned by denied
+  attempts).
 
 ### Added
 - M0: repository governance, architecture docs, ADR log, ERD, DQ rule taxonomy,

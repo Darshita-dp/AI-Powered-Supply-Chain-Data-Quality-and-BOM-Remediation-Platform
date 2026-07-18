@@ -191,15 +191,16 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 | H4 | True dbt end-to-end integration test | ✅ Complete |
 | H5 | Complete/modernize the Snowflake execution path | ✅ Complete (implemented locally; external execution pending) |
 | H6 | Add a configurable real AI provider | ✅ Complete (implemented + fake-client tested; external validation pending) |
-| H7 | Role-based remediation authorization | ⬜ Not started |
+| H7 | Role-based remediation authorization | ✅ Complete (demo auth; steward-gated decisions, authenticated actor recorded) |
 | H8 | Verify GitHub Actions | ⬜ Not started |
 | H9 | Verified application screenshots | ⬜ Not started |
 | H10 | Final forensic audit | ⬜ Not started |
 
 ## In-progress work
 
-- H7 next — role-based remediation authorization (analyst/steward/admin; approve/reject
-  require steward+; authenticated actor recorded, not trusted from the body).
+- H8 next — verify the GitHub Actions workflows actually run green on github.com (not
+  just locally); add a status badge only after a confirmed successful run and record the
+  run URL here.
 
 ## Hardening results so far
 
@@ -246,6 +247,18 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
   (skips cleanly / exit 2 without a key — no fabricated artifact), and 7 fake-client
   tests + 1 integration test that skips without `ANTHROPIC_API_KEY`. **Never called
   against the real Anthropic API — external validation pending.**
+- **H7** — added role-based authorization to the API (`api/app/auth.py`): an
+  analyst/steward/admin role ladder, `get_principal` (Bearer-token → principal, 401 on
+  missing/unknown token) applied at the router level to every business route, and
+  `require_role(STEWARD)` on the approve / reject / request-evidence endpoints (403 for
+  analysts). The recorded reviewer is now the **authenticated principal** — the
+  `reviewer` field was removed from the request body, so a caller cannot spoof an actor.
+  This is **demonstration auth** (static demo bearer tokens, overridable via
+  `BOMG_DEMO_USERS`), clearly labeled as such and not an enterprise IdP integration; the
+  frontend signs in as a steward via a demo token (`VITE_DEMO_TOKEN`). Added
+  `tests/unit/test_authorization.py` (7 unit tests) and an API-level
+  `test_authorization_enforcement` (401 unauthenticated, 401 unknown token, 403 analyst,
+  200 analyst-read, issue never transitioned by denied attempts).
 
 ## Last successful commit
 
@@ -254,8 +267,8 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 
 ## Tests currently passing
 
-- Python: 136 tests — unit + integration + data-quality + API + E2E (`pytest`),
-  ruff + mypy clean (measured this session; see `git log` for the commit).
+- Python: 173 passed, 1 skipped — unit + integration + data-quality + API + E2E
+  (`pytest`), ruff + mypy (`mypy src`) clean (measured this session; see `git log`).
 - Frontend: 5 vitest tests, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI: workflows authored; **local equivalents of every job pass** (ruff, mypy, pytest,
   frontend lint/typecheck/test/build, dbt smoke pipeline). **GitHub Actions run status
@@ -283,16 +296,17 @@ HTTPS).
 
 ## Next exact action
 
-Finish H1 (doc reconciliation + claim inventory), commit
-`docs: reconcile project status and implementation claims`, then proceed to H2
-(entity-disjoint ML evaluation).
+Proceed to H8 — inspect the GitHub Actions run history, fix any failing job, and confirm
+a green run on github.com before adding a status badge or claiming CI passes; record the
+run URL here.
 
 ## Honest completion percentage
 
-**~90%** (revised down during hardening). M0–M21 are built and locally tested, but the
-hardening pass has identified real gaps to close: ML-evaluation leakage (H2), incomplete
-DQ precision/recall (H3), a shortcut in the E2E test that bypasses the real dbt project
-(H4), an incomplete Snowflake execution path (H5), no executed real AI provider (H6),
-and no API authorization (H7). Percentage will be re-derived honestly in H10 after these
-are addressed; external validation (live Snowflake, Power BI Desktop, confirmed CI,
-screenshots) remains outstanding.
+**~92%** (revised during hardening). M0–M21 plus H1–H7 are built and locally tested:
+ML-evaluation leakage (H2), DQ precision/recall (H3), the real-dbt E2E test (H4), the
+Snowflake path (H5), the real AI provider (H6), and role-based authorization (H7) are all
+addressed with tests. Remaining before any "complete" claim: confirmed green GitHub
+Actions (H8), verified application screenshots (H9), the final forensic audit (H10), and
+the external validations that need credentials/resources (live Snowflake deployment,
+Power BI Desktop `.pbix`, a real AI-provider execution). Percentage will be re-derived
+honestly in H10.

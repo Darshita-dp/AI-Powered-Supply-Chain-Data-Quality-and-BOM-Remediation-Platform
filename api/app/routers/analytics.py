@@ -3,11 +3,14 @@ from __future__ import annotations
 import pandas as pd
 from fastapi import APIRouter, Depends
 
+from api.app.auth import get_principal
 from api.app.dependencies import get_warehouse
 from bom_guardian.quality import QualityScorer
 from bom_guardian.warehouse import LocalWarehouse
 
-router = APIRouter(prefix="/analytics", tags=["analytics"])
+router = APIRouter(
+    prefix="/analytics", tags=["analytics"], dependencies=[Depends(get_principal)]
+)
 
 
 @router.get("/quality")

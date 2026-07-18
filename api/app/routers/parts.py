@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from api.app.auth import get_principal
 from api.app.dependencies import get_warehouse
 from api.app.schemas import Page, PartOut
 from bom_guardian.bom_graph import BomGraph
@@ -10,7 +11,7 @@ from bom_guardian.golden_record import GoldenRecordBuilder
 from bom_guardian.impact_twin import ImpactTwin
 from bom_guardian.warehouse import LocalWarehouse
 
-router = APIRouter(prefix="/parts", tags=["parts"])
+router = APIRouter(prefix="/parts", tags=["parts"], dependencies=[Depends(get_principal)])
 
 _SORTABLE = {"part_key", "description", "category", "lifecycle_status", "standard_cost"}
 

@@ -3,11 +3,14 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
+from api.app.auth import get_principal
 from api.app.dependencies import get_warehouse
 from bom_guardian.copilot import Copilot
 from bom_guardian.warehouse import LocalWarehouse
 
-router = APIRouter(prefix="/copilot", tags=["copilot"])
+router = APIRouter(
+    prefix="/copilot", tags=["copilot"], dependencies=[Depends(get_principal)]
+)
 
 
 class CopilotQuery(BaseModel):

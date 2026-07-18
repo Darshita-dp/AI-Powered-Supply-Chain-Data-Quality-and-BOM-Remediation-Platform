@@ -30,6 +30,7 @@ end, reproducibly, on a laptop.
 | Snowflake warehouse adapter + Cortex `AI_COMPLETE` provider | Implemented locally, fake-connection tested — **external Snowflake execution pending (no credentials)** |
 | Configurable real AI provider (Anthropic Claude) | Implemented, fake-client tested — **external validation pending (`scripts/validate_real_ai_provider.py` needs a key)** |
 | FastAPI service (25 endpoints) | Implemented and tested |
+| Role-based authorization (analyst/steward/admin; steward-gated decisions; authenticated actor recorded) | Implemented and tested — **demonstration auth (static demo tokens), not enterprise SSO/OIDC** |
 | React remediation workbench (8 surfaces, live API data) | Implemented and tested (5 vitest tests, typecheck/build clean); browser rendering exercised via the accessibility tree — automated screenshots pending (H9) |
 | Data Steward Copilot (read-only, cited) | Implemented and tested |
 | Snowflake warehouse scripts + adapter + deploy path | Implemented locally (`SnowflakeWarehouse`, `scripts/deploy_snowflake.py`) — **deployment pending (no credentials)** |
@@ -48,7 +49,7 @@ end, reproducibly, on a laptop.
 | Generated records — smoke / demo / full | 13,882 / 247,881 / **1,699,010** | [`evaluation/performance/profile_counts.json`](evaluation/performance/profile_counts.json) |
 | 49 rules over demo profile (248k records) | 0.9 s | [`evaluation/performance/benchmarks_demo.json`](evaluation/performance/benchmarks_demo.json) |
 | API list endpoints | ~10 ms | same |
-| Automated tests | **143 Python + 5 frontend, all passing** (incl. a true dbt-pipeline E2E) | `pytest`, `npm test` |
+| Automated tests | **173 Python (1 skipped) + 5 frontend, all passing** (incl. a true dbt-pipeline E2E and authorization enforcement) | `pytest`, `npm test` |
 
 Full-profile numbers cover generation only; downstream stages ran at smoke/demo scale
 (see [docs/limitations.md](docs/limitations.md)).
@@ -108,7 +109,7 @@ python scripts/run_local_pipeline.py                 # generate → inject → i
 uvicorn api.app.main:app --port 8000                 # API (terminal 1)
 cd frontend && npm install && npm run dev            # UI  (terminal 2) → http://localhost:5173
 
-pytest                                                # 136 tests
+pytest                                                # 173 tests (1 skipped)
 ```
 
 Evaluation artifacts regenerate with `scripts/evaluate_detection.py`,

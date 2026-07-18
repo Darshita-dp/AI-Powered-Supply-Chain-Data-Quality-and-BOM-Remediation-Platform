@@ -69,12 +69,12 @@
     },
     {
       "id": "er-ml-metrics",
-      "claim": "ML ER, leakage-safe: logistic regression P 0.962±0.010 / R 0.804±0.178 / F1 0.867±0.113; gradient boosting high-variance (R 0.471±0.375) and not recommended at this scale. Candidate-generation recall 0.95 over 409 labeled pairs.",
+      "claim": "ML ER, leakage-safe: logistic regression P 0.962\u00b10.010 / R 0.804\u00b10.178 / F1 0.867\u00b10.113; gradient boosting high-variance (R 0.471\u00b10.375) and not recommended at this scale. Candidate-generation recall 0.95 over 409 labeled pairs.",
       "supporting": "evaluation/entity_resolution/ml_eval.json; scripts/train_entity_resolution.py; tests/unit/test_ml_entity_resolution.py (entity-disjoint + connected-component + multi-seed tests); docs/model-card.md",
       "validation_status": "measured",
       "date_validated": "2026-07-17",
       "external_dependency": null,
-      "known_limitation": "Replaces the retired P=1.00/R=1.00 claim (that split was not provably entity-disjoint and rested on ~6 positives). Folds are now connected-component entity-disjoint with a runtime part-disjointness assertion; metrics are mean ± std over 5 split seeds. Per-fold test positives still range ~20-140, hence the wide recall band. Synthetic duplicates only."
+      "known_limitation": "Replaces the retired P=1.00/R=1.00 claim (that split was not provably entity-disjoint and rested on ~6 positives). Folds are now connected-component entity-disjoint with a runtime part-disjointness assertion; metrics are mean \u00b1 std over 5 split seeds. Per-fold test positives still range ~20-140, hence the wide recall band. Synthetic duplicates only."
     },
     {
       "id": "golden-record",
@@ -146,7 +146,7 @@
       "validation_status": "verified_local",
       "date_validated": "2026-07-16",
       "external_dependency": null,
-      "known_limitation": "No authentication/authorization — reviewer identity is self-declared in the request body. H7 adds role-based authorization."
+      "known_limitation": "No authentication/authorization \u2014 reviewer identity is self-declared in the request body. H7 adds role-based authorization."
     },
     {
       "id": "frontend",
@@ -201,6 +201,15 @@
       "date_validated": null,
       "external_dependency": "headless browser screenshot capability",
       "known_limitation": "None exist. Automated capture timed out in the build environment; H9 adds a Playwright capture script and either produces real screenshots or leaves this explicitly pending."
+    },
+    {
+      "id": "role-based-authorization",
+      "claim": "Role-based API authorization: analyst/steward/admin ladder; approve/reject/request-evidence require steward+; the recorded reviewer is the authenticated principal, not trusted from the request body.",
+      "supporting": "api/app/auth.py (Role, get_principal, require_role); router-level auth on parts/issues/bom/scenarios/analytics/copilot; api/app/routers/issues.py (steward-gated decisions, principal.username recorded); tests/unit/test_authorization.py (7 tests); api/tests/test_api.py::test_authorization_enforcement (401/401/403, analyst read allowed, no transition on denial)",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-17",
+      "external_dependency": null,
+      "known_limitation": "DEMONSTRATION auth: identities come from static demo bearer tokens (overridable via BOMG_DEMO_USERS), not an SSO/OIDC IdP; no session management, token expiry, or rate limiting. The authorization logic (role checks, steward-gated decisions, authenticated-actor recording) is production-shaped; the credential source is not."
     }
   ]
 }

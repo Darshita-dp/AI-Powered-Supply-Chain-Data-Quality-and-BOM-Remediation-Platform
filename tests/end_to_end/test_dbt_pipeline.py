@@ -134,7 +134,9 @@ def test_real_dbt_pipeline_end_to_end(tmp_path) -> None:  # type: ignore[no-unty
         DeterministicMockAIProvider(), warehouse=api_wh
     )
     try:
-        with TestClient(app) as client:
+        with TestClient(
+            app, headers={"Authorization": "Bearer demo-steward-token"}
+        ) as client:
             assert client.get("/api/v1/readiness").status_code == 200
             issue_id = api_wh.query(
                 "SELECT issue_id FROM quality.dq_issues WHERE status = 'DETECTED' LIMIT 1"
@@ -145,7 +147,7 @@ def test_real_dbt_pipeline_end_to_end(tmp_path) -> None:  # type: ignore[no-unty
 
             approved = client.post(
                 f"/api/v1/issues/{issue_id}/approve",
-                json={"reviewer": "dbt-e2e", "reason": "verified through real dbt pipeline"},
+                json={"reason": "verified through real dbt pipeline"},
             )
             assert approved.status_code == 200 and approved.json()["status"] == "APPROVED"
 
@@ -155,7 +157,7 @@ def test_real_dbt_pipeline_end_to_end(tmp_path) -> None:  # type: ignore[no-unty
 
             # 16. audit history
             history = client.get(f"/api/v1/issues/{issue_id}/history").json()
-            assert len(history) == 1 and history[0]["reviewer"] == "dbt-e2e"
+            assert len(history) == 1 and history[0]["reviewer"] == "demo.steward"
     finally:
         app.dependency_overrides.clear()
         api_wh.close()

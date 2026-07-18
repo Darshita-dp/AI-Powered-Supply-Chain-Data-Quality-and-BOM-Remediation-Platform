@@ -9,6 +9,7 @@
 | Restricted CORS (explicit origin list, GET/POST only) | `api/app/main.py` |
 | Request validation (Pydantic bodies, bounded pagination, sort-column allowlists) | `api/app/routers/*` |
 | Structured errors without stack traces + correlation IDs | `api/app/main.py` |
+| Role-based authorization (analyst/steward/admin); decisions require steward+; authenticated actor recorded, not trusted from the body — **demonstration auth**, not enterprise IdP | `api/app/auth.py` |
 | AI providers cannot write; proposals schema-validated + grounded; mandatory human review | `src/bom_guardian/ai/` |
 | AI call budget/timeout settings | `settings.py` (`ai_call_budget`, `ai_timeout_seconds`) |
 | Copilot: allowlisted parameterized SELECT tools only; mutation refusal | `src/bom_guardian/copilot/` |
@@ -24,7 +25,7 @@
 | 1 | Incorrect entity consolidation (wrong merge) | Precision-favoring thresholds, abstain band, no auto-merge, human approval, scenario preview, reversible field lineage | Reviewer error remains possible; feedback loop surfaces override rates |
 | 2 | Hallucinated AI explanations | Grounding validation rejects evidence refs not in the bundle; schema validation; deterministic mock in tests | Live-provider phrasing may still mislead; explanation limited to evidence text |
 | 3 | Prompt injection via supplier documents | Deterministic extraction first; instruction-pattern flagging; delimited untrusted content; schema-constrained AI output; field validation | Novel injection phrasings may evade the pattern list; flagged docs go to review |
-| 4 | Unauthorized remediation approval | Only the human decision endpoint mutates status; AI has no approve action in its schema; transitions guarded; every decision audited | No authn in the portfolio build — add SSO before any real deployment |
+| 4 | Unauthorized remediation approval | Approve/reject/request-evidence require a steward or admin role (`require_role`); the recorded actor is the authenticated principal, not a body-supplied name; AI has no approve action in its schema; transitions guarded; every decision audited | Authentication is **demonstration-grade** (static demo bearer tokens); a real deployment must swap in SSO/OIDC identities — the authorization logic stays |
 | 5 | Exposure of supplier information | All data synthetic; no PII generated; logs exclude document bodies | N/A for synthetic data; real deployments need data classification |
 | 6 | Data poisoning through feedback | No automatic retraining; feedback only reported | — |
 | 7 | Model drift | Versioned models + prompt versions audited per call; evaluation reports reproducible | No scheduled re-evaluation job yet |
@@ -34,9 +35,13 @@
 
 ## Known gaps (honest)
 
-- **No authentication/authorization on the API or UI** — this is a single-user local
-  portfolio build. Reviewer identity is self-declared. Production would require SSO,
-  role checks on decision endpoints, and rate limiting.
+- **Authentication is demonstration-grade, not production IAM.** The API enforces a real
+  role ladder (analyst/steward/admin) and gates decision endpoints on steward+, recording
+  the authenticated principal rather than a self-declared name. But identities come from
+  static demo bearer tokens (`api/app/auth.py`, overridable via `BOMG_DEMO_USERS`), not an
+  SSO/OIDC provider, and there is no session management, token expiry, or rate limiting.
+  A production deployment must replace the token store with a corporate IdP; the
+  authorization checks themselves carry over unchanged.
 - SQL identifiers are quoted via escaping helpers rather than fully parameterized
   bindings in some warehouse paths (DuckDB local trust boundary); Snowflake deployment
   should switch to bound parameters throughout.

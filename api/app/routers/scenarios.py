@@ -4,13 +4,16 @@ import json
 
 from fastapi import APIRouter, Depends, HTTPException
 
+from api.app.auth import get_principal
 from api.app.dependencies import get_warehouse
 from api.app.routers.parts import _build_twin
 from api.app.schemas import ComponentReplacementIn, FieldCorrectionIn, MergeScenarioIn
 from bom_guardian.impact_twin import ScenarioResult, ScenarioSimulator
 from bom_guardian.warehouse import LocalWarehouse
 
-router = APIRouter(prefix="/scenarios", tags=["scenarios"])
+router = APIRouter(
+    prefix="/scenarios", tags=["scenarios"], dependencies=[Depends(get_principal)]
+)
 
 
 def _simulator(wh: LocalWarehouse) -> ScenarioSimulator:

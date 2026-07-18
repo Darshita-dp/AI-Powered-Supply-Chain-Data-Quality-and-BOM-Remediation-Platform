@@ -48,7 +48,8 @@ class EvidenceOut(BaseModel):
 
 
 class DecisionIn(BaseModel):
-    reviewer: str = Field(min_length=1, max_length=120)
+    # No reviewer field: the actor is taken from the authenticated principal,
+    # never trusted from the request body.
     reason: str = Field(min_length=1, max_length=2000)
 
 

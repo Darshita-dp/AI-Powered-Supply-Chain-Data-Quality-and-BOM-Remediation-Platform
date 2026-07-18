@@ -83,7 +83,9 @@ def test_service_level_end_to_end(tmp_path_factory) -> None:  # type: ignore[no-
             DeterministicMockAIProvider(), warehouse=wh
         )
         baseline_parts = wh.query("SELECT * FROM core.dim_part ORDER BY part_key")
-        with TestClient(app) as client:
+        with TestClient(
+            app, headers={"Authorization": "Bearer demo-steward-token"}
+        ) as client:
             # 9: mock recommendation
             rec = client.post(f"/api/v1/issues/{issue['issue_id']}/recommendations")
             assert rec.status_code == 200
@@ -97,7 +99,7 @@ def test_service_level_end_to_end(tmp_path_factory) -> None:  # type: ignore[no-
             # 11: reviewer approval
             approved = client.post(
                 f"/api/v1/issues/{issue['issue_id']}/approve",
-                json={"reviewer": "e2e-reviewer", "reason": "verified end to end"},
+                json={"reason": "verified end to end"},
             )
             assert approved.status_code == 200
             assert approved.json()["status"] == "APPROVED"
@@ -109,7 +111,7 @@ def test_service_level_end_to_end(tmp_path_factory) -> None:  # type: ignore[no-
             # 12: audit history
             history = client.get(f"/api/v1/issues/{issue['issue_id']}/history").json()
             assert len(history) == 1
-            assert history[0]["reviewer"] == "e2e-reviewer"
+            assert history[0]["reviewer"] == "demo.steward"
             assert history[0]["before_status"] == "DETECTED"
             assert history[0]["after_status"] == "APPROVED"
 

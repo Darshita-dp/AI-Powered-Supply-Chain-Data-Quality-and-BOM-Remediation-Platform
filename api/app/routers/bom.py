@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from api.app.auth import get_principal
 from api.app.dependencies import get_warehouse
 from bom_guardian.bom_graph import BomGraph
 from bom_guardian.warehouse import LocalWarehouse
 
-router = APIRouter(prefix="/bom", tags=["bom"])
+router = APIRouter(prefix="/bom", tags=["bom"], dependencies=[Depends(get_principal)])
 
 
 def _graph(wh: LocalWarehouse) -> BomGraph:

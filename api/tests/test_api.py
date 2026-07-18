@@ -18,7 +18,11 @@ def client(tmp_path_factory):  # type: ignore[no-untyped-def]
     app.dependency_overrides[get_remediation_engine] = lambda: RemediationEngine(
         DeterministicMockAIProvider(), warehouse=wh
     )
-    with TestClient(app, raise_server_exceptions=False) as c:
+    with TestClient(
+        app,
+        raise_server_exceptions=False,
+        headers={"Authorization": "Bearer demo-steward-token"},
+    ) as c:
         yield c
     app.dependency_overrides.clear()
     wh.close()
@@ -99,20 +103,48 @@ def test_approval_workflow_with_audit(client) -> None:  # type: ignore[no-untype
     issue = _first_issue(client, status="DETECTED")
     r = client.post(
         f"/api/v1/issues/{issue['issue_id']}/approve",
-        json={"reviewer": "darshita", "reason": "verified against source"},
+        json={"reason": "verified against source"},
     )
     assert r.status_code == 200
     assert r.json()["status"] == "APPROVED"
     # double-approve must 409
     again = client.post(
         f"/api/v1/issues/{issue['issue_id']}/approve",
-        json={"reviewer": "darshita", "reason": "again"},
+        json={"reason": "again"},
     )
     assert again.status_code == 409
     history = client.get(f"/api/v1/issues/{issue['issue_id']}/history").json()
     assert len(history) == 1
     assert history[0]["decision"] == "APPROVE"
     assert history[0]["before_status"] == "DETECTED"
+    # The recorded actor is the authenticated principal, not a body-supplied name.
+    assert history[0]["reviewer"] == "demo.steward"
+
+
+def test_authorization_enforcement(client) -> None:  # type: ignore[no-untyped-def]
+    issue = _first_issue(client, status="DETECTED")
+    path = f"/api/v1/issues/{issue['issue_id']}/approve"
+    body = {"reason": "attempted without/with wrong role"}
+    # Unauthenticated -> 401
+    r_anon = client.post(path, json=body, headers={"Authorization": ""})
+    assert r_anon.status_code == 401
+    # Unknown token -> 401
+    r_bad = client.post(path, json=body, headers={"Authorization": "Bearer nope"})
+    assert r_bad.status_code == 401
+    # Authenticated analyst (insufficient role) -> 403
+    r_analyst = client.post(
+        path, json=body, headers={"Authorization": "Bearer demo-analyst-token"}
+    )
+    assert r_analyst.status_code == 403
+    # Analyst may still read issues (least privilege, not no-access)
+    r_read = client.get(
+        "/api/v1/issues",
+        params={"page_size": 1},
+        headers={"Authorization": "Bearer demo-analyst-token"},
+    )
+    assert r_read.status_code == 200
+    # The issue was never transitioned by the denied attempts.
+    assert client.get(f"/api/v1/issues/{issue['issue_id']}").json()["status"] == "DETECTED"
 
 
 def test_bom_graph_endpoints(client) -> None:  # type: ignore[no-untyped-def]

@@ -16,7 +16,10 @@
 1. **No AI path can mutate data.** Providers return dicts; the engine validates and
    returns proposals; only the human decision endpoints change issue state — and the
    proposal schema contains no approve action, and `human_review_required` cannot be
-   set false (schema-enforced, tested).
+   set false (schema-enforced, tested). Those decision endpoints require a **data steward
+   or administrator** role, and the reviewer recorded on each decision is the
+   authenticated principal, never a name supplied in the request body (demonstration
+   auth; see `docs/security-model.md`).
 2. **Grounding is enforced**, not requested: evidence references outside the supplied
    bundle cause rejection of the proposal (tested).
 3. **Abstention is a first-class outcome** (`insufficient_evidence`), triggered on
