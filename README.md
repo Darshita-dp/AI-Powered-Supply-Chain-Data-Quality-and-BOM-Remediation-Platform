@@ -27,9 +27,9 @@ end, reproducibly, on a laptop.
 | Quality Impact Twin — blast radius + counterfactual simulation | Implemented and tested (baseline immutability asserted) |
 | Document intelligence with prompt-injection controls | Implemented and tested |
 | Governed AI remediation engine (mock provider) | Implemented and tested |
-| Snowflake Cortex AI provider | Implemented — **external validation pending (no credentials)** |
+| Snowflake Cortex AI provider | Implemented locally — **external execution pending (no credentials)** |
 | FastAPI service (25 endpoints) | Implemented and tested |
-| React remediation workbench (8 surfaces, live API data) | Implemented and tested; verified in-browser |
+| React remediation workbench (8 surfaces, live API data) | Implemented and tested (5 vitest tests, typecheck/build clean); browser rendering exercised via the accessibility tree — automated screenshots pending (H9) |
 | Data Steward Copilot (read-only, cited) | Implemented and tested |
 | Snowflake warehouse scripts | Authored — **deployment pending (no credentials)** |
 | Power BI package (marts, model spec, DAX, theme, pages) | Source package complete — **Desktop validation pending; no `.pbix` exists** |
@@ -40,9 +40,9 @@ end, reproducibly, on a laptop.
 
 | Metric | Result | Source |
 |---|---|---|
-| Detection recall vs 156 injected labeled defects (17 mapped types) | **100%** | [`evaluation/data_quality/detection_smoke.json`](evaluation/data_quality/detection_smoke.json) · `python scripts/evaluate_detection.py` |
+| Detection recall vs injected labeled defects (17 SQL-rule-mapped types) | **100% recall** *(recall only; precision + all 25 types + subsystem attribution added in H3)* | [`evaluation/data_quality/detection_smoke.json`](evaluation/data_quality/detection_smoke.json) · `python scripts/evaluate_detection.py` |
 | ER baseline (recommend band) | P = 1.00, R = 0.57 | [`evaluation/entity_resolution/baseline_smoke.json`](evaluation/entity_resolution/baseline_smoke.json) |
-| ER gradient boosting (held-out test split) | P = 1.00, R = 1.00 *(≈6 positives — wide uncertainty, see model card)* | [`evaluation/entity_resolution/ml_smoke.json`](evaluation/entity_resolution/ml_smoke.json) |
+| ER ML (LR / gradient boosting) | **under re-evaluation** — the original split was not provably entity-disjoint; leakage-safe metrics land in H2 | [`evaluation/entity_resolution/ml_smoke.json`](evaluation/entity_resolution/ml_smoke.json), [model card](docs/model-card.md) |
 | Generated records — smoke / demo / full | 13,882 / 247,881 / **1,699,010** | [`evaluation/performance/profile_counts.json`](evaluation/performance/profile_counts.json) |
 | 49 rules over demo profile (248k records) | 0.9 s | [`evaluation/performance/benchmarks_demo.json`](evaluation/performance/benchmarks_demo.json) |
 | API list endpoints | ~10 ms | same |
@@ -85,10 +85,14 @@ Details: [docs/architecture/overview.md](docs/architecture/overview.md) ·
 
 ## Screenshots
 
-Not included: automated screenshot capture wasn't possible in the build environment,
-and this project doesn't fabricate outputs. The UI was verified live (Command Center
-KPIs, issue workbench, AI recommendation, approval audit) — run the 10-minute
-[demo script](docs/demo-script.md) to see it.
+**Status: pending (H9).** No screenshots are committed yet. The UI's structure and live
+API-backed content were exercised programmatically via the browser accessibility tree
+(routes render, Command Center KPIs and issue data resolve from the API), but pixel
+screenshots have not been captured — an earlier automated attempt timed out in the build
+environment, and this project does not fabricate outputs. Hardening checkpoint **H9**
+adds a Playwright capture script (`scripts/capture_screenshots.py`) and will either
+commit real screenshots to `docs/screenshots/` or leave this section explicitly pending.
+Meanwhile, run the 10-minute [demo script](docs/demo-script.md) to see the app.
 
 ## Quickstart (no cloud account needed)
 

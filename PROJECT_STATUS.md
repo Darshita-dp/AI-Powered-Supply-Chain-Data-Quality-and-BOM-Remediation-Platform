@@ -1,10 +1,11 @@
 # PROJECT_STATUS.md — BOM Guardian AI
 
-_Last updated: 2026-07-16_
+_Last updated: 2026-07-17 (hardening phase)_
 
 ## Current milestone
 
-**All 22 milestones (M0–M21) complete.**
+**M0–M21 built and locally tested. Now in the H1–H10 hardening phase** (accuracy,
+validation, and production-hardening; see the hardening table below).
 
 ## Milestone plan
 
@@ -26,7 +27,7 @@ _Last updated: 2026-07-16_
 | M13 | AI remediation engine | ✅ Complete (mock provider tested; Cortex path pending credentials) |
 | M14 | Quality Impact Twin | ✅ Complete |
 | M15 | FastAPI service | ✅ Complete |
-| M16 | React remediation workbench | ✅ Complete (verified live against the API) |
+| M16 | React remediation workbench | ✅ Complete (live API data; 5 vitest tests + build; browser rendering exercised via accessibility tree — screenshots pending H9) |
 | M17 | Data Steward Copilot | ✅ Complete (deterministic classifier; AI rewrite optional later) |
 | M18 | Power BI analytical package | ✅ Complete (source package; Desktop validation pending — no `.pbix` claimed) |
 | M19 | CI, security, observability | ✅ Complete (workflows authored; GitHub run status verifies on push) |
@@ -83,13 +84,14 @@ _Last updated: 2026-07-16_
   (`evaluation/entity_resolution/baseline_smoke.json`, reproducible via
   `scripts/evaluate_entity_resolution.py`): recommend band precision 1.00 / recall 0.57;
   review band precision 1.00 / recall 0.86. 8 tests.
-- **M9** — ML ER: LR + gradient boosting over the same 11 features, group-aware
-  60/20/20 splits (no entity leakage), validation threshold selection with a 0.95
-  precision floor, joblib persistence, LR coefficients exported for explainability,
-  model card (`docs/model-card.md`) with honest caveats about small test-set size.
-  Measured on smoke (`evaluation/entity_resolution/ml_smoke.json`): LR P=1.00/R=0.83,
-  GB P=1.00/R=1.00 on held-out test split (~6 positives — wide uncertainty, noted).
-  6 tests.
+- **M9** — ML ER: LR + gradient boosting over the same 11 features, GroupShuffleSplit
+  60/20/20, validation threshold selection with a 0.95 precision floor, joblib
+  persistence, LR coefficients exported for explainability, model card
+  (`docs/model-card.md`). 6 tests.
+  ⚠️ **Superseded by H2:** the M9 grouping keyed only on the first part ID, which does
+  **not** guarantee entity-disjoint folds — the "no entity leakage" claim was not
+  actually enforced. H2 replaces it with connected-component splitting and re-measures;
+  the P=1.00/R=1.00 headline is retired. See the H2 evaluation artifacts and model card.
 - **M10** — golden-record survivorship: field-level selection over 9 governed fields
   scored on source reliability + recency + cross-source agreement with documented
   domain preferences (engineering→description, ERP→cost, supplier portal→lead time);
@@ -172,47 +174,79 @@ _Last updated: 2026-07-16_
   ER 66.6s); profile counts measured (`profile_counts.json`): smoke 13,882 / demo
   247,881 / **full 1,699,010 records generated in 735s** (full-profile downstream
   stages not run — documented). 136 Python tests total.
+  ⚠️ **Refined by H4:** the M20 end-to-end test exercises the services but applies
+  `bom_guardian.testing.TRANSFORM_SQL` (hand-written views) instead of invoking the real
+  dbt project, so it is a *service-level* E2E test — it would not catch a broken dbt
+  model/mart. H4 adds a true dbt-pipeline integration test alongside it.
+
+## Hardening phase (H1–H10, post-M21)
+
+Rigorous accuracy/validation/production-hardening pass over the completed M0–M21 build.
+
+| # | Checkpoint | Status |
+|---|------------|--------|
+| H1 | Reconcile documentation and status | 🔄 In progress |
+| H2 | Enforce entity-disjoint ML evaluation | ⬜ Not started |
+| H3 | Strengthen defect-detection evaluation | ⬜ Not started |
+| H4 | True dbt end-to-end integration test | ⬜ Not started |
+| H5 | Complete/modernize the Snowflake execution path | ⬜ Not started |
+| H6 | Add a configurable real AI provider | ⬜ Not started |
+| H7 | Role-based remediation authorization | ⬜ Not started |
+| H8 | Verify GitHub Actions | ⬜ Not started |
+| H9 | Verified application screenshots | ⬜ Not started |
+| H10 | Final forensic audit | ⬜ Not started |
 
 ## In-progress work
 
-- None; next is M2.
+- H1 — reconciling stale/contradictory documentation and building
+  `evaluation/claim-verification.json`.
 
 ## Last successful commit
 
-- See `git log` (M1 commit).
+- `741153a` docs: publish complete BOM Guardian AI portfolio case study (M0–M21).
+  The hardening phase (H1+) builds on top of it.
 
 ## Tests currently passing
 
 - Python: 136 tests — unit + integration + data-quality + API + E2E (`pytest`),
-  ruff + mypy clean.
+  ruff + mypy clean (measured this session; see `git log` for the commit).
 - Frontend: 5 vitest tests, oxlint clean, `tsc -b` clean, production build succeeds.
-- CI workflow authored but not yet observed passing on GitHub (validates on push).
+- CI: workflows authored; **local equivalents of every job pass** (ruff, mypy, pytest,
+  frontend lint/typecheck/test/build, dbt smoke pipeline). **GitHub Actions run status
+  on github.com: not yet confirmed** — to be verified in H8.
 
 ## Known failures
 
-- None.
+- None locally.
 
 ## External integrations
 
-**Configured:** none.
+**Configured / working:** GitHub push authentication (24 commits pushed to `main` over
+HTTPS).
 
-**Not configured:**
-- Snowflake (no credentials — local DuckDB fallback is the plan; Snowflake scripts will
-  be authored but deployment status will be documented honestly)
-- GitHub push auth: clone over HTTPS worked; push not yet attempted
-- Power BI Desktop: availability unverified; fallback is a full source/build package
-- Anthropic or other hosted AI provider: optional, not required for core tests
+**Implemented locally, external execution pending (no credentials/resources):**
+- **Snowflake** — provisioning scripts, role model, DuckDB-parity schema, `dbt`
+  `snowflake` target, and Cortex/AI_COMPLETE provider are authored; **never executed
+  against a live account**. Status: *implemented locally; external Snowflake execution
+  pending.*
+- **Power BI Desktop** — full source package (marts, semantic-model spec, DAX, theme,
+  page specs); **no `.pbix` built or visually validated**. Status: *pending Desktop
+  validation.*
+- **Hosted AI provider (Anthropic/other)** — optional; real provider + validation
+  script added in H6, marked *externally validated* only after a successful run.
 
 ## Next exact action
 
-None — the project is complete. Remaining external items (documented, not blockers):
-Snowflake deployment when credentials exist; Power BI Desktop build/validation per
-`powerbi/BUILD_POWER_BI.md`; confirming GitHub Actions run status on github.com;
-optional application screenshots (automated capture unavailable in the build
-environment; see README).
+Finish H1 (doc reconciliation + claim inventory), commit
+`docs: reconcile project status and implementation claims`, then proceed to H2
+(entity-disjoint ML evaluation).
 
 ## Honest completion percentage
 
-**~95%** — everything specified is built, tested, and honestly documented. The
-remaining 5% is external validation that requires resources this environment lacks
-(Snowflake account, Power BI Desktop) plus screenshots.
+**~90%** (revised down during hardening). M0–M21 are built and locally tested, but the
+hardening pass has identified real gaps to close: ML-evaluation leakage (H2), incomplete
+DQ precision/recall (H3), a shortcut in the E2E test that bypasses the real dbt project
+(H4), an incomplete Snowflake execution path (H5), no executed real AI provider (H6),
+and no API authorization (H7). Percentage will be re-derived honestly in H10 after these
+are addressed; external validation (live Snowflake, Power BI Desktop, confirmed CI,
+screenshots) remains outstanding.

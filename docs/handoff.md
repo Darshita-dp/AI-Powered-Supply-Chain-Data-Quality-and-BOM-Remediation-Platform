@@ -8,15 +8,19 @@ Read `CLAUDE.md`, `PROJECT_STATUS.md`, and this file. Inspect the repository and
 history, verify the current test state, and continue from the next incomplete milestone
 in `PROJECT_STATUS.md` without rebuilding completed work.
 
-## Current state (2026-07-16, end of build)
+## Current state (2026-07-17, hardening phase)
 
-- **All milestones M0–M21 complete and pushed.** 136 Python + 5 frontend tests pass;
-  ruff/mypy/typecheck/build clean; evaluation artifacts in `evaluation/`.
+- **M0–M21 built and locally tested; now in the H1–H10 hardening phase.** 136 Python +
+  5 frontend tests pass; ruff/mypy/typecheck/build clean; evaluation artifacts in
+  `evaluation/`. See the hardening table in `PROJECT_STATUS.md` for per-checkpoint status.
 - Pipeline: `python scripts/run_local_pipeline.py`; API: `uvicorn api.app.main:app`;
   UI: `cd frontend && npm run dev`. Demo walkthrough: `docs/demo-script.md`.
-- Open external items only: Snowflake deployment (needs account), Power BI Desktop
-  validation (`powerbi/BUILD_POWER_BI.md`), GitHub Actions run confirmation,
-  application screenshots.
+- **Known gaps being closed by hardening:** ML-eval leakage (H2), DQ precision/all-25
+  types (H3), dbt-bypassing E2E test (H4), incomplete Snowflake execution path (H5),
+  no executed real AI provider (H6), no API authorization (H7).
+- **Open external items:** live Snowflake deployment (needs account), Power BI Desktop
+  validation, confirmed GitHub Actions run (H8), application screenshots (H9).
+- Per-claim evidence and validation status: `evaluation/claim-verification.json`.
 
 ## Environment notes
 

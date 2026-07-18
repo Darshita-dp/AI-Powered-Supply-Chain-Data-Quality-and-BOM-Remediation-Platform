@@ -1,5 +1,13 @@
 # Model Card — Duplicate Part Entity Resolution
 
+> ⚠️ **Under revision (hardening H2).** The split described below was keyed on the first
+> part ID only, which does **not** guarantee entity-disjoint folds — so the ML metrics
+> in this card may reflect leakage and rest on ~6 test positives. **Do not quote
+> P=1.00/R=1.00.** H2 replaces the split with connected-component grouping, asserts
+> disjoint train/val/test entity sets, evaluates across multiple seeds with confidence
+> intervals, and rewrites the results table with leakage-safe numbers. Until then, treat
+> the ML rows as provisional; the weighted-baseline rows (unsupervised, no split) stand.
+
 ## Overview
 
 | | |

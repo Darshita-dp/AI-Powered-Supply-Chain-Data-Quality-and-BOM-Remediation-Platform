@@ -4,6 +4,17 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 
 ## [Unreleased]
 
+### Hardening (H1–H10, post-M21)
+- H1: reconciled stale/contradictory status wording; added
+  `evaluation/claim-verification.json` (per-claim evidence + validation status).
+  Corrections: the M9 "no entity leakage" claim and the ML P=1.00/R=1.00 headline are
+  retired pending H2's leakage-safe re-evaluation; the M20 E2E test is relabeled
+  service-level (it bypasses the real dbt project — H4 adds a true dbt-pipeline test);
+  detection recall is clarified as recall-only over 17 SQL-mapped types (H3 adds
+  precision + all 25 types); screenshots and GitHub Actions status marked explicitly
+  pending; earlier "verified live/in-browser" phrasing replaced with what was actually
+  exercised (accessibility tree + local tests).
+
 ### Added
 - M0: repository governance, architecture docs, ADR log, ERD, DQ rule taxonomy,
   README skeleton, `.gitignore`, `.env.example`.

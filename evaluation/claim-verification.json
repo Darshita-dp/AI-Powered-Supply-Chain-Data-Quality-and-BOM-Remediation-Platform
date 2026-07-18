@@ -1,0 +1,197 @@
+{
+  "$comment": "Machine-readable inventory of every major README/status claim, with its supporting evidence and honest validation status. validation_status values: verified_local (a command/test on this machine proves it), measured (a reproducible evaluation artifact backs the number), implemented_untested_externally (code exists, no external run), pending (not yet done), superseded (an earlier claim retired by the hardening phase).",
+  "generated_at": "2026-07-17",
+  "repo_commit_at_generation": "741153a",
+  "hardening_phase": "H1",
+  "claims": [
+    {
+      "id": "gen-profiles",
+      "claim": "Synthetic ERP generator produces 22 datasets across smoke/demo/full profiles; counts smoke 13,882 / demo 247,881 / full 1,699,010.",
+      "supporting": "evaluation/performance/profile_counts.json; data_generator/; `python -m data_generator.cli generate --profile <p>`",
+      "validation_status": "measured",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "Full profile: only generation was run and measured; downstream stages (ingest/dbt/rules/ER) ran at smoke and demo scale only."
+    },
+    {
+      "id": "defect-injection",
+      "claim": "25 controlled defect types injected with isolated ground truth.",
+      "supporting": "data_generator/injectors/engine.py (ISSUE_TYPES, 25 entries); tests/unit/test_injection.py",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "Synthetic perturbations; do not model all real-world defect variety."
+    },
+    {
+      "id": "ingestion-audit",
+      "claim": "Auditable, idempotent ingestion into DuckDB with row/file hashes and rejected-record handling.",
+      "supporting": "src/bom_guardian/ingestion/loader.py; tests/integration/test_ingestion.py",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "Per-row hashing is Python-side (pandas apply); not vectorized for full scale."
+    },
+    {
+      "id": "dbt-pipeline",
+      "claim": "dbt builds staging, core star schema, and 7 marts on the local DuckDB target.",
+      "supporting": "dbt_supply_chain/; `python scripts/run_local_pipeline.py` (dbt build PASS report)",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "The M20 E2E test bypasses dbt via TRANSFORM_SQL; a true dbt-pipeline test is added in H4."
+    },
+    {
+      "id": "dq-rules",
+      "claim": "49-rule data-quality engine with evidence and scoring.",
+      "supporting": "src/bom_guardian/quality/registry.py (49 rules); tests/data_quality/test_rule_engine.py",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": null
+    },
+    {
+      "id": "dq-detection-recall",
+      "claim": "100% detection recall on 156 injected labeled defects across 17 SQL-rule-mapped types.",
+      "supporting": "evaluation/data_quality/detection_smoke.json; scripts/evaluate_detection.py",
+      "validation_status": "measured",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "RECALL ONLY, and only 17 of 25 types (those mapped to SQL rules). No precision. No clean-baseline validation. H3 addresses all of this with precision/recall/F1 by subsystem across all 25 types."
+    },
+    {
+      "id": "er-baseline",
+      "claim": "Weighted entity-resolution baseline: recommend band P=1.00/R=0.57, review band P=1.00/R=0.86.",
+      "supporting": "evaluation/entity_resolution/baseline_smoke.json; scripts/evaluate_entity_resolution.py",
+      "validation_status": "measured",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "Smoke-scale, small positive population; baseline evaluates over all labeled pairs (no train/test split needed as it is unsupervised)."
+    },
+    {
+      "id": "er-ml-metrics",
+      "claim": "ML ER (gradient boosting) P=1.00/R=1.00 on held-out test split.",
+      "supporting": "evaluation/entity_resolution/ml_smoke.json (original)",
+      "validation_status": "superseded",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "RETIRED. The split grouped on the first part ID only, which does not guarantee entity-disjoint folds, so the metric may reflect leakage and rests on ~6 positives. H2 replaces the split with connected-component grouping, asserts disjoint entity sets, evaluates over multiple seeds, and re-reports with confidence intervals. Do not quote P=1.00/R=1.00."
+    },
+    {
+      "id": "golden-record",
+      "claim": "Field-level golden-record survivorship with full lineage; reversible; no warehouse mutation.",
+      "supporting": "src/bom_guardian/golden_record/survivorship.py; tests/unit/test_golden_record.py",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "No large field-level survivorship accuracy report against ground truth yet."
+    },
+    {
+      "id": "bom-graph",
+      "claim": "BOM graph intelligence: cycles, orphans, reverse dependencies, criticality, supplier concentration.",
+      "supporting": "src/bom_guardian/bom_graph/graph.py; tests/unit/test_bom_graph.py (16 tests, all required shapes)",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": null
+    },
+    {
+      "id": "impact-twin",
+      "claim": "Quality Impact Twin computes blast radius and simulates counterfactuals without mutating baseline data.",
+      "supporting": "src/bom_guardian/impact_twin/; tests/unit/test_impact_twin.py (baseline-immutability assertion)",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "Exposure figures are estimates; no MRP/costing re-run."
+    },
+    {
+      "id": "document-intelligence",
+      "claim": "Supplier-document extraction with evidence/confidence and prompt-injection controls; extraction unaffected by embedded instructions.",
+      "supporting": "src/bom_guardian/document_intelligence/; tests/integration/test_document_intelligence.py",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "Injection detection is pattern-based; novel phrasings may evade the list (flagged content is routed to review, never followed)."
+    },
+    {
+      "id": "ai-mock-provider",
+      "claim": "Governed AI remediation engine with schema validation, grounding, abstention, and audit; the mock provider is tested.",
+      "supporting": "src/bom_guardian/ai/; tests/unit/test_ai_remediation.py (10 tests, incl. no-approve-action and grounding-rejection)",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "Only the deterministic mock provider is exercised; no real LLM has been called (H6 adds and validates a real provider)."
+    },
+    {
+      "id": "snowflake-cortex",
+      "claim": "Snowflake Cortex AI provider and Snowflake warehouse scripts are implemented.",
+      "supporting": "src/bom_guardian/ai/providers.py (SnowflakeCortexAIProvider); warehouse/snowflake/",
+      "validation_status": "implemented_untested_externally",
+      "date_validated": null,
+      "external_dependency": "Snowflake account + credentials",
+      "known_limitation": "Never executed against a live account. Uses SNOWFLAKE.CORTEX.COMPLETE (legacy); H5 modernizes to AI_COMPLETE and completes the warehouse adapter/deploy path. Status: implemented locally; external Snowflake execution pending."
+    },
+    {
+      "id": "api",
+      "claim": "FastAPI service exposes 25 versioned /api/v1 endpoints with pagination, structured errors, correlation IDs, OpenAPI.",
+      "supporting": "api/app/; api/tests/; docs/api-guide.md",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "No authentication/authorization — reviewer identity is self-declared in the request body. H7 adds role-based authorization."
+    },
+    {
+      "id": "frontend",
+      "claim": "React remediation workbench (8 surfaces) renders live API data with loading/empty/error states.",
+      "supporting": "frontend/src/; frontend/src/**/*.test.tsx (5 vitest tests); `npm run typecheck && npm run build`",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "Browser rendering was exercised via the accessibility tree, not pixel screenshots; automated screenshot capture is pending (H9)."
+    },
+    {
+      "id": "copilot",
+      "claim": "Read-only Data Steward Copilot answers with citations, refuses mutations, over allowlisted parameterized queries.",
+      "supporting": "src/bom_guardian/copilot/; tests for copilot (read-only guarantee check)",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "Deterministic keyword classification, not an LLM; unusual phrasings fall to the unsupported path."
+    },
+    {
+      "id": "powerbi",
+      "claim": "Power BI package: 7 marts, semantic-model spec, 30+ DAX measures, theme, page specs, CSV fallback.",
+      "supporting": "powerbi/; scripts/export_powerbi_data.py; dbt marts",
+      "validation_status": "implemented_untested_externally",
+      "date_validated": null,
+      "external_dependency": "Power BI Desktop",
+      "known_limitation": "No .pbix built or visually validated; DAX authored but never executed in a live model."
+    },
+    {
+      "id": "ci",
+      "claim": "CI (GitHub Actions) runs Python/frontend/dbt/link/secret jobs.",
+      "supporting": ".github/workflows/ci.yml, snowflake-validation.yml",
+      "validation_status": "pending",
+      "date_validated": null,
+      "external_dependency": "GitHub Actions execution",
+      "known_limitation": "Workflows authored; every job's local equivalent passes on this machine; the GitHub-hosted run has NOT been confirmed green. H8 verifies and records the run URL before any badge is added."
+    },
+    {
+      "id": "tests",
+      "claim": "136 Python + 5 frontend automated tests, all passing.",
+      "supporting": "`pytest` (136 passed, measured this session); `cd frontend && npm test -- --run` (5 passed)",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-16",
+      "external_dependency": null,
+      "known_limitation": "The E2E test is service-level (bypasses dbt); H4 adds a true dbt-pipeline test."
+    },
+    {
+      "id": "screenshots",
+      "claim": "Application screenshots.",
+      "supporting": null,
+      "validation_status": "pending",
+      "date_validated": null,
+      "external_dependency": "headless browser screenshot capability",
+      "known_limitation": "None exist. Automated capture timed out in the build environment; H9 adds a Playwright capture script and either produces real screenshots or leaves this explicitly pending."
+    }
+  ]
+}
