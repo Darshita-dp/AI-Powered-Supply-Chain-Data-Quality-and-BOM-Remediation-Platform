@@ -1,4 +1,4 @@
-"""End-to-end platform test: the full loop from generation to audited approval.
+"""SERVICE-LEVEL end-to-end test: the full loop from generation to audited approval.
 
 Steps (per the build specification):
  1. generate smoke-scale data       7. create issues
@@ -7,6 +7,12 @@ Steps (per the build specification):
  4. run transformations            10. retrieve the issue through the API
  5. run quality rules              11. simulate reviewer approval (no baseline mutation)
  6. run entity resolution          12. verify audit history
+
+Scope note: step 4 applies `bom_guardian.testing.TRANSFORM_SQL` (hand-written views
+that mirror the dbt staging/core models) rather than invoking the real dbt project, so
+this test runs in seconds and exercises the *services*. It does NOT prove the dbt models
+themselves compile/build — that is covered by tests/end_to_end/test_dbt_pipeline.py,
+which invokes the actual dbt project end to end.
 """
 
 import pandas as pd
@@ -24,7 +30,7 @@ from bom_guardian.testing import build_test_warehouse
 
 
 @pytest.mark.e2e
-def test_full_platform_loop(tmp_path_factory) -> None:  # type: ignore[no-untyped-def]
+def test_service_level_end_to_end(tmp_path_factory) -> None:  # type: ignore[no-untyped-def]
     # 1-4: generate, inject, ingest, transform
     wh = build_test_warehouse(tmp_path_factory.mktemp("e2e"), n_parts=300, seed=11)
     try:

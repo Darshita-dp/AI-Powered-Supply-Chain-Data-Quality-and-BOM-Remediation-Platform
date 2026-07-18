@@ -36,9 +36,9 @@
       "claim": "dbt builds staging, core star schema, and 7 marts on the local DuckDB target.",
       "supporting": "dbt_supply_chain/; `python scripts/run_local_pipeline.py` (dbt build PASS report)",
       "validation_status": "verified_local",
-      "date_validated": "2026-07-16",
+      "date_validated": "2026-07-17",
       "external_dependency": null,
-      "known_limitation": "The M20 E2E test bypasses dbt via TRANSFORM_SQL; a true dbt-pipeline test is added in H4."
+      "known_limitation": "Local DuckDB target. H4 added tests/end_to_end/test_dbt_pipeline.py which invokes the real dbt project (all 11 core models + 7 marts build and populate) and fails on any dbt breakage; a fixture-drift guard keeps TRANSFORM_SQL in sync with the dbt models."
     },
     {
       "id": "dq-rules",
@@ -182,7 +182,7 @@
       "validation_status": "verified_local",
       "date_validated": "2026-07-16",
       "external_dependency": null,
-      "known_limitation": "The E2E test is service-level (bypasses dbt); H4 adds a true dbt-pipeline test."
+      "known_limitation": "Two E2E tests: a fast service-level one (TRANSFORM_SQL) and a true dbt-pipeline one (real dbt build) added in H4."
     },
     {
       "id": "screenshots",

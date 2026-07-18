@@ -34,6 +34,12 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   explicit denominators. Duplicate types cross-referenced to entity resolution; 2 types
   documented as unevaluated. Added `scripts/validate_clean_baseline.py` and
   `tests/data_quality/test_clean_baseline.py`.
+- H4: added a TRUE dbt end-to-end test (`tests/end_to_end/test_dbt_pipeline.py`) that
+  invokes the real dbt project against a persistent DuckDB file, verifies all 11 core
+  models and 7 marts build and populate, and runs the full engine + API + audited-approval
+  loop against the dbt-built warehouse. Renamed the fast service-level test accordingly
+  and added a fixture-drift guard so `TRANSFORM_SQL` cannot silently diverge from the dbt
+  models.
 
 ### Added
 - M0: repository governance, architecture docs, ADR log, ERD, DQ rule taxonomy,

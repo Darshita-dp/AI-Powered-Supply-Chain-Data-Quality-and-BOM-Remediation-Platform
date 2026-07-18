@@ -47,7 +47,7 @@ end, reproducibly, on a laptop.
 | Generated records — smoke / demo / full | 13,882 / 247,881 / **1,699,010** | [`evaluation/performance/profile_counts.json`](evaluation/performance/profile_counts.json) |
 | 49 rules over demo profile (248k records) | 0.9 s | [`evaluation/performance/benchmarks_demo.json`](evaluation/performance/benchmarks_demo.json) |
 | API list endpoints | ~10 ms | same |
-| Automated tests | **136 Python + 5 frontend, all passing** | `pytest`, `npm test` |
+| Automated tests | **143 Python + 5 frontend, all passing** (incl. a true dbt-pipeline E2E) | `pytest`, `npm test` |
 
 Full-profile numbers cover generation only; downstream stages ran at smoke/demo scale
 (see [docs/limitations.md](docs/limitations.md)).

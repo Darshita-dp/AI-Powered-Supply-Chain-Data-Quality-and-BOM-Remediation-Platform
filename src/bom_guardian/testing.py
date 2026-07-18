@@ -1,7 +1,16 @@
 """Test support: build a fully-populated in-memory warehouse without dbt.
 
-Used by the data-quality, API, and end-to-end test suites. The SQL views
-mirror the dbt staging/core models for the columns the engine consumes.
+Used by the data-quality, API, and (service-level) end-to-end test suites so they run
+in seconds without spawning `dbt build`. The SQL views below deliberately mirror the
+dbt staging/core models for the columns the engine consumes.
+
+DRIFT RISK: these views duplicate production logic and could silently diverge from the
+real dbt models. Two guards keep them honest:
+  1. tests/end_to_end/test_dbt_pipeline.py invokes the REAL dbt project and fails if any
+     model/mart breaks — so correctness of the actual pipeline is covered there.
+  2. That same test asserts the dbt-built core.dim_part exposes the same columns these
+     views produce (see _assert_no_fixture_drift), so a schema drift fails the suite.
+If you change a dbt staging/core model's columns, update the matching view here too.
 """
 
 from __future__ import annotations

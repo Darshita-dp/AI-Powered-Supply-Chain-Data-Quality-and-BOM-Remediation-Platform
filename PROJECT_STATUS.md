@@ -188,7 +188,7 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 | H1 | Reconcile documentation and status | ✅ Complete |
 | H2 | Enforce entity-disjoint ML evaluation | ✅ Complete |
 | H3 | Strengthen defect-detection evaluation | ✅ Complete |
-| H4 | True dbt end-to-end integration test | ⬜ Not started |
+| H4 | True dbt end-to-end integration test | ✅ Complete |
 | H5 | Complete/modernize the Snowflake execution path | ⬜ Not started |
 | H6 | Add a configurable real AI provider | ⬜ Not started |
 | H7 | Role-based remediation authorization | ⬜ Not started |
@@ -198,8 +198,8 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 
 ## In-progress work
 
-- H4 next — true dbt end-to-end integration test (invoke the real dbt project, verify
-  staging/core/marts, then run the full engine + API loop against it).
+- H5 next — complete/modernize the Snowflake execution path (warehouse adapter,
+  loading path, `AI_COMPLETE`, mocked tests; status stays external-pending).
 
 ## Hardening results so far
 
@@ -221,6 +221,14 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
   cross-referenced to ER, 2 documented as unevaluated. Artifacts
   `evaluation/data_quality/{clean_baseline,detection}_smoke.json`; 2 new tests lock in
   the clean-baseline property.
+- **H4** — added `tests/end_to_end/test_dbt_pipeline.py`: a TRUE end-to-end test that
+  invokes the real dbt project against a persistent DuckDB file, asserts all 11 core
+  models and 7 marts build and populate, then runs the full quality → API →
+  audited-approval loop against the dbt-built warehouse (fails if any dbt model/mart
+  breaks). Renamed the fast `test_full_platform.py` case to `test_service_level_end_to_end`
+  and documented that it uses `TRANSFORM_SQL`. Added a fixture-drift guard (dbt
+  `dim_part` columns must match the `TRANSFORM_SQL` fixture) and documented the sync
+  requirement in `src/bom_guardian/testing.py`.
 
 ## Last successful commit
 
