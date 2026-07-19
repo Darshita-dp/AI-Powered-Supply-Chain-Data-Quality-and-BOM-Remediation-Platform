@@ -1,8 +1,8 @@
 {
   "$comment": "Machine-readable inventory of every major README/status claim, with its supporting evidence and honest validation status. validation_status values: verified_local (a command/test on this machine proves it), measured (a reproducible evaluation artifact backs the number), implemented_untested_externally (code exists, no external run), pending (not yet done), superseded (an earlier claim retired by the hardening phase).",
-  "generated_at": "2026-07-17",
+  "generated_at": "2026-07-19",
   "repo_commit_at_generation": "741153a",
-  "hardening_phase": "H1",
+  "hardening_phase": "H10 (complete)",
   "claims": [
     {
       "id": "gen-profiles",
@@ -141,12 +141,12 @@
     },
     {
       "id": "api",
-      "claim": "FastAPI service exposes 25 versioned /api/v1 endpoints with pagination, structured errors, correlation IDs, OpenAPI.",
-      "supporting": "api/app/; api/tests/; docs/api-guide.md",
+      "claim": "FastAPI service exposes 29 versioned /api/v1 operations with pagination, structured errors, correlation IDs, OpenAPI, and role-based authorization.",
+      "supporting": "api/app/; api/tests/; docs/api-guide.md; count verified against app.openapi() (29 GET/POST operations)",
       "validation_status": "verified_local",
-      "date_validated": "2026-07-16",
+      "date_validated": "2026-07-19",
       "external_dependency": null,
-      "known_limitation": "No authentication/authorization \u2014 reviewer identity is self-declared in the request body. H7 adds role-based authorization."
+      "known_limitation": "Authorization IS enforced (see role-based-authorization), but authentication is demonstration-grade (static demo bearer tokens), not SSO/OIDC. SQL is built with f-strings using a _safe() escaping helper plus allowlisted sort columns rather than bound parameters \u2014 documented in docs/security-model.md."
     },
     {
       "id": "frontend",
@@ -178,20 +178,20 @@
     {
       "id": "ci",
       "claim": "CI (GitHub Actions) runs Python 3.12/3.13 (lint, format, mypy, full pytest incl. real dbt E2E), frontend (lint/typecheck/test/build), dbt smoke pipeline, docs-link check, and secret scanning.",
-      "supporting": ".github/workflows/ci.yml; verified run https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29670834422 on commit 13fa952 (conclusion: success)",
+      "supporting": ".github/workflows/ci.yml; verified run https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29671853670 on commit c4c8bbc (conclusion: success)",
       "validation_status": "verified_ci",
       "date_validated": "2026-07-18",
       "external_dependency": null,
-      "known_limitation": "Confirmed green on GitHub Actions for commit 13fa952. Prior to H8 every run failed: the python job installed .[dev,api,ml] but test collection needs the docs-ai extra (reportlab/pypdf), aborting pytest with exit code 2. dependency-review is intentionally skipped on push (pull_request only). The optional snowflake-validation workflow is manual and still never executed (no credentials)."
+      "known_limitation": "Confirmed green on GitHub Actions for commits 13fa952 and c4c8bbc. Prior to H8 every run failed: the python job installed .[dev,api,ml] but test collection needs the docs-ai extra (reportlab/pypdf), aborting pytest with exit code 2. dependency-review is intentionally skipped on push (pull_request only). The optional snowflake-validation workflow is manual and still never executed (no credentials)."
     },
     {
       "id": "tests",
-      "claim": "136 Python + 5 frontend automated tests, all passing.",
-      "supporting": "`pytest` (136 passed, measured this session); `cd frontend && npm test -- --run` (5 passed)",
-      "validation_status": "verified_local",
-      "date_validated": "2026-07-16",
+      "claim": "182 Python (1 skipped) + 5 frontend automated tests, all passing; 93% line coverage.",
+      "supporting": "`pytest` (182 passed, 1 skipped, coverage 93% \u2014 measured in a clean CI-equivalent venv); `cd frontend && npm test -- --run` (5 passed); also green on GitHub Actions run 29671853670 for Python 3.12 and 3.13",
+      "validation_status": "verified_ci",
+      "date_validated": "2026-07-19",
       "external_dependency": null,
-      "known_limitation": "Two E2E tests: a fast service-level one (TRANSFORM_SQL) and a true dbt-pipeline one (real dbt build) added in H4."
+      "known_limitation": "The single skip is the Anthropic integration test, which requires ANTHROPIC_API_KEY (reported explicitly via `pytest -rs`). Two E2E tests: a fast service-level one (TRANSFORM_SQL, with a drift guard) and a true dbt-pipeline one that runs the real dbt build."
     },
     {
       "id": "screenshots",
@@ -211,5 +211,6 @@
       "external_dependency": null,
       "known_limitation": "DEMONSTRATION auth: identities come from static demo bearer tokens (overridable via BOMG_DEMO_USERS), not an SSO/OIDC IdP; no session management, token expiry, or rate limiting. The authorization logic (role checks, steward-gated decisions, authenticated-actor recording) is production-shaped; the credential source is not."
     }
-  ]
+  ],
+  "final_verification_report": "docs/final-verification-report.md"
 }

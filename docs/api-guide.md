@@ -21,7 +21,10 @@ Missing or unknown token → 401; authenticated but insufficient role → 403. T
 recorded on a decision is the **authenticated principal**, never a value in the request
 body. Example: `curl -H "Authorization: Bearer demo-steward-token" .../issues`.
 
-## Endpoints (26)
+## Endpoints (29)
+
+Counted as distinct method+path operations in the OpenAPI schema (`/api/v1/openapi.json`);
+some rows below group several related paths.
 
 ### Platform
 | Method | Path | Notes |
@@ -69,4 +72,6 @@ uvicorn api.app.main:app --port 8000
 ```
 
 The API serves `warehouse/local/bom_guardian.duckdb` (path via `BOMG_DUCKDB_PATH`).
-No authentication is implemented — see [security-model.md](security-model.md).
+Authentication is **demonstration-grade** (static demo bearer tokens, role-based
+authorization enforced) — not enterprise SSO. See the Authorization section above and
+[security-model.md](security-model.md).

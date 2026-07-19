@@ -194,11 +194,12 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 | H7 | Role-based remediation authorization | ✅ Complete (demo auth; steward-gated decisions, authenticated actor recorded) |
 | H8 | Verify GitHub Actions | ✅ Complete (**confirmed green on github.com** — run 29670834422) |
 | H9 | Verified application screenshots | ✅ Complete (8 real Playwright captures committed) |
-| H10 | Final forensic audit | ⬜ Not started |
+| H10 | Final forensic audit | ✅ Complete ([`docs/final-verification-report.md`](docs/final-verification-report.md)) |
 
 ## In-progress work
 
-- H10 next — final forensic audit and `docs/final-verification-report.md`.
+- None. The hardening phase (H1–H10) is complete. Remaining work requires external
+  credentials/software and is listed under "Manual actions remaining" below.
 
 ## Hardening results so far
 
@@ -300,22 +301,48 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
     that H7 had made meaningless (the API records the authenticated principal and ignores
     any body-supplied actor). Added `GET /api/v1/me` and replaced the input with
     "Signing as demo.steward (steward) — recorded from your authenticated session, not
-    typed in." Endpoint count 25 → 26.
+    typed in." Endpoint count corrected in H10 to the real figure (29).
+- **H10** — final forensic audit; published
+  [`docs/final-verification-report.md`](docs/final-verification-report.md), which sorts
+  every claim into verified-on-CI / tested-locally / external-pending / not-implemented /
+  manual-remaining, with explicit denominators for each headline metric. Re-ran the full
+  gate set in a clean CI-equivalent venv (ruff, ruff format, mypy, 182 tests, frontend
+  lint/typecheck/test/build, real dbt smoke pipeline, markdown-link check).
+  - **5 findings, all fixed:** (1) `docs/api-guide.md` still said "No authentication is
+    implemented" — stale since H7; (2) `docs/limitations.md` still claimed reviewer
+    identity is self-declared; (3) the published endpoint count (25/26) was wrong — the
+    OpenAPI schema exposes **29** operations; (4) `fetchPart` was dead code in the
+    frontend API client; (5) the Workbench dead control (fixed in H9).
+  - **Clean scans:** no TODO/FIXME markers, no placeholder/stub implementations, no
+    hard-coded secrets, no generated/local files tracked, no frontend mock data, all
+    markdown links resolve, no legacy `CORTEX.COMPLETE` calls.
 
-## Last successful commit
+## Hardening commit log (H1–H10)
 
-- `741153a` docs: publish complete BOM Guardian AI portfolio case study (M0–M21).
-  The hardening phase (H1+) builds on top of it.
+| Checkpoint | Commit | Message |
+|---|---|---|
+| H1 | `ccdcfea` | docs: reconcile project status and implementation claims |
+| H2 | `52f269f` | fix: enforce entity-disjoint ML evaluation |
+| H3 | `335e35d` | test: strengthen defect detection evaluation against clean ground truth |
+| H4 | `2248693` (+ `a1984d6` lint follow-up) | test: validate the real dbt pipeline end to end |
+| H5 | `f0f684f` | feat: complete and modernize the Snowflake execution path |
+| H6 | `91c85fc` | feat: add configurable real AI remediation provider |
+| H7 | `b4495cc` | feat: enforce role-based remediation authorization |
+| H8 | `13fa952` (+ `6e4d724` badge/record) | ci: verify repository quality gates on GitHub Actions |
+| H9 | `c4c8bbc` | docs: add verified application screenshots |
+| H10 | this commit | docs: publish verified platform completion report |
 
 ## Tests currently passing
 
-- Python: 173 passed, 1 skipped — unit + integration + data-quality + API + E2E
-  (`pytest`), ruff + mypy (`mypy src`) clean (measured this session; see `git log`).
+- Python: **182 passed, 1 skipped** — unit + integration + data-quality + API + E2E
+  (`pytest`), coverage 93%; ruff, `ruff format --check`, and `mypy src` clean. Measured
+  in a clean CI-equivalent virtualenv. The single skip is the Anthropic integration test
+  (no `ANTHROPIC_API_KEY`), reported explicitly via `pytest -rs`.
 - Frontend: 5 vitest tests, oxlint clean, `tsc -b` clean, production build succeeds.
-- CI: **confirmed green on GitHub Actions** (run 29670834422, commit `13fa952`) —
-  python 3.12 + 3.13 (ruff check, ruff format --check, mypy, full pytest incl. the real
-  dbt E2E), frontend (lint/typecheck/test/build), dbt smoke pipeline, docs-links,
-  secret scanning. Coverage on the CI-equivalent run: 93%.
+- CI: **confirmed green on GitHub Actions** — latest run
+  [29671853670](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29671853670)
+  on commit `c4c8bbc`; previous green run 29670834422 on `13fa952`. Jobs: python 3.12,
+  python 3.13, frontend, dbt, docs-links, secrets (dependency-review is PR-only).
 
 ## Known failures
 
@@ -323,8 +350,8 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 
 ## External integrations
 
-**Configured / working:** GitHub push authentication (24 commits pushed to `main` over
-HTTPS).
+**Configured / working:** GitHub push authentication (36 commits on `main` over HTTPS);
+**GitHub Actions verified green**.
 
 **Implemented locally, external execution pending (no credentials/resources):**
 - **Snowflake** — provisioning scripts, role model, DuckDB-parity schema, `dbt`
@@ -337,19 +364,33 @@ HTTPS).
 - **Hosted AI provider (Anthropic/other)** — optional; real provider + validation
   script added in H6, marked *externally validated* only after a successful run.
 
-## Next exact action
+## Manual actions remaining (require credentials/software this environment lacks)
 
-Proceed to H9 — build a reproducible Playwright capture that runs the real pipeline, API,
-and frontend, then captures genuine screenshots of the 8 surfaces; or document the exact
-blocker and leave H9 explicitly pending. No fabricated images.
+1. **Snowflake** — run `python scripts/deploy_snowflake.py --execute` against a real
+   account, then run the pipeline on the `snowflake` dbt target and record the result.
+2. **Anthropic provider** — set `ANTHROPIC_API_KEY`, run
+   `python scripts/validate_real_ai_provider.py`, and flip the `real-ai-provider` claim
+   to *measured* once `evaluation/ai/real_provider_validation.json` exists.
+3. **Power BI** — build the model in Power BI Desktop per `powerbi/BUILD_POWER_BI.md` and
+   commit/publish the `.pbix`.
+4. **Screenshots** — re-run `make screenshots` after any material UI change.
 
 ## Honest completion percentage
 
-**~92%** (revised during hardening). M0–M21 plus H1–H7 are built and locally tested:
-ML-evaluation leakage (H2), DQ precision/recall (H3), the real-dbt E2E test (H4), the
-Snowflake path (H5), the real AI provider (H6), and role-based authorization (H7) are all
-addressed with tests. Remaining before any "complete" claim: confirmed green GitHub
-Actions (H8), verified application screenshots (H9), the final forensic audit (H10), and
-the external validations that need credentials/resources (live Snowflake deployment,
-Power BI Desktop `.pbix`, a real AI-provider execution). Percentage will be re-derived
-honestly in H10.
+**93%** — re-derived in H10 (see
+[`docs/final-verification-report.md`](docs/final-verification-report.md) §7).
+
+Everything that can be built and proven without external credentials is done and
+verified: M0–M21 plus H1–H10, 182 tests passing, CI green on GitHub Actions across two
+Python versions, and real screenshots of all 8 UI surfaces. The remaining ~7% is
+explicitly blocked on resources this project does not have: a live Snowflake account
+(~3%), an Anthropic API key (~2%), and Power BI Desktop (~2%).
+
+**This project is deliberately NOT called 100% complete.** Three of the five
+disqualifying conditions still hold:
+
+- ❌ Snowflake has not been executed against a real account
+- ❌ The Anthropic provider has not been successfully run with credentials
+- ❌ Power BI Desktop has not produced and validated the final report
+- ✅ Screenshot capture is complete (8/8 real captures)
+- ✅ GitHub Actions is green (run 29671853670)

@@ -31,13 +31,13 @@ end, reproducibly, on a laptop.
 | Governed AI remediation engine (mock provider) | Implemented and tested |
 | Snowflake warehouse adapter + Cortex `AI_COMPLETE` provider | Implemented locally, fake-connection tested — **external Snowflake execution pending (no credentials)** |
 | Configurable real AI provider (Anthropic Claude) | Implemented, fake-client tested — **external validation pending (`scripts/validate_real_ai_provider.py` needs a key)** |
-| FastAPI service (26 endpoints) | Implemented and tested |
+| FastAPI service (29 endpoints) | Implemented and tested |
 | Role-based authorization (analyst/steward/admin; steward-gated decisions; authenticated actor recorded) | Implemented and tested — **demonstration auth (static demo tokens), not enterprise SSO/OIDC** |
 | React remediation workbench (8 surfaces, live API data) | Implemented and tested (5 vitest tests, typecheck/build clean); **real Playwright screenshots of all 8 surfaces captured** from the running app ([`docs/screenshots/`](docs/screenshots/)) |
 | Data Steward Copilot (read-only, cited) | Implemented and tested |
 | Snowflake warehouse scripts + adapter + deploy path | Implemented locally (`SnowflakeWarehouse`, `scripts/deploy_snowflake.py`) — **deployment pending (no credentials)** |
 | Power BI package (marts, model spec, DAX, theme, pages) | Source package complete — **Desktop validation pending; no `.pbix` exists** |
-| CI (GitHub Actions), secret scanning, threat model | Implemented and **verified green on GitHub** (run [29670834422](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29670834422): python 3.12 + 3.13, frontend, dbt, docs-links, secrets) |
+| CI (GitHub Actions), secret scanning, threat model | Implemented and **verified green on GitHub** (latest run [29671853670](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29671853670): python 3.12 + 3.13, frontend, dbt, docs-links, secrets) |
 | End-to-end test + published evaluation artifacts | Implemented and measured |
 
 ## Measured results (reproducible, synthetic data, seed 20260716)
@@ -51,7 +51,7 @@ end, reproducibly, on a laptop.
 | Generated records — smoke / demo / full | 13,882 / 247,881 / **1,699,010** | [`evaluation/performance/profile_counts.json`](evaluation/performance/profile_counts.json) |
 | 49 rules over demo profile (248k records) | 0.9 s | [`evaluation/performance/benchmarks_demo.json`](evaluation/performance/benchmarks_demo.json) |
 | API list endpoints | ~10 ms | same |
-| Automated tests | **173 Python (1 skipped) + 5 frontend, all passing** (incl. a true dbt-pipeline E2E and authorization enforcement) | `pytest`, `npm test` |
+| Automated tests | **182 Python (1 skipped) + 5 frontend, all passing** (incl. a true dbt-pipeline E2E and authorization enforcement) | `pytest`, `npm test` |
 
 Full-profile numbers cover generation only; downstream stages ran at smoke/demo scale
 (see [docs/limitations.md](docs/limitations.md)).
@@ -129,7 +129,7 @@ python scripts/run_local_pipeline.py                 # generate → inject → i
 uvicorn api.app.main:app --port 8000                 # API (terminal 1)
 cd frontend && npm install && npm run dev            # UI  (terminal 2) → http://localhost:5173
 
-pytest                                                # 173 tests (1 skipped)
+pytest                                                # 182 tests (1 skipped)
 ```
 
 Evaluation artifacts regenerate with `scripts/evaluate_detection.py`,
@@ -147,11 +147,12 @@ and is honestly marked pending throughout.
 | [Business case](docs/business-case.md) | Why master-data defects matter and who benefits |
 | [Data dictionary](docs/data-dictionary.md) | Every layer and table |
 | [DQ rule catalog](docs/dq-rule-catalog.md) | Rule taxonomy (registry in code is source of truth) |
-| [API guide](docs/api-guide.md) | All 26 endpoints |
+| [API guide](docs/api-guide.md) | All 29 endpoints |
 | [Model card](docs/model-card.md) | ER models, metrics, caveats |
 | [AI governance](docs/ai-governance.md) | Hard guarantees: no AI mutation, grounding, abstention, audit |
 | [Security model](docs/security-model.md) | Controls + 10-risk threat model + honest gaps |
 | [Limitations](docs/limitations.md) | What this project does **not** prove |
+| [Final verification report](docs/final-verification-report.md) | Forensic audit: what is CI-verified vs locally tested vs externally pending |
 | [Demo script](docs/demo-script.md) | 10-minute walkthrough |
 | [Power BI build kit](powerbi/BUILD_POWER_BI.md) | Semantic model, DAX, pages, honest status |
 

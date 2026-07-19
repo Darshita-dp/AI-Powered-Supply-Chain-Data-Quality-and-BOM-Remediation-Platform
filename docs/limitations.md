@@ -24,8 +24,13 @@ An honest list of what this project does **not** do or prove.
 
 ## Platform
 
-- **No authentication or authorization** — reviewer identity is self-declared; the
-  approval endpoint trusts the caller. A real deployment needs SSO + roles + rate limits.
+- **Authentication is demonstration-grade, not production IAM.** Role-based
+  authorization *is* enforced (analyst/steward/admin; approve/reject/request-evidence
+  require steward or admin; the recorded actor is the authenticated principal, never a
+  body-supplied name). But identities come from static demo bearer tokens in
+  `api/app/auth.py`, not an SSO/OIDC provider, and there is no session management, token
+  expiry, revocation, or rate limiting. A real deployment must swap the token store for a
+  corporate IdP; the authorization checks themselves carry over.
 - **Snowflake is scripted but has never been deployed** (no account/credentials).
   All Snowflake artifacts are labeled "pending external validation."
 - **Snowflake Cortex AI provider is implemented but never executed** against a live

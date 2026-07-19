@@ -21,7 +21,6 @@ const V1 = '/api/v1'
 
 export const fetchParts = (params: Record<string, string | number>) =>
   apiGet<Page<Part>>(`${V1}/parts`, params)
-export const fetchPart = (id: string) => apiGet<Part>(`${V1}/parts/${id}`)
 export const fetchPartLineage = (id: string) => apiGet<Lineage>(`${V1}/parts/${id}/lineage`)
 export const fetchPartImpact = (id: string) => apiGet<Impact>(`${V1}/parts/${id}/impact`)
 
