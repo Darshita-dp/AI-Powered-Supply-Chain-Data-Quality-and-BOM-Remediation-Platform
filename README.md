@@ -1,5 +1,7 @@
 # BOM Guardian AI
 
+[![CI](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/workflows/ci.yml)
+
 **AI-Powered Supply Chain Data Quality and BOM Remediation Platform**
 
 BOM Guardian AI detects supply-chain master-data and bill-of-materials defects across
@@ -35,7 +37,7 @@ end, reproducibly, on a laptop.
 | Data Steward Copilot (read-only, cited) | Implemented and tested |
 | Snowflake warehouse scripts + adapter + deploy path | Implemented locally (`SnowflakeWarehouse`, `scripts/deploy_snowflake.py`) — **deployment pending (no credentials)** |
 | Power BI package (marts, model spec, DAX, theme, pages) | Source package complete — **Desktop validation pending; no `.pbix` exists** |
-| CI (GitHub Actions), secret scanning, threat model | Implemented (see Actions run history for live status) |
+| CI (GitHub Actions), secret scanning, threat model | Implemented and **verified green on GitHub** (run [29670834422](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29670834422): python 3.12 + 3.13, frontend, dbt, docs-links, secrets) |
 | End-to-end test + published evaluation artifacts | Implemented and measured |
 
 ## Measured results (reproducible, synthetic data, seed 20260716)

@@ -65,6 +65,15 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   steward via a demo token (`VITE_DEMO_TOKEN`). Added 7 unit tests plus an API-level
   enforcement test (401/401/403, analyst-read allowed, issue never transitioned by denied
   attempts).
+- H8: made GitHub Actions genuinely green (it had never passed; every prior run failed).
+  Root cause: the python job installed `.[dev,api,ml]`, but the document-intelligence
+  tests import `reportlab`/`pypdf` from the `docs-ai` extra, so pytest aborted during
+  collection with exit code 2. Also fixed a latent `ruff format --check` failure on 8
+  files. The python job now installs `.[dev,api,ml,docs-ai,dbt]`, adds a step asserting
+  dbt is importable so the real dbt E2E test cannot silently skip, and runs `pytest -rs`.
+  Verified on GitHub: run 29670834422 (commit `13fa952`) — python 3.12, python 3.13,
+  frontend, dbt, docs-links, and secrets all successful. README CI badge added only
+  after that confirmed run.
 
 ### Added
 - M0: repository governance, architecture docs, ADR log, ERD, DQ rule taxonomy,

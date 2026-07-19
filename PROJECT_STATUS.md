@@ -192,15 +192,14 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 | H5 | Complete/modernize the Snowflake execution path | ✅ Complete (implemented locally; external execution pending) |
 | H6 | Add a configurable real AI provider | ✅ Complete (implemented + fake-client tested; external validation pending) |
 | H7 | Role-based remediation authorization | ✅ Complete (demo auth; steward-gated decisions, authenticated actor recorded) |
-| H8 | Verify GitHub Actions | ⬜ Not started |
+| H8 | Verify GitHub Actions | ✅ Complete (**confirmed green on github.com** — run 29670834422) |
 | H9 | Verified application screenshots | ⬜ Not started |
 | H10 | Final forensic audit | ⬜ Not started |
 
 ## In-progress work
 
-- H8 next — verify the GitHub Actions workflows actually run green on github.com (not
-  just locally); add a status badge only after a confirmed successful run and record the
-  run URL here.
+- H9 next — capture real Playwright screenshots of the running application against live
+  API data, or document the precise blocker and leave the checkpoint explicitly pending.
 
 ## Hardening results so far
 
@@ -259,6 +258,27 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
   `tests/unit/test_authorization.py` (7 unit tests) and an API-level
   `test_authorization_enforcement` (401 unauthenticated, 401 unknown token, 403 analyst,
   200 analyst-read, issue never transitioned by denied attempts).
+- **H8** — **GitHub Actions is now genuinely green** (it had never passed before this
+  checkpoint; every prior run failed). Root cause of the long-standing Python job
+  failure: the workflow installed `.[dev,api,ml]`, but `tests/integration/
+  test_document_intelligence.py` imports `data_generator.documents`, which needs
+  `reportlab`/`pypdf` from the **`docs-ai`** extra — so pytest aborted during *collection*
+  with exit code 2 (not a test failure, which is why the suite passed locally where all
+  extras were installed). A second latent failure was also fixed: `ruff format --check`
+  would have rejected 8 files touched in H7. Changes: the python job now installs
+  `.[dev,api,ml,docs-ai,dbt]`, a "Verify dbt is installed" step guarantees the real dbt
+  E2E test cannot silently skip, `pytest -rs` surfaces skip reasons, and the dbt job
+  installs `docs-ai` too. Reproduced the failure and the fix in a clean CI-equivalent
+  virtualenv before pushing.
+  - **Verified run:** [29670834422](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29670834422)
+    on commit `13fa952`, conclusion **success**.
+  - **Jobs confirmed successful:** `python (3.12)`, `python (3.13)`, `frontend`, `dbt`,
+    `docs-links`, `secrets`. (`dependency-review` shows *skipped* by design — it is
+    gated on `github.event_name == 'pull_request'`.)
+  - Within the python job, every step passed: Install, Lint (`ruff check`), Format check
+    (`ruff format --check`), Type check (`mypy src`), Verify dbt is installed, and Tests
+    (full suite including the real dbt end-to-end test).
+  - README CI badge added **only after** this confirmed green run.
 
 ## Last successful commit
 
@@ -270,9 +290,10 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 - Python: 173 passed, 1 skipped — unit + integration + data-quality + API + E2E
   (`pytest`), ruff + mypy (`mypy src`) clean (measured this session; see `git log`).
 - Frontend: 5 vitest tests, oxlint clean, `tsc -b` clean, production build succeeds.
-- CI: workflows authored; **local equivalents of every job pass** (ruff, mypy, pytest,
-  frontend lint/typecheck/test/build, dbt smoke pipeline). **GitHub Actions run status
-  on github.com: not yet confirmed** — to be verified in H8.
+- CI: **confirmed green on GitHub Actions** (run 29670834422, commit `13fa952`) —
+  python 3.12 + 3.13 (ruff check, ruff format --check, mypy, full pytest incl. the real
+  dbt E2E), frontend (lint/typecheck/test/build), dbt smoke pipeline, docs-links,
+  secret scanning. Coverage on the CI-equivalent run: 93%.
 
 ## Known failures
 
@@ -296,9 +317,9 @@ HTTPS).
 
 ## Next exact action
 
-Proceed to H8 — inspect the GitHub Actions run history, fix any failing job, and confirm
-a green run on github.com before adding a status badge or claiming CI passes; record the
-run URL here.
+Proceed to H9 — build a reproducible Playwright capture that runs the real pipeline, API,
+and frontend, then captures genuine screenshots of the 8 surfaces; or document the exact
+blocker and leave H9 explicitly pending. No fabricated images.
 
 ## Honest completion percentage
 

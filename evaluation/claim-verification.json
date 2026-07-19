@@ -177,12 +177,12 @@
     },
     {
       "id": "ci",
-      "claim": "CI (GitHub Actions) runs Python/frontend/dbt/link/secret jobs.",
-      "supporting": ".github/workflows/ci.yml, snowflake-validation.yml",
-      "validation_status": "pending",
-      "date_validated": null,
-      "external_dependency": "GitHub Actions execution",
-      "known_limitation": "Workflows authored; every job's local equivalent passes on this machine; the GitHub-hosted run has NOT been confirmed green. H8 verifies and records the run URL before any badge is added."
+      "claim": "CI (GitHub Actions) runs Python 3.12/3.13 (lint, format, mypy, full pytest incl. real dbt E2E), frontend (lint/typecheck/test/build), dbt smoke pipeline, docs-link check, and secret scanning.",
+      "supporting": ".github/workflows/ci.yml; verified run https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29670834422 on commit 13fa952 (conclusion: success)",
+      "validation_status": "verified_ci",
+      "date_validated": "2026-07-18",
+      "external_dependency": null,
+      "known_limitation": "Confirmed green on GitHub Actions for commit 13fa952. Prior to H8 every run failed: the python job installed .[dev,api,ml] but test collection needs the docs-ai extra (reportlab/pypdf), aborting pytest with exit code 2. dependency-review is intentionally skipped on push (pull_request only). The optional snowflake-validation workflow is manual and still never executed (no credentials)."
     },
     {
       "id": "tests",
