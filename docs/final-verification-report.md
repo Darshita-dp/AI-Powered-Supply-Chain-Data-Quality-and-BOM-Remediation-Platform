@@ -1,6 +1,6 @@
 # Final Verification Report — BOM Guardian AI
 
-**Audit date:** 2026-07-19 · **Audited commit:** `c4c8bbc` (+ this report) ·
+**Audit date:** 2026-07-19 · **Audited commit:** `61d1228` ·
 **Auditor:** final forensic pass (hardening checkpoint H10)
 
 This report states what is actually true about this repository. Every claim below is
@@ -25,10 +25,12 @@ Claims are sorted into five tiers. Nothing is promoted a tier without evidence.
 
 ## 2. Tier A — Verified through GitHub Actions
 
-CI run **[29671853670](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29671853670)**
-on commit `c4c8bbc`, conclusion **success**. (Previous green run:
+CI run **[29672365390](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29672365390)**
+on commit `61d1228`, conclusion **success** — the third consecutive green run, after
 [29670834422](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29670834422)
-on `13fa952`.)
+(`13fa952`) and
+[29671853670](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29671853670)
+(`c4c8bbc`).
 
 | Job | Result | What it proves |
 |---|---|---|
@@ -166,6 +168,9 @@ non-zero rather than emitting placeholders. 8 harness regression tests guard it.
 | 3 | Endpoint count published as 25/26; the OpenAPI schema actually exposes **29** GET/POST operations (guide rows group several paths) | README and API guide corrected to 29, with a note on how it is counted |
 | 4 | `fetchPart` exported from the frontend API client but never used — dead code | Removed; typecheck and build re-verified |
 | 5 | Workbench "Reviewer name" input had been made meaningless by H7 (a dead control implying a typed name is recorded) | Fixed in H9: replaced with the authenticated identity from a new `GET /api/v1/me` |
+| 6 | The historical M20 entry in `PROJECT_STATUS.md` still quoted "100% recall on 156 mapped defects" and "136 Python tests" — both superseded, and quotable out of context | Annotated as **superseded by H3**, pointing at the current figures (0.985 recall / 197 defects; 182 tests) |
+| 7 | `evaluation/claim-verification.json` entries for `api` and `tests` were stale (25 endpoints; "no authentication — reviewer identity is self-declared"; 136 tests) | Both claims rewritten and re-dated; `tests` promoted to `verified_ci` |
+| 8 | Several `PROJECT_STATUS.md` milestone rows still said "screenshots pending H9" / "no screenshots — capture unavailable" / CI "verifies on push" | Updated to reflect captured screenshots and the confirmed green run |
 
 **Clean scans (no findings):** no `TODO`/`FIXME`/`XXX`/`HACK` markers in tracked source;
 no `NotImplementedError`/stub/placeholder implementations (all "placeholder" hits are
@@ -222,7 +227,7 @@ do:
 - ❌ The Anthropic provider has not been successfully run with credentials
 - ❌ Power BI Desktop has not produced and validated the final report
 - ✅ Screenshot capture is complete (8/8 surfaces, real captures)
-- ✅ GitHub Actions is green (run 29671853670)
+- ✅ GitHub Actions is green (run 29672365390)
 
 ---
 

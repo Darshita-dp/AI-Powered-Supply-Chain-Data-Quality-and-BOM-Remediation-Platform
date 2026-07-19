@@ -1,11 +1,13 @@
 # PROJECT_STATUS.md — BOM Guardian AI
 
-_Last updated: 2026-07-17 (hardening phase)_
+_Last updated: 2026-07-19 (hardening phase H1-H10 complete)_
 
 ## Current milestone
 
-**M0–M21 built and locally tested. Now in the H1–H10 hardening phase** (accuracy,
-validation, and production-hardening; see the hardening table below).
+**M0–M21 built and tested, and the H1–H10 hardening phase is complete.** CI is green on
+GitHub Actions and all 8 UI surfaces have real screenshots. Remaining work needs external
+credentials/software — see "Manual actions remaining" and
+[docs/final-verification-report.md](docs/final-verification-report.md).
 
 ## Milestone plan
 
@@ -27,12 +29,12 @@ validation, and production-hardening; see the hardening table below).
 | M13 | AI remediation engine | ✅ Complete (mock provider tested; Cortex path pending credentials) |
 | M14 | Quality Impact Twin | ✅ Complete |
 | M15 | FastAPI service | ✅ Complete |
-| M16 | React remediation workbench | ✅ Complete (live API data; 5 vitest tests + build; browser rendering exercised via accessibility tree — screenshots pending H9) |
+| M16 | React remediation workbench | ✅ Complete (live API data; 5 vitest tests + build; **real screenshots of all 8 surfaces captured in H9**) |
 | M17 | Data Steward Copilot | ✅ Complete (deterministic classifier; AI rewrite optional later) |
 | M18 | Power BI analytical package | ✅ Complete (source package; Desktop validation pending — no `.pbix` claimed) |
-| M19 | CI, security, observability | ✅ Complete (workflows authored; GitHub run status verifies on push) |
+| M19 | CI, security, observability | ✅ Complete (**verified green on GitHub Actions in H8** — run 29672365390) |
 | M20 | End-to-end evaluation | ✅ Complete |
-| M21 | Portfolio packaging | ✅ Complete (no screenshots — capture unavailable; documented honestly) |
+| M21 | Portfolio packaging | ✅ Complete (screenshots captured in H9; final audit published in H10) |
 
 ## Completed milestones
 
@@ -174,6 +176,13 @@ validation, and production-hardening; see the hardening table below).
   ER 66.6s); profile counts measured (`profile_counts.json`): smoke 13,882 / demo
   247,881 / **full 1,699,010 records generated in 735s** (full-profile downstream
   stages not run — documented). 136 Python tests total.
+  ⚠️ **Superseded by H3 — do not quote the figures above.** The "100% recall on 156
+  mapped defects across 17 types" was recall-only, measured without a validated clean
+  baseline and without precision. H3 re-measured against a validated clean baseline over
+  **all 25 injected types**: recall **0.985 (194/197)** and precision **≥ 0.933** on the
+  20 SQL-detectable types. The test count is also stale — the suite is now **182 passed,
+  1 skipped**. Current figures live in `evaluation/data_quality/detection_smoke.json` and
+  `docs/final-verification-report.md`.
   ⚠️ **Refined by H4:** the M20 end-to-end test exercises the services but applies
   `bom_guardian.testing.TRANSFORM_SQL` (hand-written views) instead of invoking the real
   dbt project, so it is a *service-level* E2E test — it would not catch a broken dbt
@@ -308,7 +317,7 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
   manual-remaining, with explicit denominators for each headline metric. Re-ran the full
   gate set in a clean CI-equivalent venv (ruff, ruff format, mypy, 182 tests, frontend
   lint/typecheck/test/build, real dbt smoke pipeline, markdown-link check).
-  - **5 findings, all fixed:** (1) `docs/api-guide.md` still said "No authentication is
+  - **8 findings, all fixed:** (1) `docs/api-guide.md` still said "No authentication is
     implemented" — stale since H7; (2) `docs/limitations.md` still claimed reviewer
     identity is self-declared; (3) the published endpoint count (25/26) was wrong — the
     OpenAPI schema exposes **29** operations; (4) `fetchPart` was dead code in the
@@ -340,8 +349,8 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
   (no `ANTHROPIC_API_KEY`), reported explicitly via `pytest -rs`.
 - Frontend: 5 vitest tests, oxlint clean, `tsc -b` clean, production build succeeds.
 - CI: **confirmed green on GitHub Actions** — latest run
-  [29671853670](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29671853670)
-  on commit `c4c8bbc`; previous green run 29670834422 on `13fa952`. Jobs: python 3.12,
+  [29672365390](https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/actions/runs/29672365390)
+  on commit `61d1228`; previous green run 29670834422 on `13fa952`. Jobs: python 3.12,
   python 3.13, frontend, dbt, docs-links, secrets (dependency-review is PR-only).
 
 ## Known failures
@@ -393,4 +402,4 @@ disqualifying conditions still hold:
 - ❌ The Anthropic provider has not been successfully run with credentials
 - ❌ Power BI Desktop has not produced and validated the final report
 - ✅ Screenshot capture is complete (8/8 real captures)
-- ✅ GitHub Actions is green (run 29671853670)
+- ✅ GitHub Actions is green (run 29672365390)

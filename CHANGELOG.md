@@ -87,12 +87,14 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 - H10: final forensic audit — published `docs/final-verification-report.md` sorting every
   claim into verified-on-CI / tested-locally / external-validation-pending /
   not-implemented / manual-remaining, with explicit denominators for every headline
-  metric. Re-ran the full gate set in a clean CI-equivalent virtualenv. Five findings,
+  metric. Re-ran the full gate set in a clean CI-equivalent virtualenv. Eight findings,
   all corrected: `docs/api-guide.md` still said "No authentication is implemented" and
   `docs/limitations.md` still claimed reviewer identity was self-declared (both stale
   since H7); the published endpoint count was wrong (the OpenAPI schema exposes **29**
   operations, not 25/26); `fetchPart` was dead code in the frontend API client; and the
-  Workbench dead control (fixed in H9). Scans for TODO/FIXME markers, placeholder
+  Workbench dead control (fixed in H9); a superseded "100% recall" figure and stale test
+  counts in historical status entries; and stale `api`/`tests` entries in the claim
+  inventory. Scans for TODO/FIXME markers, placeholder
   implementations, hard-coded secrets, committed generated files, frontend mock data,
   broken links, and legacy `CORTEX.COMPLETE` calls all came back clean. Honest completion
   re-derived at **93%** — deliberately not 100% while Snowflake, the Anthropic provider,
