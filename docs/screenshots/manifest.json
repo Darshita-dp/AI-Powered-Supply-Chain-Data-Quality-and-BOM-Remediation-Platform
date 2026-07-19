@@ -1,0 +1,60 @@
+{
+  "captured_from": "live application (real pipeline + FastAPI + Vite dev server)",
+  "profile": "smoke",
+  "api_base": "http://127.0.0.1:50090",
+  "ui_base": "http://localhost:50091",
+  "viewport": {
+    "width": 1600,
+    "height": 900
+  },
+  "screenshots": [
+    {
+      "file": "command-center.png",
+      "caption": "Command Center \u2014 enterprise quality score, issue counts by severity, and the highest-exposure defects, all read from the live API.",
+      "alt": "BOM Guardian Command Center dashboard showing the enterprise quality score, issue counts by severity, and a ranked list of highest-impact data-quality issues.",
+      "bytes": 86767
+    },
+    {
+      "file": "issue-explorer.png",
+      "caption": "Data Quality Explorer \u2014 filterable, paginated issues from the 49-rule engine with severity, domain, and status.",
+      "alt": "Data Quality Explorer table listing detected data-quality issues with rule id, severity, domain, entity, and status columns.",
+      "bytes": 164537
+    },
+    {
+      "file": "remediation-workbench.png",
+      "caption": "Remediation Workbench \u2014 issue evidence, a governed AI proposal (schema-validated, grounded, human-review-required), and the steward decision panel showing the authenticated actor.",
+      "alt": "Remediation Workbench showing issue summary, evidence rows, an AI remediation proposal with confidence and explanation, and an approve or reject decision panel.",
+      "bytes": 89910
+    },
+    {
+      "file": "part-360.png",
+      "caption": "Part 360 \u2014 searchable part master with the golden record, per-field lineage (source, reason, confidence) and blast-radius impact.",
+      "alt": "Part 360 page listing parts with a selected part's golden record, field-level lineage, and impact metrics.",
+      "bytes": 129589
+    },
+    {
+      "file": "bom-explorer.png",
+      "caption": "BOM Graph Explorer \u2014 multi-level bill-of-materials traversal with cycle, orphan, and reverse-dependency analysis.",
+      "alt": "BOM Graph Explorer showing an interactive node-and-edge graph of a multi-level bill of materials for the selected part.",
+      "bytes": 95654
+    },
+    {
+      "file": "scenario-simulator.png",
+      "caption": "Scenario Simulator \u2014 counterfactual merge/correction/replacement with before-and-after diffs and newly introduced conflicts. Simulations are persisted separately and never mutate baseline data.",
+      "alt": "Scenario Simulator showing a simulated part merge with before and after comparison and any newly introduced conflicts.",
+      "bytes": 132798
+    },
+    {
+      "file": "ai-governance.png",
+      "caption": "AI Governance \u2014 every AI call audited: provider, model, prompt version, latency, validation result, abstention, and confidence.",
+      "alt": "AI Governance dashboard listing audited AI calls with provider, model, latency, validation outcome, and confidence.",
+      "bytes": 49766
+    },
+    {
+      "file": "copilot.png",
+      "caption": "Data Steward Copilot \u2014 read-only, allowlisted retrieval with cited evidence; refuses mutations and answers 'insufficient evidence' rather than guessing.",
+      "alt": "Data Steward Copilot chat panel showing a question about critical issues and a cited, evidence-backed answer.",
+      "bytes": 72985
+    }
+  ]
+}

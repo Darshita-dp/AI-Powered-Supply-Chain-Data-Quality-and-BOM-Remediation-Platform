@@ -195,12 +195,12 @@
     },
     {
       "id": "screenshots",
-      "claim": "Application screenshots.",
-      "supporting": null,
-      "validation_status": "pending",
-      "date_validated": null,
-      "external_dependency": "headless browser screenshot capability",
-      "known_limitation": "None exist. Automated capture timed out in the build environment; H9 adds a Playwright capture script and either produces real screenshots or leaves this explicitly pending."
+      "claim": "Real application screenshots of all 8 UI surfaces, captured from the running app.",
+      "supporting": "scripts/capture_screenshots.py (real pipeline + FastAPI + Vite + Playwright); docs/screenshots/*.png + manifest.json; tests/unit/test_screenshot_capture.py (8 harness tests)",
+      "validation_status": "verified_local",
+      "date_validated": "2026-07-18",
+      "external_dependency": null,
+      "known_limitation": "Captured on a Windows dev machine against the smoke profile; values are synthetic and vary by profile/seed. The capture is not run in CI (it needs a browser download plus npm install), so the committed PNGs are refreshed manually via `make screenshots`. The script asserts live API values appear in the DOM before saving, and fails rather than emitting placeholders."
     },
     {
       "id": "role-based-authorization",

@@ -1,5 +1,12 @@
 /** Types mirroring the FastAPI response models. */
 
+/** The authenticated principal (GET /api/v1/me). Decisions are recorded against
+ *  this identity — a reviewer name is never accepted from the client. */
+export interface Principal {
+  username: string
+  role: string
+}
+
 export interface Page<T> {
   items: T[]
   total: number

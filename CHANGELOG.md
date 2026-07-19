@@ -74,6 +74,16 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   Verified on GitHub: run 29670834422 (commit `13fa952`) — python 3.12, python 3.13,
   frontend, dbt, docs-links, and secrets all successful. README CI badge added only
   after that confirmed run.
+- H9: captured **real application screenshots** of all 8 UI surfaces (previously none
+  existed). Added `scripts/capture_screenshots.py` — runs the real pipeline, starts
+  FastAPI and the Vite dev server on runtime-selected free ports, waits for
+  health/readiness, authenticates with the demo steward token, and drives the live UI
+  with Playwright using ids read from the API; writes optimized PNGs plus a manifest with
+  captions and alt text, and tears down the whole process tree in a `finally`. Exposed as
+  `make screenshots` / `npm run screenshots`, with 8 harness regression tests. Also fixed
+  a dead control the H7 authorization change had left behind: the Workbench's free-text
+  "Reviewer name" input no longer had any effect, so it was replaced with the
+  authenticated identity from a new `GET /api/v1/me` endpoint (25 → 26 endpoints).
 
 ### Added
 - M0: repository governance, architecture docs, ADR log, ERD, DQ rule taxonomy,

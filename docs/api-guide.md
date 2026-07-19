@@ -21,7 +21,7 @@ Missing or unknown token → 401; authenticated but insufficient role → 403. T
 recorded on a decision is the **authenticated principal**, never a value in the request
 body. Example: `curl -H "Authorization: Bearer demo-steward-token" .../issues`.
 
-## Endpoints (25)
+## Endpoints (26)
 
 ### Platform
 | Method | Path | Notes |
@@ -29,6 +29,7 @@ body. Example: `curl -H "Authorization: Bearer demo-steward-token" .../issues`.
 | GET | /health | liveness + version |
 | GET | /readiness | verifies all warehouse schemas |
 | GET | /metrics | part count, issues by status |
+| GET | /me | the authenticated principal (`username`, `role`) — the UI shows this as the actor a decision will be recorded against |
 
 ### Parts
 | GET | /parts | pagination (`page`, `page_size`≤200), `search`, `category`, `lifecycle_status`, `plant`, `sort_by` (allowlisted), `sort_dir` |

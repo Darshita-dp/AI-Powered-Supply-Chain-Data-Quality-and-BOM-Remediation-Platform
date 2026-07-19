@@ -193,13 +193,12 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
 | H6 | Add a configurable real AI provider | ✅ Complete (implemented + fake-client tested; external validation pending) |
 | H7 | Role-based remediation authorization | ✅ Complete (demo auth; steward-gated decisions, authenticated actor recorded) |
 | H8 | Verify GitHub Actions | ✅ Complete (**confirmed green on github.com** — run 29670834422) |
-| H9 | Verified application screenshots | ⬜ Not started |
+| H9 | Verified application screenshots | ✅ Complete (8 real Playwright captures committed) |
 | H10 | Final forensic audit | ⬜ Not started |
 
 ## In-progress work
 
-- H9 next — capture real Playwright screenshots of the running application against live
-  API data, or document the precise blocker and leave the checkpoint explicitly pending.
+- H10 next — final forensic audit and `docs/final-verification-report.md`.
 
 ## Hardening results so far
 
@@ -279,6 +278,29 @@ Rigorous accuracy/validation/production-hardening pass over the completed M0–M
     (`ruff format --check`), Type check (`mypy src`), Verify dbt is installed, and Tests
     (full suite including the real dbt end-to-end test).
   - README CI badge added **only after** this confirmed green run.
+- **H9** — **real screenshots captured** (previously "pending — none exist"). Added
+  `scripts/capture_screenshots.py`: runs the real pipeline, starts FastAPI + the Vite dev
+  server on runtime-selected free ports, waits for health/readiness, authenticates with
+  the demo steward token, and drives the live UI with Playwright using part/issue ids
+  read from the API. All **8 surfaces** captured to `docs/screenshots/` with a manifest
+  (caption + alt text + size); PNGs palette-optimized (~2.0 MB → ~0.8 MB total). Exposed
+  via `make screenshots` / `npm run screenshots`, tears down the whole process tree in a
+  `finally`, and fails loudly rather than emitting a placeholder.
+  - **Genuineness controls:** the frontend has no mock-data path, and the script asserts
+    values fetched from the API (issue id, rule id, authenticated principal) actually
+    appear in the rendered DOM before saving (`_assert_api_backed`).
+  - **Bugs found and fixed while doing this** (each now covered by a regression test in
+    `tests/unit/test_screenshot_capture.py`): the Playwright route glob `**/api/**` also
+    matched the app's own `/src/api/client.ts`, redirecting it to FastAPI (404) and
+    rendering a blank page — narrowed to `**/api/v1/**`; the readiness probe used
+    `127.0.0.1` while vite binds to `localhost`/IPv6 `::1`, so it timed out on a server
+    that was actually serving; and teardown terminated the `npm` wrapper but not its node
+    grandchild, orphaning a Vite process holding the port — now a process-tree kill.
+  - **Dead control removed:** the Workbench still had a free-text "Reviewer name" input
+    that H7 had made meaningless (the API records the authenticated principal and ignores
+    any body-supplied actor). Added `GET /api/v1/me` and replaced the input with
+    "Signing as demo.steward (steward) — recorded from your authenticated session, not
+    typed in." Endpoint count 25 → 26.
 
 ## Last successful commit
 

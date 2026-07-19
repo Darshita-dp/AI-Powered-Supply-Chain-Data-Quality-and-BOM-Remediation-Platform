@@ -31,9 +31,9 @@ end, reproducibly, on a laptop.
 | Governed AI remediation engine (mock provider) | Implemented and tested |
 | Snowflake warehouse adapter + Cortex `AI_COMPLETE` provider | Implemented locally, fake-connection tested — **external Snowflake execution pending (no credentials)** |
 | Configurable real AI provider (Anthropic Claude) | Implemented, fake-client tested — **external validation pending (`scripts/validate_real_ai_provider.py` needs a key)** |
-| FastAPI service (25 endpoints) | Implemented and tested |
+| FastAPI service (26 endpoints) | Implemented and tested |
 | Role-based authorization (analyst/steward/admin; steward-gated decisions; authenticated actor recorded) | Implemented and tested — **demonstration auth (static demo tokens), not enterprise SSO/OIDC** |
-| React remediation workbench (8 surfaces, live API data) | Implemented and tested (5 vitest tests, typecheck/build clean); browser rendering exercised via the accessibility tree — automated screenshots pending (H9) |
+| React remediation workbench (8 surfaces, live API data) | Implemented and tested (5 vitest tests, typecheck/build clean); **real Playwright screenshots of all 8 surfaces captured** from the running app ([`docs/screenshots/`](docs/screenshots/)) |
 | Data Steward Copilot (read-only, cited) | Implemented and tested |
 | Snowflake warehouse scripts + adapter + deploy path | Implemented locally (`SnowflakeWarehouse`, `scripts/deploy_snowflake.py`) — **deployment pending (no credentials)** |
 | Power BI package (marts, model spec, DAX, theme, pages) | Source package complete — **Desktop validation pending; no `.pbix` exists** |
@@ -90,14 +90,32 @@ Details: [docs/architecture/overview.md](docs/architecture/overview.md) ·
 
 ## Screenshots
 
-**Status: pending (H9).** No screenshots are committed yet. The UI's structure and live
-API-backed content were exercised programmatically via the browser accessibility tree
-(routes render, Command Center KPIs and issue data resolve from the API), but pixel
-screenshots have not been captured — an earlier automated attempt timed out in the build
-environment, and this project does not fabricate outputs. Hardening checkpoint **H9**
-adds a Playwright capture script (`scripts/capture_screenshots.py`) and will either
-commit real screenshots to `docs/screenshots/` or leave this section explicitly pending.
-Meanwhile, run the 10-minute [demo script](docs/demo-script.md) to see the app.
+Real captures of the running application — no mockups. Each was taken by
+[`scripts/capture_screenshots.py`](scripts/capture_screenshots.py), which runs the actual
+pipeline, starts FastAPI and the Vite dev server, signs in with the demo steward token,
+and drives the live UI with Playwright. Reproduce with `make screenshots`. All eight
+surfaces are in [`docs/screenshots/`](docs/screenshots/).
+
+![BOM Guardian Command Center dashboard showing the enterprise quality score, issue counts by severity, and a ranked list of highest-impact data-quality issues.](docs/screenshots/command-center.png)
+
+*Command Center — enterprise quality score, issues by domain, and the highest-exposure defects, all read from the live API.*
+
+![Remediation Workbench showing issue summary, evidence rows, an AI remediation proposal with confidence and explanation, and an approve or reject decision panel.](docs/screenshots/remediation-workbench.png)
+
+*Remediation Workbench — evidence, a governed AI proposal (schema-validated, grounded, human-review-required), and the steward decision panel. The reviewer is taken from the authenticated session, never typed in.*
+
+![Scenario Simulator showing a simulated part merge with before and after comparison and any newly introduced conflicts.](docs/screenshots/scenario-simulator.png)
+
+*Scenario Simulator (Quality Impact Twin) — a counterfactual merge with before/after state, rules resolved, and newly introduced conflicts (here: "merge introduces a BOM cycle"). Baseline data is never mutated.*
+
+![BOM Graph Explorer showing an interactive node-and-edge graph of a multi-level bill of materials for the selected part.](docs/screenshots/bom-explorer.png)
+
+*BOM Graph Explorer — multi-level BOM traversal with cycle, orphan, and reverse-dependency analysis.*
+
+Also captured: [Data Quality Explorer](docs/screenshots/issue-explorer.png) ·
+[Part 360](docs/screenshots/part-360.png) ·
+[AI Governance](docs/screenshots/ai-governance.png) ·
+[Data Steward Copilot](docs/screenshots/copilot.png)
 
 ## Quickstart (no cloud account needed)
 
@@ -129,7 +147,7 @@ and is honestly marked pending throughout.
 | [Business case](docs/business-case.md) | Why master-data defects matter and who benefits |
 | [Data dictionary](docs/data-dictionary.md) | Every layer and table |
 | [DQ rule catalog](docs/dq-rule-catalog.md) | Rule taxonomy (registry in code is source of truth) |
-| [API guide](docs/api-guide.md) | All 25 endpoints |
+| [API guide](docs/api-guide.md) | All 26 endpoints |
 | [Model card](docs/model-card.md) | ER models, metrics, caveats |
 | [AI governance](docs/ai-governance.md) | Hard guarantees: no AI mutation, grounding, abstention, audit |
 | [Security model](docs/security-model.md) | Controls + 10-risk threat model + honest gaps |

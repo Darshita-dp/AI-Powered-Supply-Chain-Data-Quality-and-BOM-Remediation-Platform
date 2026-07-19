@@ -6,6 +6,7 @@ import {
   fetchIssue,
   fetchIssueEvidence,
   fetchIssueHistory,
+  fetchMe,
   generateRecommendation,
   rejectIssue,
 } from '../api/endpoints'
@@ -31,9 +32,12 @@ export default function Workbench() {
 
 function IssueDetail({ issueId }: { issueId: string }) {
   const qc = useQueryClient()
-  const [reviewer, setReviewer] = useState('')
   const [reason, setReason] = useState('')
   const [proposal, setProposal] = useState<Proposal | null>(null)
+
+  // The decision is attributed to the authenticated principal server-side; the
+  // client cannot supply a reviewer name.
+  const me = useQuery({ queryKey: ['me'], queryFn: fetchMe })
 
   const issue = useQuery({ queryKey: ['issue', issueId], queryFn: () => fetchIssue(issueId) })
   const evidence = useQuery({
@@ -50,7 +54,7 @@ function IssueDetail({ issueId }: { issueId: string }) {
   })
   const decide = useMutation({
     mutationFn: ({ kind }: { kind: 'approve' | 'reject' }) =>
-      kind === 'approve' ? approveIssue(issueId, reviewer, reason) : rejectIssue(issueId, reviewer, reason),
+      kind === 'approve' ? approveIssue(issueId, reason) : rejectIssue(issueId, reason),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['issue', issueId] })
       qc.invalidateQueries({ queryKey: ['history', issueId] })
@@ -153,14 +157,11 @@ function IssueDetail({ issueId }: { issueId: string }) {
             {!decidable && <p style={{ margin: 0, color: 'var(--muted)' }}>This issue has already been decided.</p>}
             {decidable && (
               <>
-                <div className="controls">
-                  <input
-                    aria-label="Reviewer"
-                    placeholder="Reviewer name"
-                    value={reviewer}
-                    onChange={(e) => setReviewer(e.target.value)}
-                  />
-                </div>
+                <p className="signed-in-as" style={{ margin: '0 0 8px', color: 'var(--muted)' }}>
+                  Signing as{' '}
+                  <strong>{me.data ? `${me.data.username} (${me.data.role})` : '…'}</strong>
+                  {' '}— recorded from your authenticated session, not typed in.
+                </p>
                 <textarea
                   aria-label="Reason"
                   placeholder="Decision rationale (required)"
@@ -172,14 +173,14 @@ function IssueDetail({ issueId }: { issueId: string }) {
                 <div className="controls">
                   <button
                     className="approve"
-                    disabled={!reviewer || !reason || decide.isPending}
+                    disabled={!reason || decide.isPending}
                     onClick={() => decide.mutate({ kind: 'approve' })}
                   >
                     Approve
                   </button>
                   <button
                     className="reject"
-                    disabled={!reviewer || !reason || decide.isPending}
+                    disabled={!reason || decide.isPending}
                     onClick={() => decide.mutate({ kind: 'reject' })}
                   >
                     Reject

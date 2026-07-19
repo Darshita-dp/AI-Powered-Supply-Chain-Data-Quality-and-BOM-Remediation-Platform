@@ -41,6 +41,18 @@ def test_health_and_readiness(client) -> None:  # type: ignore[no-untyped-def]
     assert ready.json()["schemas"]["quality"] > 0
 
 
+def test_me_reports_authenticated_principal(client) -> None:  # type: ignore[no-untyped-def]
+    me = client.get("/api/v1/me")
+    assert me.status_code == 200
+    assert me.json() == {"username": "demo.steward", "role": "steward"}
+    # role reflects the presented credential, not a fixed value
+    analyst = client.get(
+        "/api/v1/me", headers={"Authorization": "Bearer demo-analyst-token"}
+    ).json()
+    assert analyst == {"username": "demo.analyst", "role": "analyst"}
+    assert client.get("/api/v1/me", headers={"Authorization": ""}).status_code == 401
+
+
 def test_correlation_id_header(client) -> None:  # type: ignore[no-untyped-def]
     r = client.get("/api/v1/health")
     assert r.headers["X-Correlation-ID"].startswith("REQ-")

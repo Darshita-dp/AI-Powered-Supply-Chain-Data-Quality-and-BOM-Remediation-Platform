@@ -10,6 +10,7 @@ import type {
   Lineage,
   Page,
   Part,
+  Principal,
   Proposal,
   QualityAnalytics,
   RemediationAnalytics,
@@ -31,10 +32,15 @@ export const fetchIssueEvidence = (id: string) => apiGet<Evidence[]>(`${V1}/issu
 export const fetchIssueHistory = (id: string) => apiGet<Decision[]>(`${V1}/issues/${id}/history`)
 export const generateRecommendation = (id: string) =>
   apiPost<Proposal>(`${V1}/issues/${id}/recommendations`)
-export const approveIssue = (id: string, reviewer: string, reason: string) =>
-  apiPost(`${V1}/issues/${id}/approve`, { reviewer, reason })
-export const rejectIssue = (id: string, reviewer: string, reason: string) =>
-  apiPost(`${V1}/issues/${id}/reject`, { reviewer, reason })
+/** The signed-in principal. Decisions are attributed to this identity server-side. */
+export const fetchMe = () => apiGet<Principal>(`${V1}/me`)
+
+// No reviewer argument: the API records the authenticated principal and ignores
+// any client-supplied actor, so sending one would be misleading.
+export const approveIssue = (id: string, reason: string) =>
+  apiPost(`${V1}/issues/${id}/approve`, { reason })
+export const rejectIssue = (id: string, reason: string) =>
+  apiPost(`${V1}/issues/${id}/reject`, { reason })
 
 export const fetchBomGraph = (id: string, depth: number) =>
   apiGet<BomGraphData>(`${V1}/bom/${id}/graph`, { depth })
