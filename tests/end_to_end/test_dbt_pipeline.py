@@ -134,9 +134,7 @@ def test_real_dbt_pipeline_end_to_end(tmp_path) -> None:  # type: ignore[no-unty
         DeterministicMockAIProvider(), warehouse=api_wh
     )
     try:
-        with TestClient(
-            app, headers={"Authorization": "Bearer demo-steward-token"}
-        ) as client:
+        with TestClient(app, headers={"Authorization": "Bearer demo-steward-token"}) as client:
             assert client.get("/api/v1/readiness").status_code == 200
             issue_id = api_wh.query(
                 "SELECT issue_id FROM quality.dq_issues WHERE status = 'DETECTED' LIMIT 1"

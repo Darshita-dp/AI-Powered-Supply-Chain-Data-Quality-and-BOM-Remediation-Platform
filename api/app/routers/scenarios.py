@@ -11,9 +11,7 @@ from api.app.schemas import ComponentReplacementIn, FieldCorrectionIn, MergeScen
 from bom_guardian.impact_twin import ScenarioResult, ScenarioSimulator
 from bom_guardian.warehouse import LocalWarehouse
 
-router = APIRouter(
-    prefix="/scenarios", tags=["scenarios"], dependencies=[Depends(get_principal)]
-)
+router = APIRouter(prefix="/scenarios", tags=["scenarios"], dependencies=[Depends(get_principal)])
 
 
 def _simulator(wh: LocalWarehouse) -> ScenarioSimulator:

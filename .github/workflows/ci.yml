@@ -18,15 +18,21 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - name: Install
-        run: pip install -e ".[dev,api,ml]"
+        # docs-ai (reportlab/pypdf) is required for test collection of the
+        # document-intelligence tests; dbt-duckdb is required for the real
+        # dbt end-to-end test to actually run instead of skipping.
+        run: pip install -e ".[dev,api,ml,docs-ai,dbt]"
       - name: Lint
         run: ruff check .
       - name: Format check
         run: ruff format --check .
       - name: Type check
         run: mypy src
-      - name: Tests
-        run: pytest --cov=src --cov-report=term-missing
+      - name: Verify dbt is installed (the real E2E test must not silently skip)
+        run: python -c "import dbt.cli.main; print('dbt available')"
+      - name: Tests (full suite incl. real dbt end-to-end)
+        # -rs reports skip reasons so a silently-skipped test is visible in the log.
+        run: pytest --cov=src --cov-report=term-missing -rs
 
   frontend:
     runs-on: ubuntu-latest
@@ -60,7 +66,7 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: Install
-        run: pip install -e ".[dev,api,ml,dbt]"
+        run: pip install -e ".[dev,api,ml,docs-ai,dbt]"
       - name: Run local pipeline (generate -> inject -> ingest -> dbt -> quality -> marts)
         run: python scripts/run_local_pipeline.py --profile smoke
 

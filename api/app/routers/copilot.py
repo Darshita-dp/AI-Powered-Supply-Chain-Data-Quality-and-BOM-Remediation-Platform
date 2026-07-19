@@ -8,9 +8,7 @@ from api.app.dependencies import get_warehouse
 from bom_guardian.copilot import Copilot
 from bom_guardian.warehouse import LocalWarehouse
 
-router = APIRouter(
-    prefix="/copilot", tags=["copilot"], dependencies=[Depends(get_principal)]
-)
+router = APIRouter(prefix="/copilot", tags=["copilot"], dependencies=[Depends(get_principal)])
 
 
 class CopilotQuery(BaseModel):

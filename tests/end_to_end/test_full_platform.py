@@ -83,9 +83,7 @@ def test_service_level_end_to_end(tmp_path_factory) -> None:  # type: ignore[no-
             DeterministicMockAIProvider(), warehouse=wh
         )
         baseline_parts = wh.query("SELECT * FROM core.dim_part ORDER BY part_key")
-        with TestClient(
-            app, headers={"Authorization": "Bearer demo-steward-token"}
-        ) as client:
+        with TestClient(app, headers={"Authorization": "Bearer demo-steward-token"}) as client:
             # 9: mock recommendation
             rec = client.post(f"/api/v1/issues/{issue['issue_id']}/recommendations")
             assert rec.status_code == 200

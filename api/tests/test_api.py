@@ -132,9 +132,7 @@ def test_authorization_enforcement(client) -> None:  # type: ignore[no-untyped-d
     r_bad = client.post(path, json=body, headers={"Authorization": "Bearer nope"})
     assert r_bad.status_code == 401
     # Authenticated analyst (insufficient role) -> 403
-    r_analyst = client.post(
-        path, json=body, headers={"Authorization": "Bearer demo-analyst-token"}
-    )
+    r_analyst = client.post(path, json=body, headers={"Authorization": "Bearer demo-analyst-token"})
     assert r_analyst.status_code == 403
     # Analyst may still read issues (least privilege, not no-access)
     r_read = client.get(

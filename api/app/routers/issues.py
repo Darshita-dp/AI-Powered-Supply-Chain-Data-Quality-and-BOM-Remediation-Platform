@@ -9,9 +9,7 @@ from api.app.services import IssueService
 from bom_guardian.ai import RemediationEngine
 from bom_guardian.warehouse import LocalWarehouse
 
-router = APIRouter(
-    prefix="/issues", tags=["issues"], dependencies=[Depends(get_principal)]
-)
+router = APIRouter(prefix="/issues", tags=["issues"], dependencies=[Depends(get_principal)])
 
 # Decisions that transition an issue require a data steward or administrator.
 _require_steward = require_role(Role.STEWARD)

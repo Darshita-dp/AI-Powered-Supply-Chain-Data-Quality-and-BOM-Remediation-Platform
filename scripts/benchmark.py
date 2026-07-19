@@ -105,9 +105,7 @@ def main() -> int:
     app.dependency_overrides[get_remediation_engine] = lambda: RemediationEngine(
         DeterministicMockAIProvider(), warehouse=wh
     )
-    with TestClient(
-        app, headers={"Authorization": "Bearer demo-analyst-token"}
-    ) as client:
+    with TestClient(app, headers={"Authorization": "Bearer demo-analyst-token"}) as client:
         for path, key in [
             ("/api/v1/parts?page_size=25", "api_parts_list_ms"),
             ("/api/v1/issues?page_size=25", "api_issues_list_ms"),
