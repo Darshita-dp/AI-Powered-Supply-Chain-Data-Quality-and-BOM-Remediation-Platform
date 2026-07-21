@@ -1,6 +1,22 @@
 # PROJECT_STATUS.md — BOM Guardian AI
 
-_Last updated: 2026-07-19 (hardening phase H1-H10 complete)_
+_Last updated: 2026-07-20 (v0.9.0 portfolio release)_
+
+## Release
+
+| | |
+|---|---|
+| **Current release** | **v0.9.0** ([release notes](RELEASE_NOTES.md)) |
+| **Release date** | July 20, 2026 |
+| **Classification** | Portfolio release (prerelease — **not** production-ready) |
+| **Local platform status** | ✅ Complete |
+| **GitHub Actions status** | ✅ Verified green |
+| **Snowflake** | ⏳ Pending — never executed against a live account |
+| **Anthropic provider** | ⏳ Pending — never executed with a real API key |
+| **Power BI Desktop** | ⏳ Pending — no `.pbix`/`.pbip` built or validated |
+
+Versioned 0.9.0 rather than 1.0.0 precisely because the three external validations above
+remain outstanding.
 
 ## Current milestone
 

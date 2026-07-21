@@ -4,103 +4,19 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
 
 ## [Unreleased]
 
-### Hardening (H1–H10, post-M21)
-- H1: reconciled stale/contradictory status wording; added
-  `evaluation/claim-verification.json` (per-claim evidence + validation status).
-  Corrections: the M9 "no entity leakage" claim and the ML P=1.00/R=1.00 headline are
-  retired pending H2's leakage-safe re-evaluation; the M20 E2E test is relabeled
-  service-level (it bypasses the real dbt project — H4 adds a true dbt-pipeline test);
-  detection recall is clarified as recall-only over 17 SQL-mapped types (H3 adds
-  precision + all 25 types); screenshots and GitHub Actions status marked explicitly
-  pending; earlier "verified live/in-browser" phrasing replaced with what was actually
-  exercised (accessibility tree + local tests).
-- H2: enforced entity-disjoint ML evaluation. Candidate pairs form a graph over part
-  ids; connected components become split groups; train/val/test part-set disjointness
-  is asserted at runtime. Evaluated over 5 split seeds on a 4,000-part profile (409
-  labeled duplicate pairs). Honest results (`evaluation/entity_resolution/ml_eval.json`):
-  candidate-generation recall 0.95; logistic regression P 0.962±0.010 / R 0.804±0.178 /
-  F1 0.867±0.113 (stable, recommended); gradient boosting P 0.769±0.431 / R 0.471±0.375
-  (high-variance, not recommended at this scale) — retiring the earlier P=1.00/R=1.00.
-  Reports candidate-generation recall separately so model recall is not read as
-  end-to-end recall. Added connected-component, entity-disjointness, leak-rejection,
-  and multi-seed tests.
-- H3: strengthened defect-detection evaluation against a validated clean baseline.
-  Generator fixes make the pre-injection baseline genuinely clean (active-only BOM
-  components and demand; contiguous, non-overlapping revision windows) — validated by
-  `scripts/validate_clean_baseline.py` (only 5 allowlisted statistical conditions fire).
-  New baseline-diff evaluation covers all 25 injected types with subsystem attribution:
-  SQL-detectable types recall 0.985 (194/197), precision >= 0.933 (conservative; false
-  positives split into collateral vs spurious), per-type/per-difficulty/per-rule with
-  explicit denominators. Duplicate types cross-referenced to entity resolution; 2 types
-  documented as unevaluated. Added `scripts/validate_clean_baseline.py` and
-  `tests/data_quality/test_clean_baseline.py`.
-- H4: added a TRUE dbt end-to-end test (`tests/end_to_end/test_dbt_pipeline.py`) that
-  invokes the real dbt project against a persistent DuckDB file, verifies all 11 core
-  models and 7 marts build and populate, and runs the full engine + API + audited-approval
-  loop against the dbt-built warehouse. Renamed the fast service-level test accordingly
-  and added a fixture-drift guard so `TRANSFORM_SQL` cannot silently diverge from the dbt
-  models.
-- H5: completed/modernized the Snowflake execution path. Added a backend-agnostic
-  `Warehouse` protocol and a `SnowflakeWarehouse` adapter (env-config, parameterized
-  queries, `write_pandas` ingestion, existence/validation checks); moved the AI provider
-  from legacy `SNOWFLAKE.CORTEX.COMPLETE` to `AI_COMPLETE` with a response schema, JSON
-  validation, error handling, configurable model and latency capture; added
-  `scripts/deploy_snowflake.py` (dry-run default), a scoped `SNOWFLAKE.CORTEX_USER`
-  grant, and 12 fake-connection tests. Still never run against a live account.
-- H6: added a configurable real AI provider (`AnthropicAIProvider`, optional `anthropic`
-  extra) on the official SDK — schema-constrained JSON output, grounding validation via
-  the engine, SDK retry/timeout, refusal handling, env-configured key/model
-  (default `claude-opus-4-8`), token/latency audit, abstention, no data-write path. Added
-  a provider factory, `scripts/validate_real_ai_provider.py` (skips without a key — no
-  fabricated artifact), and 7 fake-client tests + a skipped-without-key integration test.
-  Never called against the real API — external validation pending.
-- H7: added role-based authorization to the API (`api/app/auth.py`). An
-  analyst/steward/admin role ladder; `get_principal` resolves a Bearer token to a
-  principal (401 on missing/unknown) and is enforced at the router level on every
-  business route; approve/reject/request-evidence additionally require a steward or admin
-  (`require_role`, 403 for analysts). The reviewer recorded on a decision is now the
-  authenticated principal — the `reviewer` field was removed from the request body so an
-  actor cannot be spoofed. Demonstration auth (static demo tokens, overridable via
-  `BOMG_DEMO_USERS`), clearly labeled — not an enterprise IdP. The frontend signs in as a
-  steward via a demo token (`VITE_DEMO_TOKEN`). Added 7 unit tests plus an API-level
-  enforcement test (401/401/403, analyst-read allowed, issue never transitioned by denied
-  attempts).
-- H8: made GitHub Actions genuinely green (it had never passed; every prior run failed).
-  Root cause: the python job installed `.[dev,api,ml]`, but the document-intelligence
-  tests import `reportlab`/`pypdf` from the `docs-ai` extra, so pytest aborted during
-  collection with exit code 2. Also fixed a latent `ruff format --check` failure on 8
-  files. The python job now installs `.[dev,api,ml,docs-ai,dbt]`, adds a step asserting
-  dbt is importable so the real dbt E2E test cannot silently skip, and runs `pytest -rs`.
-  Verified on GitHub: run 29670834422 (commit `13fa952`) — python 3.12, python 3.13,
-  frontend, dbt, docs-links, and secrets all successful. README CI badge added only
-  after that confirmed run.
-- H9: captured **real application screenshots** of all 8 UI surfaces (previously none
-  existed). Added `scripts/capture_screenshots.py` — runs the real pipeline, starts
-  FastAPI and the Vite dev server on runtime-selected free ports, waits for
-  health/readiness, authenticates with the demo steward token, and drives the live UI
-  with Playwright using ids read from the API; writes optimized PNGs plus a manifest with
-  captions and alt text, and tears down the whole process tree in a `finally`. Exposed as
-  `make screenshots` / `npm run screenshots`, with 8 harness regression tests. Also fixed
-  a dead control the H7 authorization change had left behind: the Workbench's free-text
-  "Reviewer name" input no longer had any effect, so it was replaced with the
-  authenticated identity from a new `GET /api/v1/me` endpoint.
-- H10: final forensic audit — published `docs/final-verification-report.md` sorting every
-  claim into verified-on-CI / tested-locally / external-validation-pending /
-  not-implemented / manual-remaining, with explicit denominators for every headline
-  metric. Re-ran the full gate set in a clean CI-equivalent virtualenv. Eight findings,
-  all corrected: `docs/api-guide.md` still said "No authentication is implemented" and
-  `docs/limitations.md` still claimed reviewer identity was self-declared (both stale
-  since H7); the published endpoint count was wrong (the OpenAPI schema exposes **29**
-  operations, not 25/26); `fetchPart` was dead code in the frontend API client; and the
-  Workbench dead control (fixed in H9); a superseded "100% recall" figure and stale test
-  counts in historical status entries; and stale `api`/`tests` entries in the claim
-  inventory. Scans for TODO/FIXME markers, placeholder
-  implementations, hard-coded secrets, committed generated files, frontend mock data,
-  broken links, and legacy `CORTEX.COMPLETE` calls all came back clean. Honest completion
-  re-derived at **93%** — deliberately not 100% while Snowflake, the Anthropic provider,
-  and Power BI Desktop remain externally unvalidated.
+No unreleased changes.
+
+## [0.9.0] - 2026-07-20
+
+First portfolio release. The platform is feature-complete and CI-verified for local,
+reproducible operation (M0–M21 built, then hardened across checkpoints H1–H10). It is
+**not** released as 1.0.0 because three external validations remain outstanding — see
+*Known external validation gaps* below.
 
 ### Added
+
+**Platform build (M0–M21)**
+
 - M0: repository governance, architecture docs, ADR log, ERD, DQ rule taxonomy,
   README skeleton, `.gitignore`, `.env.example`.
 - M1: Python project configuration (`pyproject.toml`), settings module, structured
@@ -133,7 +49,7 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   with confidence bands + evidence, measured evaluation artifact (recommend band
   P=1.00/R=0.57 on smoke), 8 tests.
 - M9: ML entity resolution — LR + gradient boosting, group-aware splits, precision-floor
-  threshold selection, model persistence, model card, measured comparison report
+  threshold selection, model persistence, model card, measured comparison report,
   6 tests. (Metrics re-measured leakage-safe in H2 → `evaluation/entity_resolution/ml_eval.json`.)
 - M10: field-level golden-record survivorship — reliability/recency/agreement scoring,
   domain source preferences, full lineage with alternatives + confidence, reversible,
@@ -151,12 +67,13 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   weights, merge/field-correction/component-replacement counterfactual scenarios with
   before/after diffs and new-conflict warnings, scenario-only persistence, verified
   baseline immutability, 9 tests.
-- M15: FastAPI service — 24 versioned endpoints (parts, issues + human decision
-  workflow, BOM graph, scenarios, analytics), correlation IDs, structured errors,
-  restricted CORS, OpenAPI, 13 API tests on real pipeline data.
+- M15: FastAPI service — 24 versioned endpoints at the time of M15 (parts, issues +
+  human decision workflow, BOM graph, scenarios, analytics), correlation IDs, structured
+  errors, restricted CORS, OpenAPI, 13 API tests on real pipeline data. The service now
+  exposes **29** operations after the hardening phase.
 - M16: React remediation workbench — 8 surfaces over the live API (no mock data),
   cytoscape BOM explorer, approval workflow, scenario before/after, AI-governance
-  dashboard; verified in-browser; DuckDB thread-safety fix; 5 frontend tests.
+  dashboard; DuckDB thread-safety fix; 5 frontend tests.
 - M17: Data Steward Copilot — allowlisted read-only tools, keyword classification,
   cited evidence, mutation refusal, insufficient-evidence handling, API endpoint +
   UI page, 8 tests.
@@ -165,9 +82,145 @@ All notable changes to BOM Guardian AI. Follows [Keep a Changelog](https://keepa
   Desktop validation honestly marked pending.
 - M19: CI/security — dbt smoke-pipeline CI job, docs link check, dependency review,
   optional manual Snowflake workflow, security threat model + AI governance docs.
-- M20: end-to-end evaluation — 12-step E2E test, detection-recall report (100% on 156
-  mapped injected defects), measured smoke/demo benchmarks, measured profile counts
-  incl. full profile (1,699,010 records / 735s generation).
+- M20: end-to-end evaluation — 12-step E2E test, detection-recall report, measured
+  smoke/demo benchmarks, measured profile counts incl. full profile (1,699,010 records /
+  735 s generation).
+  ⚠️ The M20 detection figure ("100% recall on 156 mapped injected defects across 17
+  types") was recall-only, without a validated clean baseline and without precision. It
+  is **superseded by H3** — do not quote it. Current figures: recall **0.985 (194/197)**,
+  precision **≥ 0.933** over all 25 injected types.
 - M21: portfolio packaging — final README with measured results and honest status
   table, data dictionary, API guide, limitations, demo script; hygiene audit clean
   (no TODOs, no secrets, all local doc links resolve).
+
+**Hardening additions (H1–H10)**
+
+- Backend-agnostic `Warehouse` protocol (`warehouse/base.py`) and a `SnowflakeWarehouse`
+  adapter — env-based config with no embedded credentials, parameterized queries,
+  `write_pandas` ingestion, table-existence and schema validation; plus
+  `scripts/deploy_snowflake.py` (dry-run by default) and a scoped `SNOWFLAKE.CORTEX_USER`
+  grant. (H5)
+- `AnthropicAIProvider` (optional `anthropic` extra) on the official SDK —
+  `output_config.format` JSON-schema constraint, JSON parse + shape check before the
+  engine's full validation, SDK retry/timeout, refusal handling, env-configured key and
+  model (default `claude-opus-4-8`), token + latency capture, abstention, and no
+  data-write path. Added a `get_ai_provider` factory and
+  `scripts/validate_real_ai_provider.py`, which skips cleanly (exit 2) without a key
+  rather than fabricating an artifact. (H6)
+- Role-based authorization layer (`api/app/auth.py`) with an analyst/steward/admin role
+  ladder, `get_principal`, and `require_role`. (H7)
+- `GET /api/v1/me` — reports the authenticated principal so the UI can display the actor
+  a decision will be attributed to. (H9)
+- `scripts/capture_screenshots.py` and `docs/screenshots/` — real Playwright captures of
+  all 8 UI surfaces taken from the running application, with a manifest carrying captions
+  and alt text. Exposed as `make screenshots` / `npm run screenshots`. (H9)
+- `scripts/validate_clean_baseline.py` — asserts the pre-injection baseline is genuinely
+  clean, so detection precision is measurable. (H3)
+- `evaluation/claim-verification.json` — per-claim evidence and validation status for
+  every published claim. (H1)
+- `docs/final-verification-report.md` — forensic audit sorting every claim into
+  verified-on-CI / tested-locally / externally-pending / not-implemented /
+  manual-remaining, with explicit denominators. (H10)
+- `tests/unit/test_release_metadata.py` — guards against version drift between
+  `pyproject.toml`, `bom_guardian.__version__`, the changelog, and the release notes.
+
+### Changed
+
+- **Entity-resolution evaluation is now leakage-safe.** Candidate pairs form a graph over
+  part ids, connected components become split groups, and train/val/test part-set
+  disjointness is asserted at runtime. Re-measured over 5 split seeds on a 4,000-part
+  profile (409 labeled duplicate pairs): candidate-generation recall 0.95; logistic
+  regression P 0.962 ± 0.010 / R 0.804 ± 0.178 / F1 0.867 ± 0.113 (stable, recommended);
+  gradient boosting P 0.769 ± 0.431 / R 0.471 ± 0.375 (high variance, not recommended at
+  this scale). The earlier P=1.00/R=1.00 headline is **retired**. Candidate-generation
+  recall is reported separately so model recall is not misread as end-to-end recall. (H2)
+- **Generator fixes make the pre-injection baseline genuinely clean** — active-only BOM
+  components and demand, contiguous non-overlapping revision windows — enabling a
+  baseline-diff evaluation across all 25 injected types with subsystem attribution and
+  explicit denominators. (H3)
+- Snowflake AI provider moved from the legacy `SNOWFLAKE.CORTEX.COMPLETE` to
+  **`AI_COMPLETE`**, with a response schema, JSON validation, error handling, a
+  configurable model, and latency capture. (H5)
+- Reviewer identity on a decision is now taken from the authenticated principal; the
+  `reviewer` field was removed from the request body entirely. The Workbench's free-text
+  "Reviewer name" input — a dead control after this change — was replaced with the
+  signed-in identity from `GET /api/v1/me`. (H7, H9)
+- Corrected the published endpoint count: the OpenAPI schema exposes **29** GET/POST
+  operations, not the 25/26 previously documented. (H10)
+- Removed `fetchPart`, dead code in the frontend API client. (H10)
+- Package version set to 0.9.0 across `pyproject.toml`, `bom_guardian.__version__`, and
+  the frontend package manifest; the API and OpenAPI schema report it.
+
+### Security
+
+- **Role-based authorization is enforced.** `get_principal` resolves a Bearer token to a
+  principal (401 on a missing or unknown token) and is applied at the router level to
+  every business route. Approve, reject, and request-evidence additionally require a
+  steward or administrator (`require_role`, 403 for analysts). (H7)
+- **Actors cannot be spoofed.** The recorded reviewer is the authenticated principal, and
+  the request body carries no reviewer field. A denied attempt does not transition the
+  issue (asserted by test). (H7)
+- Authentication is **demonstration-grade and clearly labeled as such** — static demo
+  bearer tokens overridable via `BOMG_DEMO_USERS`, not an enterprise IdP. There is no
+  session management, token expiry, revocation, or rate limiting. The authorization logic
+  is production-shaped; the credential source is not. (H7)
+- AI governance guarantees unchanged and retested: no AI path can mutate data, grounding
+  is enforced, abstention is a first-class outcome, every AI call is audited, and
+  untrusted document content is flagged but never followed.
+
+### Testing
+
+- **A true dbt end-to-end test** (`tests/end_to_end/test_dbt_pipeline.py`) invokes the
+  real dbt project against a persistent DuckDB file, verifies all 11 core models and 7
+  marts build and populate, then runs the full engine + API + audited-approval loop
+  against the dbt-built warehouse. The fast test was relabeled *service-level*, and a
+  fixture-drift guard prevents `TRANSFORM_SQL` from silently diverging from the dbt
+  models. (H4)
+- **GitHub Actions is genuinely green** — it had never passed before this release. The
+  python job installed `.[dev,api,ml]`, but the document-intelligence tests import
+  `reportlab`/`pypdf` from the `docs-ai` extra, so pytest aborted during *collection*
+  with exit code 2; the suite passed locally only because that machine had every extra
+  installed. A latent `ruff format --check` failure on 8 files was fixed at the same
+  time. The job now installs `.[dev,api,ml,docs-ai,dbt]`, asserts dbt is importable so
+  the real dbt E2E test cannot silently skip, and runs `pytest -rs` to surface skips. (H8)
+- Suite grew from 136 to **182 passing tests (1 skipped)** at 93% line coverage, adding
+  connected-component / entity-disjointness / leak-rejection / multi-seed tests (H2),
+  clean-baseline tests (H3), 12 Snowflake fake-connection tests (H5), 7 Anthropic
+  fake-client tests plus a skipped-without-key integration test (H6), 8 authorization
+  tests (H7), and 8 screenshot-harness regression tests (H9).
+
+### Documentation
+
+- Reconciled stale and contradictory status wording repository-wide and introduced
+  per-claim evidence tracking. Retired the "no entity leakage" claim and the
+  P=1.00/R=1.00 headline; relabeled the M20 E2E test as service-level; clarified
+  detection recall; marked screenshots and CI status explicitly pending at the time. (H1)
+- Detection evaluation now documents precision alongside recall, splits false positives
+  into collateral versus spurious, and records per-type, per-difficulty, and per-rule
+  breakdowns with explicit denominators. Two duplicate-related types are documented as
+  unevaluated by SQL and cross-referenced to entity resolution. (H3)
+- Corrected two stale claims that contradicted the shipped code: `docs/api-guide.md`
+  still said "No authentication is implemented" and `docs/limitations.md` still claimed
+  reviewer identity was self-declared — both superseded by H7. Also annotated a
+  superseded "100% recall" figure and stale test counts in historical status entries, and
+  refreshed the `api` and `tests` entries in the claim inventory. (H10)
+- Added `docs/screenshots/README.md` explaining how captures are produced and why they
+  are real rather than fixtures, and a README screenshot gallery with alt text and
+  captions. (H9)
+
+### Known external validation gaps
+
+These are the reason this release is **0.9.0 and not 1.0.0**. Each is implemented and
+unit-tested with fakes, but has never touched the real external system:
+
+- **Snowflake** — the adapter, provisioning scripts, role model, dbt `snowflake` target,
+  and Cortex `AI_COMPLETE` provider have **never been executed against a live account**
+  (no credentials). No `evaluation/snowflake/` artifacts exist.
+- **Anthropic provider** — **never called against the real API** (no key).
+  `evaluation/ai/real_provider_validation.json` does not exist, and the integration test
+  skips.
+- **Power BI Desktop** — the full source package exists, but **no `.pbix`/`.pbip` has
+  been built or visually validated**; the DAX has never executed in a live model.
+
+[Unreleased]: https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/Darshita-dp/AI-Powered-Supply-Chain-Data-Quality-and-BOM-Remediation-Platform/releases/tag/v0.9.0

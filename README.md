@@ -4,6 +4,12 @@
 
 **AI-Powered Supply Chain Data Quality and BOM Remediation Platform**
 
+**Portfolio Release:** v0.9.0 ([release notes](RELEASE_NOTES.md))
+**Status:** Local platform complete and CI-verified; Snowflake, real Anthropic execution,
+and Power BI Desktop validation remain pending. See the
+[final verification report](docs/final-verification-report.md) for what is verified
+versus outstanding, and [PROJECT_STATUS.md](PROJECT_STATUS.md) for milestone detail.
+
 BOM Guardian AI detects supply-chain master-data and bill-of-materials defects across
 simulated ERP source systems, resolves duplicate parts into explainable golden records,
 computes each defect's downstream **blast radius** (the "Quality Impact Twin"), and
@@ -153,6 +159,7 @@ and is honestly marked pending throughout.
 | [Security model](docs/security-model.md) | Controls + 10-risk threat model + honest gaps |
 | [Limitations](docs/limitations.md) | What this project does **not** prove |
 | [Final verification report](docs/final-verification-report.md) | Forensic audit: what is CI-verified vs locally tested vs externally pending |
+| [Release notes](RELEASE_NOTES.md) | v0.9.0 capabilities, verified results, validation status, limitations |
 | [Demo script](docs/demo-script.md) | 10-minute walkthrough |
 | [Power BI build kit](powerbi/BUILD_POWER_BI.md) | Semantic model, DAX, pages, honest status |
 
