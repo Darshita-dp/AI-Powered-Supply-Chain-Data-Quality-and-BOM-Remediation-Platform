@@ -5,7 +5,7 @@
 | Control | Where |
 |---|---|
 | No credentials in code; env-based config with `.env.example` | `src/bom_guardian/config/settings.py` |
-| Secret scanning (gitleaks) in pre-commit + CI | `.pre-commit-config.yaml`, `.github/workflows/ci.yml` |
+| Secret scanning (gitleaks, full default rule set) in pre-commit + CI over full history | `.pre-commit-config.yaml`, `.github/workflows/ci.yml`, `.gitleaks.toml` |
 | Restricted CORS (explicit origin list, GET/POST only) | `api/app/main.py` |
 | Request validation (Pydantic bodies, bounded pagination, sort-column allowlists) | `api/app/routers/*` |
 | Structured errors without stack traces + correlation IDs | `api/app/main.py` |
@@ -47,3 +47,11 @@
   should switch to bound parameters throughout.
 - Dependency versions are lower-bounded, not fully locked; `frontend/package-lock.json`
   is locked, Python uses `pyproject.toml` ranges.
+- **Secret scanning carries one documented allowlist.** `.gitleaks.toml` extends the full
+  default rule set and allowlists exactly three literal strings —
+  `demo-analyst-token`, `demo-steward-token`, `demo-admin-token` — because the
+  `curl-auth-header` rule flags them wherever the docs show an authenticated `curl`
+  example. They are intentionally public, non-functional demonstration credentials
+  defined in `api/app/auth.py`. The allowlist is scoped to those exact strings: a real
+  bearer token in the *same* curl example is still detected (verified by scanning a
+  planted credential). No rule is disabled.

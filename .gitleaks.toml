@@ -1,0 +1,31 @@
+# Gitleaks configuration for BOM Guardian AI.
+#
+# The full default rule set stays enabled (`useDefault = true`) so every real
+# secret detector keeps running. The single allowlist below covers this project's
+# DEMONSTRATION bearer tokens, which the `curl-auth-header` rule flags whenever
+# they appear in a documented `curl -H "Authorization: Bearer ..."` example.
+#
+# Why these are safe to allow:
+#   * They are literal, intentionally-public strings defined in `api/app/auth.py`
+#     (`demo-analyst-token`, `demo-steward-token`, `demo-admin-token`).
+#   * They are demonstration credentials for a local, synthetic-data-only build —
+#     they authenticate nothing outside a developer's own machine and are
+#     overridable via the `BOMG_DEMO_USERS` environment variable.
+#   * They are documented as demo-only in `docs/api-guide.md` and
+#     `docs/security-model.md`, which are explicit that this is NOT enterprise IAM.
+#
+# The allowlist is deliberately narrow: it matches only these three exact token
+# strings. Any other credential-shaped value — including a real bearer token in
+# the same curl example — is still reported.
+
+title = "BOM Guardian AI gitleaks config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Documented demonstration bearer tokens (not real credentials)"
+regexTarget = "match"
+regexes = [
+  '''demo-(analyst|steward|admin)-token''',
+]

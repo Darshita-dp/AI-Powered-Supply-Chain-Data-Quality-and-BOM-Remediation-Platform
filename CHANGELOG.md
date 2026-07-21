@@ -167,6 +167,12 @@ reproducible operation (M0–M21 built, then hardened across checkpoints H1–H1
 - AI governance guarantees unchanged and retested: no AI path can mutate data, grounding
   is enforced, abstention is a first-class outcome, every AI call is audited, and
   untrusted document content is flagged but never followed.
+- Added `.gitleaks.toml` so secret scanning runs the **full default rule set** with a
+  narrow, documented allowlist for the three demonstration bearer tokens that the
+  `curl-auth-header` rule flags in authenticated `curl` examples. The allowlist matches
+  only those exact literals — a real bearer token in the same example is still detected
+  (verified against a planted credential). No detector is disabled, and the CI job now
+  references the config explicitly via `GITLEAKS_CONFIG`.
 
 ### Testing
 
